@@ -54,7 +54,7 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
     db-config:
-      id-type: auto #配置主键自增
+      id-type: assign_id #使用雪花算法生成id
       logic-delete-value: 1 # 逻辑已删除值
       logic-not-delete-value: 0 # 逻辑未删除值
   configuration:
