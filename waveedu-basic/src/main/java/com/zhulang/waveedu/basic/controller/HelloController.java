@@ -10,10 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2023-01-15 22:18
  */
 @RestController
-@RequestMapping("/hello")
+@RequestMapping("/login")
 public class HelloController {
-    @GetMapping("/test/{param}")
+    @GetMapping("/test")
     public String test(@PathVariable("param")String name){
         return "逐浪教育：hello，"+name;
+    }
+
+    @GetMapping("/phone")
+    public String hello(){
+        return "hello world";
     }
 }
