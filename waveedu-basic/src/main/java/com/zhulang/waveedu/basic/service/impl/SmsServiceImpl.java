@@ -46,8 +46,8 @@ public class SmsServiceImpl implements SmsService {
 
         // 关于恶意并发的问题，在短信云平台已经自动做了处理，这里就无需处理
 
-        // 5.先存储到 redis
-        redisCacheUtils.setCacheObject(key,code,RedisConstants.LOGIN_USER_CODE_TTL);
+        // 5.先存储到 redis，附带验证次数，初始化为0
+        redisCacheUtils.setCacheObject(key,code+",0",RedisConstants.LOGIN_USER_CODE_TTL);
 
         // 6.发送短信到手机
         boolean result = smsTemplateUtils.sendLoginCode(phone, code);

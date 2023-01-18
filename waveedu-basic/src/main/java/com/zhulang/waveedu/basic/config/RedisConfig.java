@@ -2,6 +2,7 @@ package com.zhulang.waveedu.basic.config;
 
 import com.zhulang.waveedu.common.util.FastJsonRedisSerializer;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import com.zhulang.waveedu.common.util.RedisLockUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -39,5 +40,10 @@ public class RedisConfig {
     @Bean
     public RedisCacheUtils redisCacheUtils(RedisTemplate redisTemplate){
         return new RedisCacheUtils(redisTemplate);
+    }
+
+    @Bean
+    public RedisLockUtils redisLockUtils(RedisTemplate redisTemplate){
+        return new RedisLockUtils(redisTemplate);
     }
 }

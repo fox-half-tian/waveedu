@@ -1,5 +1,7 @@
 package com.zhulang.waveedu.basic.config;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.zhulang.waveedu.common.handler.MyMetaObjectHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @MapperScan("com.zhulang.waveedu.basic.dao")
-public class MyBatisConfig {
-
+public class MyBatisPlusConfig {
+    @Bean
+    public MetaObjectHandler metaObjectHandler(){
+        return new MyMetaObjectHandler();
+    }
 }

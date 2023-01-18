@@ -25,6 +25,14 @@ public class RedisUser implements Serializable {
      */
     private Long id;
     /**
+     * 用户名
+     */
+    private String name;
+    /**
+     * 用户头像
+     */
+    private String icon;
+    /**
      * 权限
      */
     private List<String> permissions;
