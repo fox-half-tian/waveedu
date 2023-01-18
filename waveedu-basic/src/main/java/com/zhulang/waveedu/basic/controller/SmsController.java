@@ -28,7 +28,7 @@ public class SmsController {
      * @return 发送情况
      */
     @PostMapping("/login")
-    public Result sendLoginCode(@RequestParam("phone")String phone){
+    public Result sendLoginCode(@RequestParam("phone") String phone) {
         return smsService.sendLoginCode(phone);
     }
 }

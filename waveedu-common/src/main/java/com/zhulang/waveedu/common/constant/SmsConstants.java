@@ -6,7 +6,7 @@ package com.zhulang.waveedu.common.constant;
  * @author 狐狸半面添
  * @create 2023-01-16 20:51
  */
-public class TxSmsConst {
+public class SmsConstants {
     /**
      * 登录注册的手机验证码有效时长（单位：min）
      */

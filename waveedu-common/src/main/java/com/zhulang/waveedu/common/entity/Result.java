@@ -38,7 +38,7 @@ public class Result {
         this.msg = msg;
     }
 
-    public Result(int code, String msg, Object data) {
+    private Result(int code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -53,7 +53,7 @@ public class Result {
     }
 
     public static Result ok(Object data) {
-        return new Result(HTTP_OK.getCode(), HTTP_OK.getValue(), data);
+        return new Result(HTTP_OK.getCode(), null, data);
     }
 
     public static Result ok(String msg, Object data) {
@@ -70,5 +70,12 @@ public class Result {
 
     public static Result error(Integer code, String msg) {
         return new Result(code, msg);
+    }
+    public static Result error(String msg, Object data) {
+        return new Result(HTTP_INTERNAL_ERROR.getCode(), msg, data);
+    }
+
+    public static Result error(int code, String msg, Object data) {
+        return new Result(code, msg, data);
     }
 }

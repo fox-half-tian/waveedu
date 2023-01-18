@@ -3,7 +3,7 @@ package com.zhulang.waveedu.common.util;
 
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
-import com.zhulang.waveedu.common.constant.TxSmsConst;
+import com.zhulang.waveedu.common.constant.SmsConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TxSmsTemplateUtils {
+public class SmsTemplateUtils {
     /**
      * 应用的AppID
      */
@@ -46,11 +46,11 @@ public class TxSmsTemplateUtils {
         SmsSingleSenderResult result = null;
         try {
             // 短信的模板参数
-            String[] params = {code, Integer.toString(TxSmsConst.LOGIN_EFFECTIVE_TIME)};
+            String[] params = {code, Integer.toString(SmsConstants.LOGIN_EFFECTIVE_TIME)};
             // 构建短信发送器
             SmsSingleSender sender = new SmsSingleSender(appId, appKey);
             // 发送短信
-            sender.sendWithParam(TxSmsConst.CHINA_NATION_CODE, phone, loginTemplateId, params, signContent
+            sender.sendWithParam(SmsConstants.CHINA_NATION_CODE, phone, loginTemplateId, params, signContent
                     , "", "");
         } catch (Exception e) {
             return false;

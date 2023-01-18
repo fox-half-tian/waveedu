@@ -22,7 +22,17 @@ public class RedisCacheUtils {
     }
 
     /**
-     * 缓存基本的对象，Integer、String、实体类等
+     * 获取剩余TTL有效期
+     *
+     * @param key 缓存的键值
+     * @return 剩余有效期，单位：s
+     */
+    public Long getExpire(final String key){
+        return redisTemplate.getExpire(key);
+    }
+
+    /**
+     * 缓存基本的对象，Long、String、实体类等
      *
      * @param key   缓存的键值
      * @param value 缓存的值
@@ -32,15 +42,26 @@ public class RedisCacheUtils {
     }
 
     /**
-     * 缓存基本的对象，Integer、String、实体类等
+     * 缓存基本的对象，Long、String、实体类等
      *
      * @param key      缓存的键值
      * @param value    缓存的值
      * @param timeout  时间
      * @param timeUnit 时间颗粒度
      */
-    public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit) {
+    public <T> void setCacheObject(final String key, final T value, final Long timeout, final TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+    }
+
+    /**
+     * 缓存基本的对象，Long、String、实体类等
+     *
+     * @param key      缓存的键值
+     * @param value    缓存的值
+     * @param timeout  时间
+     */
+    public <T> void setCacheObject(final String key, final T value, final Long timeout) {
+        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
     }
 
     /**

@@ -1,17 +1,19 @@
 package com.zhulang.waveedu.basic.config;
 
-import com.zhulang.waveedu.common.util.TxSmsTemplateUtils;
+import com.zhulang.waveedu.common.util.SmsTemplateUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author 狐狸半面添
  * @create 2023-01-17 23:26
  */
+@Configuration
 public class SmsConfig {
     @Bean
-    @ConfigurationProperties(prefix = "sms.tx")
-    public TxSmsTemplateUtils smsTemplateUtils(){
-        return new TxSmsTemplateUtils();
+    @ConfigurationProperties(prefix = "sms")
+    public SmsTemplateUtils smsTemplateUtils(){
+        return new SmsTemplateUtils();
     }
 }

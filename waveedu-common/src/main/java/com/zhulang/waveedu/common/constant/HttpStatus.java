@@ -17,7 +17,7 @@ public enum HttpStatus {
     /**
      * 请求报文语法错误或传入后端的参数错误(格式，范围等)
      */
-    HTTP_BAD_REQUEST(400,"参数有误"),
+    HTTP_BAD_REQUEST(400,"参数校验失败"),
     /**
      * 需要通过HTTP认证，或认证失败
      */
@@ -39,9 +39,9 @@ public enum HttpStatus {
      */
     HTTP_ILLEGAL_OPERATION(700,"非法操作"),
     /**
-     * 因某些原因，服务器拒绝用户的某些请求，需要稍后再试
+     * 操作频繁，需要稍后再试
      */
-    HTTP_TRY_AGAIN_LATER (701,"请求被拒绝，稍后再试");
+    HTTP_TRY_AGAIN_LATER (701,"频繁操作，请稍后再试");
 
     private final int code;
     private final String value;
