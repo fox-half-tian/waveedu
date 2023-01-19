@@ -1,7 +1,8 @@
-package com.zhulang.waveedu.basic.controller;
+package com.zhulang.waveedu.sms.controller;
 
-import com.zhulang.waveedu.basic.service.SmsService;
+
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.sms.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * 短信服务的控制器
+ * 用户短信服务的控制器
  *
  * @author 狐狸半面添
  * @create 2023-01-17 23:37
  */
 @RestController
-@RequestMapping("/sms")
-public class SmsController {
+@RequestMapping("/user")
+public class UserController {
     @Resource
-    private SmsService smsService;
+    private UserService userService;
 
     /**
      * 发送用于登录与注册的验证码
@@ -29,6 +30,6 @@ public class SmsController {
      */
     @PostMapping("/login")
     public Result sendLoginCode(@RequestParam("phone") String phone) {
-        return smsService.sendLoginCode(phone);
+        return userService.sendLoginCode(phone);
     }
 }

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.basic.filter;
+package com.zhulang.waveedu.common.filter;
 
 
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
@@ -19,7 +19,6 @@ import java.io.IOException;
  * @author 狐狸半面添
  * @create 2023-01-17 20:59
  */
-@Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Resource

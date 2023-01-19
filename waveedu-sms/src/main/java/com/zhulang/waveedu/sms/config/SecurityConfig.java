@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.basic.config;
+package com.zhulang.waveedu.sms.config;
 
 import com.zhulang.waveedu.common.filter.JwtAuthenticationTokenFilter;
 import com.zhulang.waveedu.common.handler.AccessDeniedHandlerImpl;
@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;

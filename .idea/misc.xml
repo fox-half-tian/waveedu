@@ -5,6 +5,7 @@
       <list>
         <option value="$PROJECT_DIR$/waveedu-basic/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/waveedu-sms/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.basic.service;
+package com.zhulang.waveedu.sms.service;
 
 import com.zhulang.waveedu.common.entity.Result;
 
@@ -6,7 +6,7 @@ import com.zhulang.waveedu.common.entity.Result;
  * @author 狐狸半面添
  * @create 2023-01-17 23:39
  */
-public interface SmsService {
+public interface UserService {
     /**
      * 发送用于登录与注册的验证码
      *
