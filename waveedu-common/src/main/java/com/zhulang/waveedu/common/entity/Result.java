@@ -48,12 +48,9 @@ public class Result {
         return new Result(HTTP_OK.getCode(), HTTP_OK.getValue());
     }
 
-    public static Result ok(String msg) {
-        return new Result(HTTP_OK.getCode(), msg);
-    }
 
     public static Result ok(Object data) {
-        return new Result(HTTP_OK.getCode(), null, data);
+        return new Result(HTTP_OK.getCode(), HTTP_OK.getValue(), data);
     }
 
     public static Result ok(String msg, Object data) {

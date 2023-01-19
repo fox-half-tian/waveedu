@@ -2,6 +2,7 @@ package com.zhulang.waveedu.basic.controller;
 
 import com.zhulang.waveedu.basic.service.UserService;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
+import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,11 @@ public class UserController {
     @PostMapping("/login/code")
     public Result loginByCode(@Validated @RequestBody PhoneCodeVO phoneCodeVO){
         return userService.loginByCode(phoneCodeVO);
+    }
+
+    @PostMapping("/login/pwd")
+    public Result loginByPassword(@Validated @RequestBody PhonePasswordVO phonePasswordVO){
+        return userService.loginByPassword(phonePasswordVO);
     }
 
 }

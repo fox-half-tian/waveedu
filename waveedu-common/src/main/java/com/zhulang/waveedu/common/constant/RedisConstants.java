@@ -17,15 +17,12 @@ public class RedisConstants {
     public static final Long LOGIN_USER_CODE_AGAIN_TTL = 60 * 4L;
 
     /**
-     * 用户使用验证码登录时，只允许该用户的单线程操作，防止恶意并发尝试
+     * 用户登录时，只允许该用户的单线程操作，防止恶意并发尝试
      * TTL为 10s
      */
-    public static final String LOCK_LOGIN_USER_CODE_KEY = "lock:login:user:code:";
+    public static final String LOCK_LOGIN_USER_KEY = "lock:login:user:";
     public static final Long LOCK_LOGIN_USER_CODE_TTL = 10L;
-    /**
-     * 登录时最大验证code的次数
-     */
-    public static final int LOGIN_MAX_VERIFY_CODE_COUNT = 7;
+
 
     /**
      * 用户登录后保存在redis的信息
@@ -33,4 +30,15 @@ public class RedisConstants {
      */
     public static final String LOGIN_USER_INFO_KEY = "login:user:info:";
     public static final Long LOGIN_USER_INFO_TTL = 60 * 60 * 2L;
+
+    /**
+     * 保存用户通过密码登录的验证次数
+     * 有效期：2分钟
+     * 2分钟内验证次数达到8次依旧错误，将会冻结手机号以密码方式登录
+     */
+    public static final String LOGIN_USER_PWD_KEY = "login:user:pwd:";
+    public static final Long LOGIN_USER_PWD_TTL = 60 * 2L;
+    public static final Long LOGIN_USER_PWD_LOCK_TTL = 60 * 15L;
+
+
 }

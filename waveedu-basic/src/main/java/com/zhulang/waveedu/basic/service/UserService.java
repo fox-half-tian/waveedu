@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
+import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,4 +38,12 @@ public interface UserService extends IService<User> {
      * @param id 用户id
      */
     void modifyStatusToNormal(Long id);
+
+    /**
+     * 通过密码方式进行登录&注册
+     *
+     * @param phonePasswordVO 手机号——密码
+     * @return 验证结果
+     */
+    Result loginByPassword(PhonePasswordVO phonePasswordVO);
 }

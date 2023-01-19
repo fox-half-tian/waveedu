@@ -1,5 +1,7 @@
 package com.zhulang.waveedu.common.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RedisUser implements Serializable {
     /**
      * jwt
@@ -37,6 +40,7 @@ public class RedisUser implements Serializable {
      */
     private List<String> permissions;
 
+    @JSONField(serialize = false)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return permissions.stream()
                 .map(SimpleGrantedAuthority::new)

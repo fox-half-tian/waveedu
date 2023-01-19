@@ -8,25 +8,25 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 接收手机号+验证码的登录对象
+ * 接收手机号+密码的登录对象
  *
  * @author 狐狸半面添
- * @create 2023-01-18 17:03
+ * @create 2023-01-19 21:02
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhoneCodeVO {
+public class PhonePasswordVO {
     /**
      * 手机号
      */
     @NotBlank(message = "手机号为空")
-    @Pattern(regexp = "^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$", message = "非法手机号")
+    @Pattern(regexp = "^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$", message = "手机号或密码错误")
     private String phone;
     /**
-     * 验证码
+     * 密码
      */
-    @NotBlank(message = "验证码为空")
-    @Pattern(regexp = "^\\d{6}$", message = "非法验证码")
-    private String code;
+    @NotBlank(message = "密码为空")
+    @Pattern(regexp = "^\\w{8,18}$", message = "手机号或密码错误")
+    private String password;
 }

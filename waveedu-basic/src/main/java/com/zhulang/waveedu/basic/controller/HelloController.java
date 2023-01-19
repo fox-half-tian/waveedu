@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2023-01-15 22:18
  */
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/hello")
 public class HelloController {
     @GetMapping("/test")
     public String test(String name){
