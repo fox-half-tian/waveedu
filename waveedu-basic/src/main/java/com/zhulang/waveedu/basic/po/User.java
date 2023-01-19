@@ -5,6 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
+ * 用户表
+ *
  * @author 狐狸半面添
  * @create 2023-01-18 19:13
  */
@@ -36,6 +38,10 @@ public class User {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+    /**
+     * 用户状态：0表示未冻结，1表示注销冻结
+     */
+    private Integer status;
     /**
      * 是否已删除，1表示删除，0表示未删除
      */

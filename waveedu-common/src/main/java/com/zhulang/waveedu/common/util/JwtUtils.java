@@ -73,7 +73,7 @@ public class JwtUtils {
                 // 主题 可以是JSON数据
                 .setSubject(subject)
                 // 签发者
-                .setIssuer("fox")
+                .setIssuer("waveEdu")
                 // 签发时间
                 .setIssuedAt(now)
                 //使用HS256对称加密算法签名, 第二个参数为秘钥

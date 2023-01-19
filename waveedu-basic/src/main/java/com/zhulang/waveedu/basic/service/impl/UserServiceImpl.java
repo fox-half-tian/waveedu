@@ -1,18 +1,25 @@
 package com.zhulang.waveedu.basic.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.basic.constant.BasicConstants;
 import com.zhulang.waveedu.basic.dao.UserMapper;
+import com.zhulang.waveedu.basic.po.Logoff;
 import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
+import com.zhulang.waveedu.basic.query.UserIdAndStatusQuery;
+import com.zhulang.waveedu.basic.service.LogoffService;
 import com.zhulang.waveedu.basic.service.UserInfoService;
 import com.zhulang.waveedu.basic.service.UserService;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
+import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.BasicConvertUtils;
+import com.zhulang.waveedu.common.util.JwtUtils;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
 import com.zhulang.waveedu.common.util.RedisLockUtils;
 import org.springframework.aop.framework.AopContext;
@@ -38,6 +45,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
     @Resource
     private UserInfoService userInfoService;
+    @Resource
+    private LogoffService logoffService;
 
     @Override
     public Result loginByCode(PhoneCodeVO phoneCodeVO) {
@@ -62,7 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 4.校验验证码
             if (!cacheInfo[0].equals(code)) {
                 // 4.1 验证码不正确，count++
-                int count = Integer.parseInt(cacheInfo[0]);
+                int count = Integer.parseInt(cacheInfo[1]);
                 count++;
 
                 if (count >= RedisConstants.LOGIN_MAX_VERIFY_CODE_COUNT) {
@@ -72,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 } else {
                     // 如果不是，就修改缓存中的信息
                     Long expire = redisCacheUtils.getExpire(codeKey);
-                    if (expire == null || expire <= 0) {
+                    if (expire > 0) {
                         redisCacheUtils.setCacheObject(codeKey, cacheInfo[0] + "," + count, expire);
                     }
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "验证码错误");
@@ -82,19 +91,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 4.2 校验成功，继续往后走
 
             // 5.查看MySQL数据库是否有该用户信息
-            Long id = userMapper.selectIdByPhone(phone);
+            UserIdAndStatusQuery userQuery = userMapper.selectIdAndStatusByPhone(phone);
+            // 获取代理对象(事务)-->事务生效
+            UserService proxy = (UserService) AopContext.currentProxy();
             UserInfo userInfo = null;
-            if (id == null) {
-                // 不存在-->创建该用户
-                // 获取代理对象(事务)-->事务生效
-                UserService proxy = (UserService) AopContext.currentProxy();
+            if (userQuery == null) {
+                // 6.不存在-->创建该用户
                 userInfo = proxy.register(phone);
             } else {
-                // 存在 --> 直接查询该用户的信息
-
+                // 7.存在 --> 判断用户状态,获取用户信息
+                if (userQuery.getStatus() == 1){
+                    // 说明处于注销冻结状态，则修改状态为正常状态
+                    proxy.modifyStatusToNormal(userQuery.getId());
+                }
+                // 获取用户信息
+                LambdaQueryWrapper<UserInfo> userInfoWrapper = new LambdaQueryWrapper<>();
+                userInfoWrapper.select(UserInfo::getId,UserInfo::getName,UserInfo::getIcon)
+                        .eq(UserInfo::getId,userQuery.getId());
+                userInfo = userInfoService.getOne(userInfoWrapper);
             }
 
-            return Result.ok();
+            // todo 8.查询权限信息（后面再来补充）
+
+            // 9.生成 jwt
+            String jwt = JwtUtils.createJWT(userInfo.getId().toString());
+
+            // 10.信息存储到 redis
+            RedisUser redisUser = new RedisUser();
+            redisUser.setJwt(jwt);
+            redisUser.setIcon(userInfo.getIcon());
+            redisUser.setName(userInfo.getName());
+            redisUser.setId(userInfo.getId());
+            // todo 设置权限
+
+            redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY+redisUser.getId(),redisUser,RedisConstants.LOGIN_USER_INFO_TTL);
+
+            // 11.携带 jwt 返回成功，以后请求时前端需要携带 jwt，放在请求头中
+            return Result.ok(jwt);
         } finally {
             // 最后释放锁
             if (lock) {
@@ -116,8 +149,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userInfo.setIcon(BasicConstants.DEFAULT_USER_ICON);
         // 在 basic_user_info 表中保存用户
         userInfoService.save(userInfo);
-        int a = 10 / 0;
         return userInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyStatusToNormal(Long id){
+        LambdaUpdateWrapper<User> userWrapper = new LambdaUpdateWrapper<>();
+        userWrapper.eq(User::getId,id)
+                .set(User::getStatus,0);
+        // 修改用户状态
+        update(userWrapper);
+        LambdaUpdateWrapper<Logoff> logoffWrapper = new LambdaUpdateWrapper<>();
+        logoffWrapper.eq(Logoff::getUserId,id);
+        // 删除 basic_logoff 表中的对应数据
+        logoffService.remove(logoffWrapper);
     }
 
 

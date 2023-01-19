@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
+ * 用户详情表
+ *
  * @author 狐狸半面添
  * @create 2023-01-18 23:24
  */

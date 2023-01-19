@@ -26,4 +26,11 @@ public class RedisConstants {
      * 登录时最大验证code的次数
      */
     public static final int LOGIN_MAX_VERIFY_CODE_COUNT = 7;
+
+    /**
+     * 用户登录后保存在redis的信息
+     * 有效期：两小时
+     */
+    public static final String LOGIN_USER_INFO_KEY = "login:user:info:";
+    public static final Long LOGIN_USER_INFO_TTL = 60 * 60 * 2L;
 }

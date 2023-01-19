@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/login")
 public class HelloController {
     @GetMapping("/test")
-    public String test(@PathVariable("param")String name){
+    public String test(String name){
         return "逐浪教育：hello，"+name;
     }
 

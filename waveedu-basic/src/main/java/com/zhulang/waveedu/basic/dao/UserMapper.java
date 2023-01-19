@@ -2,6 +2,7 @@ package com.zhulang.waveedu.basic.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.basic.po.User;
+import com.zhulang.waveedu.basic.query.UserIdAndStatusQuery;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -14,7 +15,7 @@ public interface UserMapper extends BaseMapper<User> {
      * 查询该手机号的用户id
      *
      * @param phone 手机号
-     * @return 用户id
+     * @return 用户id,updateTime,status
      */
-    Long selectIdByPhone(@Param("phone") String phone);
+    UserIdAndStatusQuery selectIdAndStatusByPhone(@Param("phone") String phone);
 }

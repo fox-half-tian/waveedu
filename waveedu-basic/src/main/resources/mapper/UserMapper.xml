@@ -5,10 +5,11 @@
 
 <mapper namespace="com.zhulang.waveedu.basic.dao.UserMapper">
 
-    <select id="selectIdByPhone" resultType="java.lang.Long">
-        SELECT `id`
+    <select id="selectIdAndStatusByPhone" resultType="com.zhulang.waveedu.basic.query.UserIdAndStatusQuery">
+        SELECT `id`,`status`
         FROM `basic_user`
         WHERE phone = #{phone}
+        AND is_deleted = 0
         LIMIT 1
     </select>
 </mapper>

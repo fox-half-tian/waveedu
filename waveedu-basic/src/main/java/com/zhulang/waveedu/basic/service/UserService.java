@@ -5,6 +5,7 @@ import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.common.entity.Result;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * UserService继承IService模板提供的基础功能
@@ -29,4 +30,11 @@ public interface UserService extends IService<User> {
      * @return 用户信息
      */
     UserInfo register(String phone);
+
+    /**
+     * 修改用户状态，删除 basic_logoff 表中的对应数据
+     *
+     * @param id 用户id
+     */
+    void modifyStatusToNormal(Long id);
 }
