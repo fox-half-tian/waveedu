@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
         // 3.存在并且剩余时长大于4分钟则不可再次发送验证码
         if(expire > RedisConstants.LOGIN_USER_CODE_AGAIN_TTL){
-            return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(),"验证码在有效期内");
+            return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(),"发送失败，验证码仍在有效期内");
         }
 
         // todo 4.验证码不存在或者剩余时长小于四分钟，则可以继续发送验证码 --> 先生成六位随机数
