@@ -1,8 +1,10 @@
 package com.zhulang.waveedu.sms.config;
 
-import com.zhulang.waveedu.common.filter.JwtAuthenticationTokenFilter;
+import com.zhulang.waveedu.common.filter.AuthenticationTokenFilter;
 import com.zhulang.waveedu.common.handler.AccessDeniedHandlerImpl;
 import com.zhulang.waveedu.common.handler.AuthenticationEntryPointImpl;
+import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +28,12 @@ import java.util.Arrays;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private RedisCacheUtils redisCacheUtils;
 
+    @Autowired
+    public SecurityConfig(RedisCacheUtils redisCacheUtils){
+        this.redisCacheUtils = redisCacheUtils;
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -42,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         //把token校验过滤器添加到过滤器链中
-        http.addFilterBefore(new JwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthenticationTokenFilter(redisCacheUtils), UsernamePasswordAuthenticationFilter.class);
 
         //配置异常处理器
         http.exceptionHandling()

@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.common.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.WebUtils;
 import org.springframework.security.core.AuthenticationException;
@@ -23,8 +22,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         // 需要通过HTTP认证，或认证失败
-        Result result =  Result.error(HTTP_UNAUTHORIZED.getCode(), authException.getMessage());
-        String json = JSON.toJSONString(result);
-        WebUtils.renderString(response,json);
+        Result result =  Result.error(HTTP_UNAUTHORIZED.getCode(), "请先登录再访问");
+        WebUtils.renderString(response,result);
     }
 }

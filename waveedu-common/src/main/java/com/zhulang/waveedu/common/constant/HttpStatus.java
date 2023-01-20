@@ -41,7 +41,15 @@ public enum HttpStatus {
     /**
      * 操作频繁，需要稍后再试
      */
-    HTTP_TRY_AGAIN_LATER (701,"频繁操作，请稍后再试");
+    HTTP_TRY_AGAIN_LATER (701,"频繁操作，请稍后再试"),
+    /**
+     * 登录过期，需要重新登录
+     */
+    HTTP_LOGIN_EXPIRE (702,"登录过期，请重新登录"),
+    /**
+     * 账号在其它地方登录，强制下线
+     */
+    HTTP_USER_CROWDING(703,"账号在其它地方登录，您已被强制下线");
 
     private final int code;
     private final String value;

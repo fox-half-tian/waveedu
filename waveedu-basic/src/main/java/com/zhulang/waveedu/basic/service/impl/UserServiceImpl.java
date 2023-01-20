@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.basic.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -110,7 +111,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 userInfo = userInfoService.getOne(userInfoWrapper);
             }
 
-            // 8.缓存用户信息，携带 jwt 返回成功，以后请求时前端需要携带 jwt，放在请求头中
+            // 8.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
             return Result.ok(saveRedisInfo(userInfo));
 
         } finally {
@@ -125,17 +126,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * 设置用户信息，缓存到 redis 中
      *
      * @param userInfo 用户基本信息
-     * @return jwt生成的token
+     * @return 生成的token
      */
     public String saveRedisInfo(UserInfo userInfo) {
         // todo 1.查询权限信息（后面再来补充）
 
-        // 2.生成 jwt
-        String jwt = JwtUtils.createJWT(userInfo.getId().toString());
+        // 2.生成 token
+        String uuid = UUID.randomUUID().toString(true);
+        String token = CipherUtils.encrypt(userInfo.getId()+"-"+uuid);
 
         // 3.设置缓存的用户信息
         RedisUser redisUser = new RedisUser();
-        redisUser.setJwt(jwt);
+        redisUser.setUuid(uuid);
+        redisUser.setTime(System.currentTimeMillis());
         redisUser.setIcon(userInfo.getIcon());
         redisUser.setName(userInfo.getName());
         redisUser.setId(userInfo.getId());
@@ -144,8 +147,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 4.信息存储到 redis
         redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
 
-        // 5.返回jwt
-        return jwt;
+        // 5.返回token
+        return token;
     }
 
     @Override
@@ -196,33 +199,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (!lock) {
                 return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), HttpStatus.HTTP_TRY_AGAIN_LATER.getValue());
             }
-            // 1.从 redis 中获取当前手机号的登录次数
+            // 3.从 redis 中获取当前手机号的登录次数
             Integer count = redisCacheUtils.getCacheObject(phoneKey);
             if (count == null) {
                 count = 0;
             }
-            // 2.次数超过8次，则返回稍后再试
+            // 4.次数超过8次，则返回稍后再试
             if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
                 return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL/60 + "分钟");
             }
             count++;
-            // 3.从数据库中查询该手机号的用户信息
+            // 5.从数据库中查询该手机号的用户信息
             UserIdAndPasswordAndStatusQuery userQuery = userMapper.selectIdAndPasswordAndStatusByPhone(phone);
-            // 4.用户信息不存在则返回错误
+            // 6.用户信息不存在则返回错误
             if (userQuery == null) {
                 return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
             }
-            // 5.校验密码
+
+            // 7.校验密码
             Boolean matches = PasswordEncoderUtils.matches(userQuery.getPassword(), password);
             if (!matches) {
-                // 6.校验失败的处理
-                // 6.1 是否冻结手机号
+                // 8.校验失败的处理
+                // 8.1 是否冻结手机号
                 if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
                     // 冻结手机+密码方式登录15分钟
                     redisCacheUtils.setCacheObject(phoneKey, count, RedisConstants.LOGIN_USER_PWD_LOCK_TTL);
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL/60 + "分钟");
                 }
-                // 6.2 未冻结，则修改将手机号验证次数
+                // 8.2 未冻结，则修改将手机号验证次数
                 if (count == 1){
                     redisCacheUtils.setCacheObject(phoneKey,count,RedisConstants.LOGIN_USER_PWD_TTL);
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
@@ -231,7 +235,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 if (expire > 0) {
                     redisCacheUtils.setCacheObject(phoneKey, count, expire);
                 }
-                // 6.3 返回结果，当剩1-3次机会时返回剩余次数
+                // 8.3 返回结果，当剩1-3次机会时返回剩余次数
                 int surplusCount = BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT - count;
                 if (surplusCount > 0 && surplusCount <= BasicConstants.LOGIN_PWD_MAX_SURPLUS_COUNT) {
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误，" + surplusCount + "次机会后冻结手机号15分钟");
@@ -241,22 +245,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
 
             // 校验成功则继续往后走
-            // 7.查询用户信息
+
+            // 9.判断是否在注销冻结期
+            if(userQuery.getStatus()==1){
+                // 只能通过手机号验证码方式登录来解除注销
+                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(),"当前用户处于注销冻结期，请使用验证码方式进行解冻登录");
+            }
+            // 10.查询用户信息
             LambdaQueryWrapper<UserInfo> userInfoWrapper = new LambdaQueryWrapper<>();
             userInfoWrapper.select(UserInfo::getId, UserInfo::getName, UserInfo::getIcon)
                     .eq(UserInfo::getId, userQuery.getId());
             UserInfo userInfo = userInfoService.getOne(userInfoWrapper);
-            // 8.移除缓存中的次数统计
+            // 11.移除缓存中的次数统计
             redisCacheUtils.deleteObject(phoneKey);
 
-            // 9.缓存用户信息，携带 jwt 返回成功，以后请求时前端需要携带 jwt，放在请求头中
+            // 12.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
             return Result.ok(saveRedisInfo(userInfo));
         } finally {
-            // 10.最后释放锁
+            // 13.最后释放锁
             if (lock) {
                 redisLockUtils.unlock(lockKey);
             }
         }
+    }
+
+    @Override
+    public Result logout(Long id) {
+        redisCacheUtils.deleteObject(RedisConstants.LOGIN_USER_INFO_KEY+id);
+        return Result.ok();
     }
 
 }

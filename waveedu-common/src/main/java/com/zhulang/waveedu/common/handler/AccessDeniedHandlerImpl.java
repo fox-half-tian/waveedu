@@ -23,7 +23,6 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         // 403 请求资源被拒绝
         Result result = Result.error(HTTP_FORBIDDEN.getCode(), HTTP_FORBIDDEN.getValue());
-        String json = JSON.toJSONString(result);
-        WebUtils.renderString(response, json);
+        WebUtils.renderString(response, result);
     }
 }

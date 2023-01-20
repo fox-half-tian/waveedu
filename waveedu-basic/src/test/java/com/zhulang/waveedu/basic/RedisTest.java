@@ -19,7 +19,7 @@ public class RedisTest {
     @Test
     public void testRedisCache(){
         RedisUser redisUser = new RedisUser();
-        redisUser.setJwt("adasda");
+        redisUser.setUuid("adasda");
         redisCacheUtils.setCacheObject("a",redisUser);
     }
 }

@@ -4,12 +4,15 @@ import com.zhulang.waveedu.basic.service.UserService;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 /**
+ * User登录，注册，推出登录，注销的控制器
+ *
  * @author 狐狸半面添
  * @create 2023-01-17 23:14
  */
@@ -33,6 +36,11 @@ public class UserController {
     @PostMapping("/login/pwd")
     public Result loginByPassword(@Validated @RequestBody PhonePasswordVO phonePasswordVO){
         return userService.loginByPassword(phonePasswordVO);
+    }
+
+    @PostMapping("/logout")
+    public Result logout(){
+        return userService.logout(UserHolderUtils.getUserId());
     }
 
 }

@@ -1,8 +1,10 @@
 package com.zhulang.waveedu.basic.config;
 
-import com.zhulang.waveedu.common.filter.JwtAuthenticationTokenFilter;
+import com.zhulang.waveedu.common.filter.AuthenticationTokenFilter;
 import com.zhulang.waveedu.common.handler.AccessDeniedHandlerImpl;
 import com.zhulang.waveedu.common.handler.AuthenticationEntryPointImpl;
+import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
@@ -27,6 +30,12 @@ import java.util.Arrays;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private RedisCacheUtils redisCacheUtils;
+
+    @Autowired
+    public SecurityConfig(RedisCacheUtils redisCacheUtils){
+        this.redisCacheUtils = redisCacheUtils;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,12 +47,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
-                .antMatchers("/**").anonymous()
+                .antMatchers("/user/login/*").anonymous()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
         //把token校验过滤器添加到过滤器链中
-        http.addFilterBefore(new JwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AuthenticationTokenFilter(redisCacheUtils), UsernamePasswordAuthenticationFilter.class);
 
         //配置异常处理器
         http.exceptionHandling()

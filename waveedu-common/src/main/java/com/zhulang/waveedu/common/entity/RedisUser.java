@@ -20,9 +20,13 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RedisUser implements Serializable {
     /**
-     * jwt
+     * uuid
      */
-    private String jwt;
+    private String uuid;
+    /**
+     * 时间
+     */
+    private Long time;
     /**
      * 用户id
      */
@@ -42,6 +46,9 @@ public class RedisUser implements Serializable {
 
     @JSONField(serialize = false)
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (permissions==null){
+            return null;
+        }
         return permissions.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

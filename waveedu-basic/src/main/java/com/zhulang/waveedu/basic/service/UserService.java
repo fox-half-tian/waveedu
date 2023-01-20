@@ -46,4 +46,13 @@ public interface UserService extends IService<User> {
      * @return 验证结果
      */
     Result loginByPassword(PhonePasswordVO phonePasswordVO);
+
+
+    /**
+     * 用户退出登录
+     *
+     * @param id 用户id
+     * @return 退出状况
+     */
+    Result logout(Long id);
 }
