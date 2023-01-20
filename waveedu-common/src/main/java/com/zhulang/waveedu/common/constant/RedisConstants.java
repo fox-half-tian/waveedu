@@ -27,11 +27,11 @@ public class RedisConstants {
     /**
      * 用户登录后保存在redis的信息
      * 有效期：两小时
-     * 如果离过期还有5分钟就刷新一次有效期
+     * 如果离过期还有90分钟就刷新一次有效期
      */
     public static final String LOGIN_USER_INFO_KEY = "login:user:info:";
     public static final Long LOGIN_USER_INFO_TTL = 60 * 60 * 2L;
-    public static final Long LOGIN_USER_INFO_REFRESH_TTL = 60 * 5L;
+    public static final Long LOGIN_USER_INFO_REFRESH_TTL = 60 * 90L;
 
     /**
      * 保存用户通过密码登录的验证次数

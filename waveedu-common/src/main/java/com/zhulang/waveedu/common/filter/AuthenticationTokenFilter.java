@@ -71,7 +71,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
          */
         if (RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime())/1000 <= RedisConstants.LOGIN_USER_INFO_REFRESH_TTL){
-            // 距离过期五分钟不到，就刷新缓存
+            // 距离过期90分钟不到，就刷新缓存
             redisUser.setTime(System.currentTimeMillis());
             redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY+info[0],redisUser,RedisConstants.LOGIN_USER_INFO_TTL);
         }

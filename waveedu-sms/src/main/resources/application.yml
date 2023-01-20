@@ -14,7 +14,7 @@ spring:
       filter:
         enabled: true #启用HiddenHttpMethodFilter,支持rest风格
   redis:
-    host: 192.168.65.129
+    host: 8.134.136.211
     port: 6379
     password: 123456
     lettuce:
