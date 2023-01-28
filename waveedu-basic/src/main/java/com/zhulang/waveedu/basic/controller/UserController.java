@@ -5,6 +5,7 @@ import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,14 +34,36 @@ public class UserController {
         return userService.loginByCode(phoneCodeVO);
     }
 
+    /**
+     * 通过密码方式进行登录
+     *
+     * @param phonePasswordVO 手机号——密码
+     * @return 验证结果
+     */
     @PostMapping("/login/pwd")
     public Result loginByPassword(@Validated @RequestBody PhonePasswordVO phonePasswordVO){
         return userService.loginByPassword(phonePasswordVO);
     }
 
+    /**
+     * 用户退出登录
+     *
+     * @return 退出状况
+     */
     @PostMapping("/logout")
     public Result logout(){
         return userService.logout(UserHolderUtils.getUserId());
+    }
+
+    /**
+     * 通过手机号进行验证，完成用户注销
+     *
+     * @param code 验证码
+     * @return 注销状况
+     */
+    @PostMapping("/logoff")
+    public Result logoff(@RequestParam("code") String code){
+        return userService.logoff(code);
     }
 
 }

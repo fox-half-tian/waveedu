@@ -1,11 +1,13 @@
 package com.zhulang.waveedu.basic.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 /**
@@ -20,9 +22,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Logoff {
     /**
-     * 主键id
+     * 主键id（数据库id自增策略）
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Integer id;
     /**
      * 用户id

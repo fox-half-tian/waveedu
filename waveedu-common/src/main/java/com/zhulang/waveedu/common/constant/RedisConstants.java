@@ -42,5 +42,20 @@ public class RedisConstants {
     public static final Long LOGIN_USER_PWD_TTL = 60 * 2L;
     public static final Long LOGIN_USER_PWD_LOCK_TTL = 60 * 15L;
 
+    /**
+     * 用户注销手机验证码
+     * 有效期：5分钟
+     * 剩余时长大于 4分钟 则无法再次发送
+     */
+    public static final String LOGOFF_USER_CODE_KEY = "logoff:user:code:";
+    public static final Long LOGOFF_USER_CODE_TTL = 60 * 5L;
+    public static final Long LOGOFF_USER_CODE_AGAIN_TTL = 60 * 4L;
+
+    /**
+     * 用户注销时，只允许该用户的单线程操作，防止恶意并发尝试
+     * TTL为 10s
+     */
+    public static final String LOCK_LOGOFF_USER_KEY = "lock:logoff:user:";
+    public static final Long LOCK_LOGOFF_USER_CODE_TTL = 10L;
 
 }

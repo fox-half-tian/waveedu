@@ -47,7 +47,7 @@ public class PasswordEncoderUtils {
     }
 
     public static void main(String[] args) {
-        String encode = encode("123456");
+        String encode = encode("12345678");
         System.out.println(encode);
         System.out.println(encode.length());
     }

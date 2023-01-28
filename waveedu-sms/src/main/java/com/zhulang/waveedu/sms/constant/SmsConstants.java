@@ -16,4 +16,8 @@ public class SmsConstants {
      * +86是国家代码。0086是中国的区号，在手机号码前加了+86表示该号码为中国用户
      */
     public static final String CHINA_NATION_CODE = "86";
+    /**
+     * 注销的手机验证码有效时长（单位：min）
+     */
+    public static final Integer LOGOFF_EFFECTIVE_TIME = 5;
 }

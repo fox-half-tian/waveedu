@@ -26,9 +26,9 @@ public class RegexUtils {
          */
         public static final String EMAIL_REGEX = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
         /**
-         * 密码正则。8~18位的字母、数字、下划线
+         * 密码正则。8~16位的字母、数字、下划线
          */
-        public static final String PASSWORD_REGEX = "^\\w{8,18}$";
+        public static final String PASSWORD_REGEX = "^\\w{8,16}$";
         /**
          * 验证码正则, 6位数字
          */

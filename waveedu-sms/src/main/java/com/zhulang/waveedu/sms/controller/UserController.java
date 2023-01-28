@@ -28,8 +28,18 @@ public class UserController {
      * @param phone 手机号
      * @return 发送情况
      */
-    @PostMapping("/login")
+    @PostMapping("/sendLoginCode")
     public Result sendLoginCode(@RequestParam("phone") String phone) {
         return userService.sendLoginCode(phone);
+    }
+
+    /**
+     * 发送用于用户注销的验证码
+     *
+     * @return 发送情况
+     */
+    @PostMapping("/sendLogoffCode")
+    public Result sendLogoffCode(){
+        return userService.sendLogoffCode();
     }
 }
