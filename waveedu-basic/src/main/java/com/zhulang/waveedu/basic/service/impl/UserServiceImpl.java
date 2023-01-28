@@ -164,7 +164,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         save(user);
         UserInfo userInfo = new UserInfo();
         userInfo.setId(user.getId());
-        userInfo.setName("用户" + RandomUtil.randomString(8));
+        userInfo.setName("逐浪者" + RandomUtil.randomString(8));
         userInfo.setIcon(BasicConstants.DEFAULT_USER_ICON);
         // 在 basic_user_info 表中保存用户
         userInfoService.save(userInfo);
@@ -247,8 +247,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
                 }
             }
-
             // 校验成功则继续往后走
+
 
             // 9.判断是否在注销冻结期
             if (userQuery.getStatus() == 1) {
