@@ -26,10 +26,11 @@ public interface UserInfoService extends IService<UserInfo> {
      */
     Result modifyUserInfoByUserInfo(UserInfo userInfo);
 
+/*
     /**
      * 通过用户名来获取id
      * @param name
      * @return id
-     */
     Result getIdByName(String name);
+*/
 }

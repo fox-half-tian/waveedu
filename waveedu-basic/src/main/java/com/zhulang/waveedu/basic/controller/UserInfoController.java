@@ -2,7 +2,6 @@ package com.zhulang.waveedu.basic.controller;
 
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.service.UserInfoService;
-import com.zhulang.waveedu.basic.service.UserService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +28,13 @@ public class UserInfoController {
     }
 
     /**
-     * 通过name来获取其他用户的信息
-     * @param name
+     * 通过id来获取其他用户的信息
+     * @param id
      * @return 用户信息
      */
-    @GetMapping("/get/name")
-    public Result getUserInfoByName(@RequestParam("name") String name){
-        Result R = userInfoService.getIdByName(name);
-        return userInfoService.GetUserInfoById((Long)R.getData());
+    @GetMapping("/get/id")
+    public Result getUserInfoByName(@RequestParam("id") Long id){
+        return userInfoService.GetUserInfoById(id);
     }
 
     /**

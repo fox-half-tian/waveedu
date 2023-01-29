@@ -44,7 +44,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         return Result.ok("修改成功");
     }
-
+/*
     @Override
     public Result getIdByName(String name) {
         try {
@@ -57,6 +57,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode()," 参数校验失败，获取失败 ");
         }
     }
-
+*/
 
 }
