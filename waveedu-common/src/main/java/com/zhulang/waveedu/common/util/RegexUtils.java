@@ -16,7 +16,7 @@ public class RegexUtils {
      * @author 狐狸半面添
      * @create 2023-01-16 22:39
      */
-    private static class RegexPatterns {
+    public static class RegexPatterns {
         /**
          * 手机号正则
          */
@@ -33,6 +33,15 @@ public class RegexUtils {
          * 验证码正则, 6位数字
          */
         public static final String VERIFY_CODE_REGEX = "^\\d{6}$";
+
+        /**
+         * uuid正则，32位0-9，a-f
+         */
+        public static final String UUID_REGEX = "^[0-9abcdef]{32}$";
+        /**
+         * 图片验证码字符正则，5位字母、数字
+         */
+        public static final String CAPTCHA_CODE_REGEX = "^[0-9a-zA-Z]{5}$";
     }
 
     /**
@@ -77,5 +86,25 @@ public class RegexUtils {
             return true;
         }
         return !str.matches(regex);
+    }
+
+    /**
+     * 是否是无效uuid格式
+     *
+     * @param uuid 要校验的uuid
+     * @return true:符合，false：不符合
+     */
+    public static boolean isUUIDInvalid(String uuid) {
+        return mismatch(uuid, RegexPatterns.UUID_REGEX);
+    }
+
+    /**
+     * 是否是无效CaptchaCode字符格式
+     *
+     * @param code 要校验的code
+     * @return true:符合，false：不符合
+     */
+    public static boolean isCaptchaCodeInvalid(String code) {
+        return mismatch(code, RegexPatterns.CAPTCHA_CODE_REGEX);
     }
 }

@@ -5,6 +5,7 @@ import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
+import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,4 +64,12 @@ public interface UserService extends IService<User> {
      * @return 注销状况
      */
     Result logoff(String code);
+
+    /**
+     * 修改密码
+     *
+     * @param updatePwdVO 两个密码+uuid+code
+     * @return 修改情况
+     */
+    Result updatePwd(UpdatePwdVO updatePwdVO);
 }

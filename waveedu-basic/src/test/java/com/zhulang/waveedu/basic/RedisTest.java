@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.basic;
 
+import cn.hutool.core.lang.UUID;
 import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -23,6 +25,21 @@ public class RedisTest {
         RedisUser redisUser = new RedisUser();
         redisUser.setUuid("adasda");
         redisCacheUtils.setCacheObject("a",redisUser);
+    }
+
+    @Test
+    public void testUUID(){
+        String uuid = UUID.randomUUID().toString(true);
+        System.out.println(uuid);
+        System.out.println(uuid.length());
+        System.out.println(RegexUtils.isUUIDInvalid(uuid));
+    }
+
+    @Test
+    public void testStringEqual(){
+        String s1 = "123abc";
+        String s2 = "123ABc";
+        System.out.println(s1.equalsIgnoreCase(s2));
     }
 
 }

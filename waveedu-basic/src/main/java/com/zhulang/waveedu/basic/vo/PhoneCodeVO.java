@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.basic.vo;
 
+import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,12 +22,12 @@ public class PhoneCodeVO {
      * 手机号
      */
     @NotBlank(message = "手机号为空")
-    @Pattern(regexp = "^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$", message = "手机号格式错误")
+    @Pattern(regexp = RegexUtils.RegexPatterns.PHONE_REGEX, message = "手机号格式错误")
     private String phone;
     /**
      * 验证码
      */
     @NotBlank(message = "验证码为空")
-    @Pattern(regexp = "^\\d{6}$", message = "验证码格式错误")
+    @Pattern(regexp = RegexUtils.RegexPatterns.VERIFY_CODE_REGEX, message = "验证码格式错误")
     private String code;
 }

@@ -3,6 +3,7 @@ package com.zhulang.waveedu.basic.controller;
 import com.zhulang.waveedu.basic.service.UserService;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
+import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import org.springframework.validation.annotation.Validated;
@@ -65,4 +66,14 @@ public class UserController {
         return userService.logoff(code);
     }
 
+    /**
+     * 修改密码
+     *
+     * @param updatePwdVO 两个密码+uuid+code
+     * @return 修改情况
+     */
+    @PutMapping("/updatePwd")
+    public Result updatePwd(@Validated @RequestBody UpdatePwdVO updatePwdVO){
+        return userService.updatePwd(updatePwdVO);
+    }
 }
