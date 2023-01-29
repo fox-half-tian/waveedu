@@ -69,7 +69,7 @@ public class UserController {
     /**
      * 修改密码
      *
-     * @param updatePwdVO 两个密码+uuid+code
+     * @param updatePwdVO 两个密码+code
      * @return 修改情况
      */
     @PutMapping("/updatePwd")
