@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author 狐狸半面添
@@ -22,4 +24,5 @@ public class RedisTest {
         redisUser.setUuid("adasda");
         redisCacheUtils.setCacheObject("a",redisUser);
     }
+
 }

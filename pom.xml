@@ -16,7 +16,7 @@
     <modules>
         <module>waveedu-basic</module>
         <module>waveedu-common</module>
-        <module>waveedu-sms</module>
+        <module>waveedu-service</module>
     </modules>
 
 </project>
