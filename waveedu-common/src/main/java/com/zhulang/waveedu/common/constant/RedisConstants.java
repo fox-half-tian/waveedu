@@ -58,4 +58,11 @@ public class RedisConstants {
     public static final String LOCK_LOGOFF_USER_KEY = "lock:logoff:user:";
     public static final Long LOCK_LOGOFF_USER_CODE_TTL = 10L;
 
+    /**
+     * 修改密码时图片验证码字符缓存
+     * TTL为 2min
+     */
+    public static final String PWD_CODE_KEY = "pwd:code:";
+    public static final Long PWD_CODE_TTL = 60 * 2L;
+
 }
