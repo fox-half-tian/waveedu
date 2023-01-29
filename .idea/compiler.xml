@@ -7,7 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="waveedu-sms" />
+        <module name="waveedu-service" />
         <module name="waveedu-basic" />
         <module name="waveedu-common" />
       </profile>
@@ -16,14 +16,14 @@
       <module name="waveedu" target="1.5" />
       <module name="waveedu-basic" target="1.8" />
       <module name="waveedu-common" target="1.8" />
-      <module name="waveedu-sms" target="1.8" />
+      <module name="waveedu-service" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="waveedu-basic" options="-parameters" />
       <module name="waveedu-common" options="" />
-      <module name="waveedu-sms" options="-parameters" />
+      <module name="waveedu-service" options="-parameters" />
     </option>
   </component>
 </project>

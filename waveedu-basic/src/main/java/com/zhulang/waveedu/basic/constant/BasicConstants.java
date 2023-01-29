@@ -19,7 +19,11 @@ public class BasicConstants {
     public static final int LOGIN_MAX_VERIFY_CODE_COUNT = 7;
 
     /**
-     * 当剩1 - 3次机会时返回会显示剩余次数
+     * 登录时当剩1 - 3次机会时返回会显示剩余次数
      */
     public static final int LOGIN_PWD_MAX_SURPLUS_COUNT = 3;
+    /**
+     * 注销时最大验证code的次数
+     */
+    public static final int LOGOFF_MAX_VERIFY_CODE_COUNT = 7;
 }

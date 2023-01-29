@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * ServiceImpl实现了IService，提供了IService中基础功能的实现
@@ -90,16 +91,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             // 4.2 校验成功，继续往后走
 
-            // 5.查看MySQL数据库是否有该用户信息
+            // 5.删除验证码缓存
+            redisCacheUtils.deleteObject(codeKey);
+
+            // 6.查看MySQL数据库是否有该用户信息
             UserIdAndStatusQuery userQuery = userMapper.selectIdAndStatusByPhone(phone);
             // 获取代理对象(事务)-->事务生效
             UserService proxy = (UserService) AopContext.currentProxy();
             UserInfo userInfo = null;
             if (userQuery == null) {
-                // 6.不存在-->创建该用户
+                // 7.不存在-->创建该用户
                 userInfo = proxy.register(phone);
             } else {
-                // 7.存在 --> 判断用户状态,获取用户信息
+                // 8.存在 --> 判断用户状态,获取用户信息
                 if (userQuery.getStatus() == 1) {
                     // 说明处于注销冻结状态，则修改状态为正常状态
                     proxy.modifyStatusToNormal(userQuery.getId());
@@ -111,11 +115,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 userInfo = userInfoService.getOne(userInfoWrapper);
             }
 
-            // 8.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
+            // 9.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
             return Result.ok(saveRedisInfo(userInfo));
 
         } finally {
-            // 最后释放锁
+            // 10.最后释放锁
             if (lock) {
                 redisLockUtils.unlock(lockKey);
             }
@@ -133,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 2.生成 token
         String uuid = UUID.randomUUID().toString(true);
-        String token = CipherUtils.encrypt(userInfo.getId()+"-"+uuid);
+        String token = CipherUtils.encrypt(userInfo.getId() + "-" + uuid);
 
         // 3.设置缓存的用户信息
         RedisUser redisUser = new RedisUser();
@@ -160,7 +164,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         save(user);
         UserInfo userInfo = new UserInfo();
         userInfo.setId(user.getId());
-        userInfo.setName("用户" + RandomUtil.randomString(8));
+        userInfo.setName("逐浪者" + RandomUtil.randomString(8));
         userInfo.setIcon(BasicConstants.DEFAULT_USER_ICON);
         // 在 basic_user_info 表中保存用户
         userInfoService.save(userInfo);
@@ -206,7 +210,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             // 4.次数超过8次，则返回稍后再试
             if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
-                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL/60 + "分钟");
+                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL / 60 + "分钟");
             }
             count++;
             // 5.从数据库中查询该手机号的用户信息
@@ -224,11 +228,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 if (count >= BasicConstants.LOGIN_MAX_VERIFY_PWD_COUNT) {
                     // 冻结手机+密码方式登录15分钟
                     redisCacheUtils.setCacheObject(phoneKey, count, RedisConstants.LOGIN_USER_PWD_LOCK_TTL);
-                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL/60 + "分钟");
+                    return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "账号因多次输入密码错误，已冻结" + RedisConstants.LOGIN_USER_PWD_LOCK_TTL / 60 + "分钟");
                 }
                 // 8.2 未冻结，则修改将手机号验证次数
-                if (count == 1){
-                    redisCacheUtils.setCacheObject(phoneKey,count,RedisConstants.LOGIN_USER_PWD_TTL);
+                if (count == 1) {
+                    redisCacheUtils.setCacheObject(phoneKey, count, RedisConstants.LOGIN_USER_PWD_TTL);
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
                 }
                 Long expire = redisCacheUtils.getExpire(phoneKey);
@@ -243,13 +247,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "手机号或密码错误");
                 }
             }
-
             // 校验成功则继续往后走
 
+
             // 9.判断是否在注销冻结期
-            if(userQuery.getStatus()==1){
+            if (userQuery.getStatus() == 1) {
                 // 只能通过手机号验证码方式登录来解除注销
-                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(),"当前用户处于注销冻结期，请使用验证码方式进行解冻登录");
+                return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "当前用户处于注销冻结期，请使用验证码方式进行解冻登录");
             }
             // 10.查询用户信息
             LambdaQueryWrapper<UserInfo> userInfoWrapper = new LambdaQueryWrapper<>();
@@ -271,8 +275,81 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Result logout(Long id) {
-        redisCacheUtils.deleteObject(RedisConstants.LOGIN_USER_INFO_KEY+id);
+        redisCacheUtils.deleteObject(RedisConstants.LOGIN_USER_INFO_KEY + id);
         return Result.ok();
     }
 
+    @Override
+    public Result logoff(String code) {
+        if (RegexUtils.isCodeInvalid(code)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "验证码格式错误");
+        }
+        Long userId = UserHolderUtils.getUserId();
+        String lockKey = RedisConstants.LOCK_LOGOFF_USER_KEY + userId;
+        String codeKey = RedisConstants.LOGOFF_USER_CODE_KEY + userId;
+        boolean lock = false;
+        try {
+            // 1.拿到锁，设置TTL
+            lock = redisLockUtils.tryLock(lockKey, RedisConstants.LOCK_LOGOFF_USER_CODE_TTL);
+            // 2.获取锁失败，直接退出
+            if (!lock) {
+                return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), HttpStatus.HTTP_TRY_AGAIN_LATER.getValue());
+            }
+
+            // 3.查询键值对信息：cacheInfo[0] 是 code ，cacheInfo[1] 是 count
+            String value = redisCacheUtils.getCacheObject(codeKey);
+            if (value == null) {
+                return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码已失效，请重新发送");
+            }
+            String[] cacheInfo = BasicConvertUtils.strSplitToArr(value, ",");
+            // 4.校验验证码
+            if (!cacheInfo[0].equals(code)) {
+                // 4.1 验证码不正确，count++
+                int count = Integer.parseInt(cacheInfo[1]);
+                count++;
+
+                if (count >= BasicConstants.LOGOFF_MAX_VERIFY_CODE_COUNT) {
+                    // 次数大于等于设置的最大次数，验证码失效，移除 redis中 的验证码缓存
+                    redisCacheUtils.deleteObject(codeKey);
+                    return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "多次校验失败，验证码已失效，请重新发送");
+                } else {
+                    // 如果不是，就修改缓存中的信息
+                    Long expire = redisCacheUtils.getExpire(codeKey);
+                    if (expire > 0) {
+                        redisCacheUtils.setCacheObject(codeKey, cacheInfo[0] + "," + count, expire);
+                    }
+                    return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码错误");
+                }
+            }
+
+            // 4.2 校验成功，继续往后走
+
+            // 5.删除验证码缓存
+            redisCacheUtils.deleteObject(codeKey);
+
+            // 6.添加信息到 logoff 表
+            Logoff logoff = new Logoff();
+            logoff.setUserId(userId);
+            logoff.setLogoffTime(LocalDateTime.now());
+            logoffService.save(logoff);
+
+            // 7.修改 user 表的用户状态
+            User user = new User();
+            user.setId(userId);
+            user.setStatus(1);
+            userMapper.updateById(user);
+
+            // 8.删除 RedisUser 缓存
+            redisCacheUtils.deleteObject(RedisConstants.LOGIN_USER_INFO_KEY + userId);
+
+            // 9.退出登录
+            return Result.ok("账号将于七天后完成注销，七天内再次登录自动解除注销冻结");
+
+        } finally {
+            // 最后释放锁
+            if (lock) {
+                redisLockUtils.unlock(lockKey);
+            }
+        }
+    }
 }

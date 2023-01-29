@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/waveedu.iml" filepath="$PROJECT_DIR$/.idea/waveedu.iml" />
       <module fileurl="file://$PROJECT_DIR$/waveedu-basic/waveedu-basic.iml" filepath="$PROJECT_DIR$/waveedu-basic/waveedu-basic.iml" />
       <module fileurl="file://$PROJECT_DIR$/waveedu-common/waveedu-common.iml" filepath="$PROJECT_DIR$/waveedu-common/waveedu-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/waveedu-sms/waveedu-sms.iml" filepath="$PROJECT_DIR$/waveedu-sms/waveedu-sms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/waveedu-service/waveedu-service.iml" filepath="$PROJECT_DIR$/waveedu-service/waveedu-service.iml" />
     </modules>
   </component>
 </project>

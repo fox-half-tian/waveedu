@@ -40,7 +40,7 @@ public interface UserService extends IService<User> {
     void modifyStatusToNormal(Long id);
 
     /**
-     * 通过密码方式进行登录&注册
+     * 通过密码方式进行登录
      *
      * @param phonePasswordVO 手机号——密码
      * @return 验证结果
@@ -55,4 +55,12 @@ public interface UserService extends IService<User> {
      * @return 退出状况
      */
     Result logout(Long id);
+
+    /**
+     * 用户注销
+     *
+     * @param code 验证码
+     * @return 注销状况
+     */
+    Result logoff(String code);
 }

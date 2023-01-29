@@ -49,7 +49,12 @@ public enum HttpStatus {
     /**
      * 账号在其它地方登录，强制下线
      */
-    HTTP_USER_CROWDING(703,"账号在其它地方登录，您已被强制下线");
+    HTTP_USER_CROWDING(703,"账号在其它地方登录，您已被强制下线"),
+
+    /**
+     * 校验失败
+     */
+    HTTP_VERIFY_FAIL(704,"验证失败");
 
     private final int code;
     private final String value;

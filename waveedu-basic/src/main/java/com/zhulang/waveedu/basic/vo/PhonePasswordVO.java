@@ -27,6 +27,6 @@ public class PhonePasswordVO {
      * 密码
      */
     @NotBlank(message = "密码为空")
-    @Pattern(regexp = "^\\w{8,18}$", message = "手机号或密码错误")
+    @Pattern(regexp = "^\\w{8,16}$", message = "手机号或密码错误")
     private String password;
 }
