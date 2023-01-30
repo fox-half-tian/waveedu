@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.sms.controller;
 
-import cn.hutool.core.lang.UUID;
 import com.google.code.kaptcha.Producer;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 
 /**
  * 生成图片验证码

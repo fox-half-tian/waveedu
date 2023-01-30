@@ -26,6 +26,13 @@ public interface UserInfoService extends IService<UserInfo> {
      */
     Result modifyUserInfoByUserInfo(UserInfo userInfo);
 
+    /**
+     * 获取用户自己的头像和姓名
+     *
+     * @return 头像+姓名
+     */
+    Result getSelfSimpleInfo();
+
 /*
     /**
      * 通过用户名来获取id

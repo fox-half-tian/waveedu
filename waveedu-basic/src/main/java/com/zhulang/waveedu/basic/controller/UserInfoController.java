@@ -20,33 +20,44 @@ public class UserInfoController {
 
     /**
      * 通过id获取本用户信息
+     *
      * @return 用户信息
      */
     @GetMapping("/get/self")
-    public Result getUserInfo(){
+    public Result getUserInfo() {
         return userInfoService.GetUserInfoById(UserHolderUtils.getUserId());
     }
 
     /**
      * 通过id来获取其他用户的信息
+     *
      * @param id
      * @return 用户信息
      */
     @GetMapping("/get/id")
-    public Result getUserInfoByName(@RequestParam("id") Long id){
+    public Result getUserInfoByName(@RequestParam("id") Long id) {
         return userInfoService.GetUserInfoById(id);
     }
 
     /**
      * 修改本用户信息
+     *
      * @param userInfo
      * @return 修改结果
      */
     @PostMapping("/modify")
-    public Result modifyUserInfoByUserInfo(@RequestBody UserInfo userInfo){
+    public Result modifyUserInfoByUserInfo(@RequestBody UserInfo userInfo) {
         // 拿到本用户的id，加进去
         userInfo.setId(UserHolderUtils.getUserId());
-
         return userInfoService.modifyUserInfoByUserInfo(userInfo);
+    }
+
+    /**
+     * 获取用户自己的头像和姓名
+     *
+     * @return 头像+姓名
+     */
+    public Result getSelfSimpleInfo(){
+        return userInfoService.getSelfSimpleInfo();
     }
 }

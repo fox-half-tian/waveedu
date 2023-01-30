@@ -9,11 +9,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class UserHolderUtils {
     /**
-     * @return 通过前端传过来的token来获取当前登录的用户名
+     * 通过前端传过来的token来获取当前登录的用户id
+     *
+     * @return 用户id
      */
     public static Long getUserId() {
         return ((RedisUser) ((SecurityContextHolder.getContext().getAuthentication())
                 .getPrincipal()))
                 .getId();
+    }
+
+    /**
+     * 获取当前登录用户缓存在redis中的信息
+     *
+     * @return 用户基础信息
+     */
+    public static RedisUser getRedisUser(){
+        return (RedisUser) (SecurityContextHolder.getContext().getAuthentication())
+                .getPrincipal();
     }
 }

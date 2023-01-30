@@ -357,27 +357,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Result updatePwd(UpdatePwdVO updatePwdVO) {
         // 1.如果两个密码不一致，则返回error
-        if (!updatePwdVO.getFirPassword().equals(updatePwdVO.getSecPassword())){
+        if (!updatePwdVO.getFirPassword().equals(updatePwdVO.getSecPassword())) {
             return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "两次密码不一致");
         }
         // 2.校验验证码是否正确
         String code = redisCacheUtils.getCacheObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
         // 2.1 不存在则返回
-        if (code==null){
-            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(),"验证码已失效，请重新获取");
+        if (code == null) {
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码已失效，请重新获取");
         }
         // 2.2 存在但不一致则清除并返回（忽略大小写）
-        if (!code.equalsIgnoreCase(updatePwdVO.getCode())){
+        if (!code.equalsIgnoreCase(updatePwdVO.getCode())) {
             redisCacheUtils.deleteObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
-            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(),"验证码错误，请重新获取");
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码错误，请重新获取");
         }
 
         // 3.验证码正确，则从缓存中移除
         redisCacheUtils.deleteObject(RedisConstants.PWD_CODE_KEY + UserHolderUtils.getUserId());
         // 4.修改密码
         LambdaUpdateWrapper<User> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(User::getId,UserHolderUtils.getUserId())
-                .set(User::getPassword,PasswordEncoderUtils.encode(updatePwdVO.getFirPassword()));
+        wrapper.eq(User::getId, UserHolderUtils.getUserId())
+                .set(User::getPassword, PasswordEncoderUtils.encode(updatePwdVO.getFirPassword()));
         this.update(wrapper);
         // 5.返回
         return Result.ok();
