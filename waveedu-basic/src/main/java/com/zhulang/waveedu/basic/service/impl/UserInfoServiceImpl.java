@@ -29,7 +29,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         RedisUser redisUser = UserHolderUtils.getRedisUser();
         // 2.装配信息
         HashMap<String, String> map = new HashMap<>(2);
-        map.put("name", redisUser.getIcon());
+        map.put("name", redisUser.getName());
         map.put("icon", redisUser.getIcon());
         // 3.返回给前端
         return Result.ok(map);

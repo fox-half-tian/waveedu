@@ -57,6 +57,7 @@ public class UserInfoController {
      *
      * @return 头像+姓名
      */
+    @GetMapping("/get/self/simpleInfo")
     public Result getSelfSimpleInfo(){
         return userInfoService.getSelfSimpleInfo();
     }
