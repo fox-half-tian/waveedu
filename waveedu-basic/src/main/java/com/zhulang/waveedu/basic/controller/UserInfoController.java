@@ -2,8 +2,10 @@ package com.zhulang.waveedu.basic.controller;
 
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.service.UserInfoService;
+import com.zhulang.waveedu.basic.vo.UpdateUserInfoVO;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,33 +25,33 @@ public class UserInfoController {
      *
      * @return 用户信息
      */
-    @GetMapping("/get/self")
-    public Result getUserInfo() {
-        return userInfoService.GetUserInfoById(UserHolderUtils.getUserId());
+    @GetMapping("/get/self/info")
+    public Result getSelfInfo() {
+        return userInfoService.getUserInfoById(UserHolderUtils.getUserId());
     }
 
     /**
      * 通过id来获取其他用户的信息
      *
-     * @param id
+     * @param id 用户id
      * @return 用户信息
      */
-    @GetMapping("/get/id")
-    public Result getUserInfoByName(@RequestParam("id") Long id) {
-        return userInfoService.GetUserInfoById(id);
+    @GetMapping("/get/info/{id}")
+    public Result getUserInfoByName(@PathVariable("id") Long id) {
+        return userInfoService.getUserInfoById(id);
     }
 
     /**
      * 修改本用户信息
      *
-     * @param userInfo
+     * @param updateUserInfoVO 需要修改的信息
      * @return 修改结果
      */
-    @PostMapping("/modify")
-    public Result modifyUserInfoByUserInfo(@RequestBody UserInfo userInfo) {
+    @PutMapping("/modify")
+    public Result modifyUserInfo(@Validated @RequestBody UpdateUserInfoVO updateUserInfoVO) {
         // 拿到本用户的id，加进去
-        userInfo.setId(UserHolderUtils.getUserId());
-        return userInfoService.modifyUserInfoByUserInfo(userInfo);
+        updateUserInfoVO.setId(UserHolderUtils.getUserId());
+        return userInfoService.modifyUserInfo(updateUserInfoVO);
     }
 
     /**
@@ -58,7 +60,7 @@ public class UserInfoController {
      * @return 头像+姓名
      */
     @GetMapping("/get/self/simpleInfo")
-    public Result getSelfSimpleInfo(){
+    public Result getSelfSimpleInfo() {
         return userInfoService.getSelfSimpleInfo();
     }
 }

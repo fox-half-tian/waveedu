@@ -9,4 +9,5 @@ import com.zhulang.waveedu.basic.po.UserInfo;
  * @create 2023-01-19 0:10
  */
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
+
 }

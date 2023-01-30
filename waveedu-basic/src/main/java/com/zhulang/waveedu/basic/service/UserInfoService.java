@@ -1,8 +1,8 @@
 package com.zhulang.waveedu.basic.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
+import com.zhulang.waveedu.basic.vo.UpdateUserInfoVO;
 import com.zhulang.waveedu.common.entity.Result;
 
 
@@ -14,17 +14,19 @@ public interface UserInfoService extends IService<UserInfo> {
 
     /**
      * 通过id获取用户基本信息
-     * @param id
+     *
+     * @param id 用户id
      * @return 用户信息
      */
-    Result GetUserInfoById(Long id);
+    Result getUserInfoById(Long id);
 
     /**
      * 修改指定id的用户信息
-     * @param userInfo
+     *
+     * @param updateUserInfoVO 需要修改的信息
      * @return 修改结果
      */
-    Result modifyUserInfoByUserInfo(UserInfo userInfo);
+    Result modifyUserInfo(UpdateUserInfoVO updateUserInfoVO);
 
     /**
      * 获取用户自己的头像和姓名

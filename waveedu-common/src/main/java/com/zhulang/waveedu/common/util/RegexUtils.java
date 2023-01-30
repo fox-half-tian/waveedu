@@ -42,6 +42,30 @@ public class RegexUtils {
          * 图片验证码字符正则，5位字母、数字
          */
         public static final String CAPTCHA_CODE_REGEX = "^[0-9a-zA-Z]{5}$";
+
+        /**
+         * 雪花算法生成的id正则，19位的数字
+         */
+        public static final String SNOW_ID_REGEX = "^\\d{19}$";
+        /**
+         * 姓名正则，2-24个字，只允许字母、数字、汉字
+         */
+        public static final String NAME_REGEX = "^[\\u4E00-\\u9FA5A-Za-z0-9]{2,24}$";
+
+        /**
+         * 个性签名正则，0-64个字符，不允许\n
+         */
+        public static final String SIGNATURE_REGEX = ".{0,64}$";
+
+        /**
+         * 性别正则，男 或 女
+         */
+        public static final String SEX_REGEX = "^[\\u7537\\u5973]$";
+
+        /**
+         * 图片链接正则，只允许以 .png .jpg .jpeg 结尾
+         */
+        public static final String IMAGE_REGEX = "^https://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?\\.(png|jpg|jpeg)$";
     }
 
     /**
@@ -107,4 +131,58 @@ public class RegexUtils {
     public static boolean isCaptchaCodeInvalid(String code) {
         return mismatch(code, RegexPatterns.CAPTCHA_CODE_REGEX);
     }
+
+    /**
+     * 是否是无效雪花算法生成的id字符格式
+     *
+     * @param id 要校验的id
+     * @return true:符合，false：不符合
+     */
+    public static boolean isSnowIdInvalid(Long id) {
+        return mismatch(id.toString(), RegexPatterns.SNOW_ID_REGEX);
+    }
+
+    /**
+     * 是否是无效名字字符格式
+     *
+     * @param name 要校验的id
+     * @return true:符合，false：不符合
+     */
+    public static boolean isNameInvalid(String name) {
+        return mismatch(name, RegexPatterns.NAME_REGEX);
+    }
+
+    /**
+     * 是否是无效个性签名字符格式
+     *
+     * @param signature 要校验的signature
+     * @return true:符合，false：不符合
+     */
+    public static boolean isSignatureInvalid(String signature) {
+        return mismatch(signature, RegexPatterns.SIGNATURE_REGEX);
+    }
+    /**
+     * 是否是无效个性签名字符格式
+     *
+     * @param sex 要校验的sex
+     * @return true:符合，false：不符合
+     */
+    public static boolean isSexInvalid(String sex) {
+        return mismatch(sex, RegexPatterns.SEX_REGEX);
+    }
+
+    /**
+     * 是否是无效图片链接字符格式
+     *
+     * @param imageUrl imageUrl
+     * @return true:符合，false：不符合
+     */
+    public static boolean isImageInvalid(String imageUrl) {
+        return mismatch(imageUrl, RegexPatterns.IMAGE_REGEX);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isSignatureInvalid("wo  "));
+    }
+
 }

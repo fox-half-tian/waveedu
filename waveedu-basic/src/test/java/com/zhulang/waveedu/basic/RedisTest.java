@@ -37,9 +37,7 @@ public class RedisTest {
 
     @Test
     public void testStringEqual(){
-        String s1 = "123abc";
-        String s2 = "123ABc";
-        System.out.println(s1.equalsIgnoreCase(s2));
+        System.out.println("1619233554649366529".length());
     }
 
 }

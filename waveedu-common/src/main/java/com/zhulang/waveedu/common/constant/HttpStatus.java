@@ -54,7 +54,12 @@ public enum HttpStatus {
     /**
      * 校验失败
      */
-    HTTP_VERIFY_FAIL(704,"验证失败");
+    HTTP_VERIFY_FAIL(704,"验证失败"),
+
+    /**
+     * 未查询到相关信息
+     */
+    HTTP_INFO_NOT_EXIST(705,"信息不存在");
 
     private final int code;
     private final String value;
