@@ -69,8 +69,6 @@ public class CipherUtils {
             // 如果有错就返回 null
             return null;
         }
-
-
     }
 
     /**
@@ -124,5 +122,9 @@ public class CipherUtils {
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println(encrypt("1719621144116133892-3"));
+        System.out.println(decrypt("0WIBVHBJR1j9jAg_87hJhTG-nQRVdP4JRwiq-H4iU60=").toString());
+    }
 }
 

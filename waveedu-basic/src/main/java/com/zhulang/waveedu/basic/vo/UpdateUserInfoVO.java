@@ -1,8 +1,5 @@
 package com.zhulang.waveedu.basic.vo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;

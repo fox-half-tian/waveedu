@@ -1,21 +1,17 @@
-package com.zhulang.waveedu.basic;
+package com.zhulang.waveedu.edu;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * 启动类
- * EnableAspectJAutoProxy 暴露代理对象
- *
  * @author 狐狸半面添
- * @create 2023-01-16 17:03
+ * @create 2023-02-03 0:11
  */
 @SpringBootApplication
 @EnableAspectJAutoProxy(exposeProxy = true)
-public class WaveeduBasicApplication {
+public class WaveeduEduApplication {
     public static void main(String[] args) {
-        SpringApplication.run(WaveeduBasicApplication.class, args);
+        SpringApplication.run(WaveeduEduApplication.class, args);
     }
 }

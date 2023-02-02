@@ -1,16 +1,9 @@
 server:
-  port: 9201
+  port: 9001
   max-http-header-size: 2MB
   servlet:
-    context-path: /edu
+    context-path: /basic
 spring:
-  cloud:
-    alicloud:
-      access-key: LTAI5tKcWoeuxTK8ibWoqW2J
-      secret-key: TQXiDtEnaR8Y7tXetvYZ0t0LXMC6jR
-      oss:
-        endpoint: oss-cn-hangzhou.aliyuncs.com
-        bucket: waveedu
   datasource:
     username: root
     password: 123456
@@ -32,14 +25,22 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   application:
-    name: waveedu-edu
+    name: waveedu-basic
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
   mvc:
     hiddenmethod:
       filter:
-        enabled: true # 启用HiddenHttpMethodFilter,支持rest风格
+        enabled: true #启用HiddenHttpMethodFilter,支持rest风格
+  http:
+    multipart:
+      maxFileSize: 100Mb
+      maxRequestSize: 100Mb
   redis:
     host: 8.134.136.211
     port: 6379
@@ -51,6 +52,16 @@ spring:
         min-idle: 1
         time-between-eviction-runs: 10s
     database: 0
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: assign_id #使用雪花算法生成id
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
+  configuration:
+    #这里我们配置出底层的sql，可以输出sql日志信息，方便我们观察
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 sms:
   # 应用的AppID
   appId: 1400791280
@@ -60,8 +71,6 @@ sms:
   signContent: 狐狸半面添公众号
   # 登录&注册短信模板的id
   loginTemplateId: 1671035
-  # 注销短信模板的id
-  logoffTemplateId: 1675463
 
 
 
