@@ -5,4 +5,9 @@
 
 <mapper namespace="com.zhulang.waveedu.basic.dao.CollegeMapper">
 
+    <select id="selectNamesLikeName" resultType="java.lang.String">
+        SELECT `name`
+        FROM `basic_college`
+        WHERE `name` LIKE #{name}"%"
+    </select>
 </mapper>

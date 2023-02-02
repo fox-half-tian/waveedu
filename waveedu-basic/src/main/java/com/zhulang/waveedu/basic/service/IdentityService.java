@@ -1,7 +1,8 @@
 package com.zhulang.waveedu.basic.service;
 
+
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.po.Identity;
+import com.zhulang.waveedu.basic.po.Identity;
 
 /**
  * @author 狐狸半面添

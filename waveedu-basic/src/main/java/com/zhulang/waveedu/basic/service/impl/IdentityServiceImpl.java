@@ -1,9 +1,9 @@
 package com.zhulang.waveedu.basic.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhulang.waveedu.edu.dao.IdentityMapper;
-import com.zhulang.waveedu.edu.po.Identity;
-import com.zhulang.waveedu.edu.service.IdentityService;
+import com.zhulang.waveedu.basic.dao.IdentityMapper;
+import com.zhulang.waveedu.basic.po.Identity;
+import com.zhulang.waveedu.basic.service.IdentityService;
 import org.springframework.stereotype.Service;
 
 /**
