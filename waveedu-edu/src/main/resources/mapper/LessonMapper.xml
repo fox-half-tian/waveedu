@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonMapper">
-
+    <select id="selectBasicInfo" resultType="com.zhulang.waveedu.edu.query.LessonBasicInfoQuery">
+        SELECT l.id,
+               l.name,
+               l.introduce,
+               l.cover,
+               l.create_time,
+               l.creator_id,
+               u.icon AS `creatorIcon`
+        FROM `edu_lesson` l,
+             `basic_user_info` u
+        WHERE l.id = #{lessonId}
+          AND l.creator_id = u.id
+          AND l.is_deleted = 0
+    </select>
 </mapper>

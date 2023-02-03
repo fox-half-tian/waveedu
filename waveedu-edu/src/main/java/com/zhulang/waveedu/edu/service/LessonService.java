@@ -21,4 +21,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 情况
      */
     Result save(SaveLessonVO saveLessonVO);
+
+    /**
+     * 获取课程基本信息
+     *
+     * @param lessonId 课程id
+     * @return 基本信息
+     */
+    Result getBasicInfo(Long lessonId);
 }
