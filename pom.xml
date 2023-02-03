@@ -18,6 +18,7 @@
         <module>waveedu-common</module>
         <module>waveedu-service</module>
         <module>waveedu-edu</module>
+        <module>waveedu-generator</module>
     </modules>
 
 </project>
