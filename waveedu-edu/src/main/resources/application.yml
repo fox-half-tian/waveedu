@@ -2,7 +2,7 @@ server:
   port: 9201
   max-http-header-size: 2MB
   servlet:
-    context-path: /basic
+    context-path: /edu
 spring:
   datasource:
     username: root
@@ -25,7 +25,7 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
   application:
-    name: waveedu-basic
+    name: waveedu-edu
   servlet:
     multipart:
       max-file-size: 100MB
