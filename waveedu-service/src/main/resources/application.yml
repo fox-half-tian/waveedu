@@ -16,10 +16,10 @@ spring:
     password: 123456
     url: jdbc:mysql://8.134.136.211:3306/wave_edu?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #指定数据源
+    # 指定数据源
     type: com.alibaba.druid.pool.DruidDataSource
-    #Spring Boot 默认是不注入这些属性值的，需要自己绑定
-    #druid 数据源专有配置
+    # Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    # druid 数据源专有配置
     initialSize: 5
     minIdle: 5
     maxActive: 20
