@@ -1,14 +1,12 @@
 package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Pattern;
 
 /**
  * 与课程相关的统一controller

@@ -4,6 +4,7 @@ package com.zhulang.waveedu.edu.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.Lesson;
+import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 
 /**
@@ -37,4 +38,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 邀请码
      */
     Result getTchInviteCode(Long lessonId);
+
+    /**
+     * 通过课程id直接获取邀请码信息
+     *
+     * @param lessonId 课程id
+     * @return 邀请码信息
+     */
+    TchInviteCodeQuery getTchInviteCodeById(Long lessonId);
 }

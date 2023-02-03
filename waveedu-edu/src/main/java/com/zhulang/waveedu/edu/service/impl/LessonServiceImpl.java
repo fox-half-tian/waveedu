@@ -107,4 +107,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         // 6.获取邀请码，成功返回
         return Result.ok(encryptCode);
     }
+
+    @Override
+    public TchInviteCodeQuery getTchInviteCodeById(Long lessonId) {
+        return lessonMapper.selectTchInviteCodeById(lessonId);
+    }
 }

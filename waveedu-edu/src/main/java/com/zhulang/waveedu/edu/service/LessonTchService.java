@@ -23,10 +23,10 @@ public interface LessonTchService extends IService<LessonTch> {
     boolean isExistByLessonAndUser(Long lessonId,Long userId);
 
     /**
+     * 通过邀请码加入教师团队
      *
-     *
-     * @param code
-     * @return
+     * @param code 邀请码
+     * @return 是否加入
      */
     Result joinTchTeam(String code);
 }

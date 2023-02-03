@@ -1,8 +1,5 @@
 package com.zhulang.waveedu.common.constant;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Http状态码响应常量
  *
@@ -64,7 +61,11 @@ public enum HttpStatus {
     /**
      * 信息被拒绝获取
      */
-    HTTP_INFO_REFUSE(706,"被拒绝获取");
+    HTTP_INFO_REFUSE(706,"被拒绝获取"),
+    /**
+     * 操作重复，该操作之前已生效
+     */
+    HTTP_REPEAT_SUCCESS_OPERATE(707,"重复已生效的操作");
 
     private final int code;
     private final String value;

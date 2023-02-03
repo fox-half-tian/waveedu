@@ -52,6 +52,8 @@ spring:
         min-idle: 1
         time-between-eviction-runs: 10s
     database: 0
+  main:
+    allow-circular-references: true
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:

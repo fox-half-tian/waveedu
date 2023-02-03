@@ -7,8 +7,7 @@ import com.zhulang.waveedu.edu.service.LessonTchService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -20,7 +19,7 @@ import javax.annotation.Resource;
  * @author 狐狸半面添
  * @since 2023-02-03
  */
-@Controller
+@RestController
 @RequestMapping("/lesson-tch")
 public class LessonTchController {
     @Resource
@@ -33,8 +32,8 @@ public class LessonTchController {
      * @return 是否加入
      */
     @PostMapping("/joinTchTeam")
-    private Result joinTchTeam(@RequestBody JSONObject object){
-        String code = object.getString("code");
-        return lessonTchService.joinTchTeam(code);
+    public Result joinTchTeam(@RequestBody JSONObject object) {
+        String encryptCode = object.getString("code");
+        return lessonTchService.joinTchTeam(encryptCode);
     }
 }
