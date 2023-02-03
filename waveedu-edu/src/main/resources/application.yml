@@ -1,5 +1,5 @@
 server:
-  port: 9001
+  port: 9201
   max-http-header-size: 2MB
   servlet:
     context-path: /basic

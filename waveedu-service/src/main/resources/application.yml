@@ -1,5 +1,5 @@
 server:
-  port: 9201
+  port: 9101
   max-http-header-size: 2MB
   servlet:
     context-path: /edu
