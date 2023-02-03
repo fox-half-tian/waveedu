@@ -5,6 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
@@ -13,6 +14,7 @@ import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
@@ -65,12 +67,44 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     @Override
     public Result getBasicInfo(Long lessonId) {
         if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "找不到课程信息");
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
         }
         LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lessonId);
         if (info == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "找不到课程信息");
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
         }
         return Result.ok(info);
+    }
+
+    @Override
+    public Result getTchInviteCode(Long lessonId) {
+        // 1.lessonId是否合理
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
+        }
+
+        // 2.当前用户是否为教师团队一员，规定只有该课程的教师才可以获取邀请码
+        if (!lessonTchService.isExistByLessonAndUser(lessonId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+
+        // 3.获取邀请码
+        TchInviteCodeQuery tchInviteCodeQuery = lessonMapper.selectTchInviteCodeById(lessonId);
+
+        // 4.获取不到说明不存在 -> 返回前端
+        if (tchInviteCodeQuery==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"课程已不存在");
+        }
+
+        // 5.邀请码被禁用 -> 返回前端
+        if (tchInviteCodeQuery.getCodeIsForbidden()==1){
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(),"邀请码已被禁用");
+        }
+
+        // 6.对邀请码进行处理
+        String encryptCode = CipherUtils.encrypt(lessonId + "-" + tchInviteCodeQuery.getTchInviteCode());
+
+        // 6.获取邀请码，成功返回
+        return Result.ok(encryptCode);
     }
 }

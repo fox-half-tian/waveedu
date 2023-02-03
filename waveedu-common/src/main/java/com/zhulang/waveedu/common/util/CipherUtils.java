@@ -42,8 +42,7 @@ public class CipherUtils {
         // 3.产生原始对称密钥
         SecretKey original_key = keyGenerator.generateKey();
         // 4. 根据字节数组生成AES密钥
-        SecretKeySpec secretKeySpec = new SecretKeySpec(original_key.getEncoded(), AES);
-        return secretKeySpec;
+        return new SecretKeySpec(original_key.getEncoded(), AES);
     }
 
     /**
@@ -53,7 +52,7 @@ public class CipherUtils {
      * @param password 加密密码
      * @return
      */
-    private static String AESEncode(String content, String password) {
+    private static String aESEncode(String content, String password) {
         try {
             // 根据指定算法AES自成密码器
             Cipher cipher = Cipher.getInstance(AES);
@@ -103,7 +102,7 @@ public class CipherUtils {
      * @return
      */
     public static String encrypt(String content) {
-        return AESEncode(content, SECRET_KEY);
+        return aESEncode(content, SECRET_KEY);
     }
 
     /**
@@ -121,7 +120,7 @@ public class CipherUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(encrypt("1719621144116133892-3"));
+        System.out.println(encrypt("1719621144116133892-3").length());
         System.out.println(decrypt("0WIBVHBJR1j9jAg_87hJhTG-nQRVdP4JRwiq-H4iU60=").toString());
     }
 }

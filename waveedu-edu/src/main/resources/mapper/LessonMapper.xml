@@ -15,4 +15,10 @@
           AND l.creator_id = u.id
           AND l.is_deleted = 0
     </select>
+    <select id="selectTchInviteCodeById" resultType="com.zhulang.waveedu.edu.query.TchInviteCodeQuery">
+        SELECT tch_invite_code, code_is_forbidden
+        FROM `edu_lesson`
+        WHERE id = #{id}
+          AND is_deleted = 0
+    </select>
 </mapper>

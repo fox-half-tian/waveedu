@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,20 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-02-03
  */
 public interface LessonTchService extends IService<LessonTch> {
+    /**
+     * 通过 lessonId 和 userId 查询该用户是否为该课程的教师
+     *
+     * @param lessonId 课程id
+     * @param userId 用户id
+     * @return false不存在，true存在
+     */
+    boolean isExistByLessonAndUser(Long lessonId,Long userId);
 
+    /**
+     *
+     *
+     * @param code
+     * @return
+     */
+    Result joinTchTeam(String code);
 }

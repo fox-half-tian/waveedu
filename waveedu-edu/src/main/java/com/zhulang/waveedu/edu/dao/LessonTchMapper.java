@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface LessonTchMapper extends BaseMapper<LessonTch> {
 
+    /**
+     * 通过 lessonId 和 userId 查询该用户是否为该课程的教师
+     *
+     * @param lessonId 课程id
+     * @param userId 用户id
+     * @return null 表示不存在，非空表示存在
+     */
+    Integer isExistByLessonAndUser(@Param("lessonId") Long lessonId,@Param("userId") Long userId);
 }

@@ -43,4 +43,15 @@ public class LessonController {
     public Result getInfo(@PathVariable("lessonId") Long lessonId) {
         return lessonService.getBasicInfo(lessonId);
     }
+
+    /**
+     * 获取教师邀请码
+     *
+     * @param lessonId 课程id
+     * @return 邀请码
+     */
+    @GetMapping("/get/tchInviteCode/{lessonId}")
+    public Result getTchInviteCode(@PathVariable("lessonId") Long lessonId){
+        return lessonService.getTchInviteCode(lessonId);
+    }
 }

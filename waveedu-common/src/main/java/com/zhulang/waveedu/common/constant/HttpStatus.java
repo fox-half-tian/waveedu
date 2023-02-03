@@ -59,7 +59,12 @@ public enum HttpStatus {
     /**
      * 未查询到相关信息
      */
-    HTTP_INFO_NOT_EXIST(705,"信息不存在");
+    HTTP_INFO_NOT_EXIST(705,"信息不存在"),
+
+    /**
+     * 信息被拒绝获取
+     */
+    HTTP_INFO_REFUSE(706,"被拒绝获取");
 
     private final int code;
     private final String value;

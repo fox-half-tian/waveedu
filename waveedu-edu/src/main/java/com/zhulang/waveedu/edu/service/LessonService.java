@@ -29,4 +29,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 基本信息
      */
     Result getBasicInfo(Long lessonId);
+
+    /**
+     * 获取教师邀请码
+     *
+     * @param lessonId 课程id
+     * @return 邀请码
+     */
+    Result getTchInviteCode(Long lessonId);
 }
