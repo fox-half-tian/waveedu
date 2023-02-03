@@ -36,7 +36,7 @@ public class UpdateUserInfoVO {
     /**
      * 用户个性签名
      */
-    @Pattern(regexp = RegexUtils.RegexPatterns.SIGNATURE_REGEX, message = "只允许非空并且64字内的签名")
+    @Pattern(regexp = RegexUtils.RegexPatterns.SIGNATURE_REGEX, message = "只允许64字内的签名")
     private String signature;
     /**
      * 性别：男或女

@@ -1,7 +1,5 @@
 package com.zhulang.waveedu.common.util;
 
-import cn.hutool.core.lang.UUID;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -116,7 +114,7 @@ public class CipherUtils {
      */
     public static String[] decrypt(String content) {
         try {
-            return BasicConvertUtils.strSplitToArr(AESDecode(content, SECRET_KEY),"-");
+            return WaveStrUtils.strSplitToArr(AESDecode(content, SECRET_KEY),"-");
         } catch (Exception e) {
             return null;
         }

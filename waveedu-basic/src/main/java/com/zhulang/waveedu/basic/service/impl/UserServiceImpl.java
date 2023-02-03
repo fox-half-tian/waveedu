@@ -69,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (value == null) {
                 return Result.error(HttpStatus.HTTP_UNAUTHORIZED.getCode(), "验证码已失效，请重新发送");
             }
-            String[] cacheInfo = BasicConvertUtils.strSplitToArr(value, ",");
+            String[] cacheInfo = WaveStrUtils.strSplitToArr(value, ",");
             // 4.校验验证码
             if (!cacheInfo[0].equals(code)) {
                 // 4.1 验证码不正确，count++
@@ -302,7 +302,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (value == null) {
                 return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "验证码已失效，请重新发送");
             }
-            String[] cacheInfo = BasicConvertUtils.strSplitToArr(value, ",");
+            String[] cacheInfo = WaveStrUtils.strSplitToArr(value, ",");
             // 4.校验验证码
             if (!cacheInfo[0].equals(code)) {
                 // 4.1 验证码不正确，count++

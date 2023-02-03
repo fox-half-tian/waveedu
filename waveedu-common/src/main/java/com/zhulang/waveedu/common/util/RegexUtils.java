@@ -55,7 +55,7 @@ public class RegexUtils {
         /**
          * 个性签名正则，0-64个字符，不允许\n
          */
-        public static final String SIGNATURE_REGEX = ".{0,64}$";
+        public static final String SIGNATURE_REGEX = "^.{0,64}$";
 
         /**
          * 性别正则，男 或 女
@@ -66,6 +66,16 @@ public class RegexUtils {
          * 图片链接正则，只允许以 .png .jpg .jpeg 结尾
          */
         public static final String IMAGE_REGEX = "^https://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?\\.(png|jpg|jpeg)$";
+
+        /**
+         * 课程介绍正则，0-255个字符，不允许\n
+         */
+        public static final String LESSON_INTRO__REGEX = "^.{0,255}$";
+
+        /**
+         * 课程名正则，1-24个字符，不允许\n
+         */
+        public static final String LESSON_NAME_REGEX = "^.{1,24}$";
     }
 
     /**
@@ -181,8 +191,28 @@ public class RegexUtils {
         return mismatch(imageUrl, RegexPatterns.IMAGE_REGEX);
     }
 
+    /**
+     * 是否是无效课程介绍字符格式
+     *
+     * @param introduce 课程介绍
+     * @return true:符合，false：不符合
+     */
+    public static boolean isLessonIntroduceInvalid(String introduce) {
+        return mismatch(introduce, RegexPatterns.LESSON_INTRO__REGEX);
+    }
+
+    /**
+     * 是否是无效课程名字符格式
+     *
+     * @param introduce 课程名
+     * @return true:符合，false：不符合
+     */
+    public static boolean isLessonNameInvalid(String introduce) {
+        return mismatch(introduce, RegexPatterns.LESSON_NAME_REGEX);
+    }
+
     public static void main(String[] args) {
-        System.out.println(isSignatureInvalid("wo  "));
+        System.out.println(isLessonIntroduceInvalid("  "));
     }
 
 }

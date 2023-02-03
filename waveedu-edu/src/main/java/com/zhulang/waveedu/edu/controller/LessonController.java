@@ -1,8 +1,10 @@
 package com.zhulang.waveedu.edu.controller;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.zhulang.waveedu.edu.vo.SaveLessonVO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -17,4 +19,15 @@ import javax.annotation.Resource;
 public class LessonController {
     @Resource
     private LessonService lessonService;
+
+    /**
+     * 创建课程
+     *
+     * @param saveLessonVO 课程信息
+     * @return 情况
+     */
+    @PostMapping("/save")
+    public Result save(@Validated @RequestBody SaveLessonVO saveLessonVO){
+        return lessonService.save(saveLessonVO);
+    }
 }

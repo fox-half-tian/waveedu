@@ -26,7 +26,7 @@ public class Lesson implements Serializable {
     /**
      * 主键id（雪花算法）
      */
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
