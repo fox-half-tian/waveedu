@@ -76,6 +76,12 @@ public class RegexUtils {
          * 课程名正则，1-24个字符，不允许\n
          */
         public static final String LESSON_NAME_REGEX = "^.{1,24}$";
+
+        /**
+         * 学号工号正则，0-16个字符，不允许\n
+         */
+        public static final String NUMBER_REGEX = "^.{0,16}$";
+
     }
 
     /**

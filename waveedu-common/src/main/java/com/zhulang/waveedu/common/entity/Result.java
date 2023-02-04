@@ -42,6 +42,7 @@ public class Result {
         this.code = code;
         this.msg = msg;
         this.data = data;
+
     }
 
     public static Result ok() {
