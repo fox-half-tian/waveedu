@@ -1,12 +1,10 @@
 package com.zhulang.waveedu.sms.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.sms.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -25,11 +23,12 @@ public class SmsServiceController {
     /**
      * 发送用于登录与注册的验证码
      *
-     * @param phone 手机号
+     * @param object 手机号的json对象
      * @return 发送情况
      */
     @PostMapping("/user/sendLoginCode")
-    public Result sendUserLoginCode(@RequestParam("phone") String phone) {
+    public Result sendUserLoginCode(@RequestBody JSONObject object) {
+        String phone = object.getString("phone");
         return userService.sendUserLoginCode(phone);
     }
 
