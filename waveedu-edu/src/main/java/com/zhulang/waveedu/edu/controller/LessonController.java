@@ -63,4 +63,16 @@ public class LessonController {
     public Result modifyTchInviteCode(@PathVariable("lessonId") Long lessonId){
         return lessonService.modifyTchInviteCode(lessonId);
     }
+
+    /**
+     * 启用/禁用教学邀请码
+     * sw：switch的缩写
+     *
+     * @param lessonId 课程id
+     * @return 状态，如果启用，则还会返回教学邀请码
+     */
+    @PutMapping("/sw/tchInviteCode/{lessonId}")
+    public Result switchTchInviteCode(@PathVariable("lessonId") Long lessonId) {
+        return lessonService.switchTchInviteCode(lessonId);
+    }
 }
