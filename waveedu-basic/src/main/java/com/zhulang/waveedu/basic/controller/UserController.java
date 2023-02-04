@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.basic.controller;
 
 import com.zhulang.waveedu.basic.service.UserService;
+import com.zhulang.waveedu.basic.vo.LogoffVO;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
@@ -58,12 +59,12 @@ public class UserController {
     /**
      * 通过手机号进行验证，完成用户注销
      *
-     * @param code 验证码
+     * @param logoffVO 验证码 + 注销原因
      * @return 注销状况
      */
     @PostMapping("/logoff")
-    public Result logoff(@RequestParam("code") String code){
-        return userService.logoff(code);
+    public Result logoff(@Validated @RequestBody LogoffVO logoffVO){
+        return userService.logoff(logoffVO);
     }
 
     /**

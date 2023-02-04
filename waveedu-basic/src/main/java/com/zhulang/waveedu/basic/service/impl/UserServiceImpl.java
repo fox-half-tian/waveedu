@@ -15,6 +15,7 @@ import com.zhulang.waveedu.basic.query.UserIdAndStatusQuery;
 import com.zhulang.waveedu.basic.service.LogoffService;
 import com.zhulang.waveedu.basic.service.UserInfoService;
 import com.zhulang.waveedu.basic.service.UserService;
+import com.zhulang.waveedu.basic.vo.LogoffVO;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
@@ -26,6 +27,7 @@ import com.zhulang.waveedu.common.util.*;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -281,9 +283,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result logoff(String code) {
-        if (RegexUtils.isCodeInvalid(code)) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "验证码格式错误");
+    public Result logoff(LogoffVO logoffVO) {
+        // 拿到验证码
+        String code = logoffVO.getCode();
+        // 拿到注销原因
+        String reason = "";
+        if (StringUtils.hasText(logoffVO.getReason())) {
+            // 如果是合法字符串，就去除空白符
+            reason = WaveStrUtils.removeBlank(logoffVO.getReason());
         }
         Long userId = UserHolderUtils.getUserId();
         String lockKey = RedisConstants.LOCK_LOGOFF_USER_KEY + userId;
@@ -330,8 +337,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             // 6.添加信息到 logoff 表
             Logoff logoff = new Logoff();
+            // 用户id
             logoff.setUserId(userId);
+            // 冻结开始的时间
             logoff.setLogoffTime(LocalDateTime.now());
+            // 截止时间
+            logoff.setEndTime(LocalDateTime.now().plusDays(BasicConstants.LOGOFF_FROZEN_DAY));
+            // 注销原因
+            logoff.setReason(reason);
+            // 保存信息到数据库
             logoffService.save(logoff);
 
             // 7.修改 user 表的用户状态

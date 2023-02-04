@@ -7,20 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 /**
- * 注销表（定时任务）
+ * 注销信息表
  *
  * @author 狐狸半面添
- * @create 2023-01-19 13:53
+ * @create 2023-02-03 0:35
  */
-@TableName("basic_logoff")
+@TableName("basic_logoff_info")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Logoff implements Serializable {
+@NoArgsConstructor
+public class LogoffInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -59,4 +59,5 @@ public class Logoff implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
+
 }

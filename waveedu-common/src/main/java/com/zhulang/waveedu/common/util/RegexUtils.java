@@ -82,6 +82,11 @@ public class RegexUtils {
          */
         public static final String NUMBER_REGEX = "^.{0,16}$";
 
+
+        /**
+         * 注销原因正则，0-255个字符，不允许\n
+         */
+        public static final String LOGOFF_REASON_REGEX = "^.{0,255}$";
     }
 
     /**

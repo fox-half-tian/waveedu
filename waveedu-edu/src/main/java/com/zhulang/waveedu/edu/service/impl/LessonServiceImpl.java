@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 /**
  * 课程表 服务实现类
@@ -93,7 +95,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
         // 4.获取不到说明不存在 -> 返回前端
         if (tchInviteCodeQuery==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"课程已不存在");
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"找不到课程信息");
         }
 
         // 5.邀请码被禁用 -> 返回前端
@@ -111,5 +113,82 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     @Override
     public TchInviteCodeQuery getTchInviteCodeById(Long lessonId) {
         return lessonMapper.selectTchInviteCodeById(lessonId);
+    }
+
+    @Override
+    public Result modifyTchInviteCode(Long lessonId) {
+        // 1.lessonId是否合理
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
+        }
+
+        // 2.当前用户是否为教师团队一员，规定只有该课程的教师才可以修改邀请码
+        if (!lessonTchService.isExistByLessonAndUser(lessonId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+
+        // 4.查询原邀请码信息
+        TchInviteCodeQuery codeInfo = lessonMapper.selectTchInviteCodeById(lessonId);
+        // 5.为空 -> 说明课程已被删除
+        if (codeInfo==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
+        }
+        // 6.查询是否被禁用 -> 被禁用，返回前端
+        if (codeInfo.getCodeIsForbidden()==1){
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(),"邀请码已被禁用");
+        }
+        // 7.生成新的真实邀请码
+        String code = RandomUtil.randomString(6);
+        while (code.equals(codeInfo.getTchInviteCode())){
+            code = RandomUtil.randomString(6);
+        }
+        // 8.修改数据库信息
+        LambdaUpdateWrapper<Lesson> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(Lesson::getTchInviteCode,code)
+                        .eq(Lesson::getId,lessonId);
+        this.update(wrapper);
+        // 9.返回给前端加密后的邀请码
+        return Result.ok(CipherUtils.encrypt(lessonId+"-"+code));
+    }
+
+    @Override
+    public Result switchTchInviteCode(Long lessonId) {
+        // 1.lessonId是否合理
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
+        }
+        // 2.当前用户是否为教师团队一员，规定只有该课程的教师才可以启用/禁用邀请码
+        if (!lessonTchService.isExistByLessonAndUser(lessonId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.查询邀请码信息
+        TchInviteCodeQuery codeInfo = lessonMapper.selectTchInviteCodeById(lessonId);
+        // 5.为空 -> 说明课程已被删除
+        if (codeInfo==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
+        }
+        // 6.当前情况
+        LambdaUpdateWrapper<Lesson> wrapper = new LambdaUpdateWrapper<>();
+        if (codeInfo.getCodeIsForbidden()==0){
+            // 6.1 说明已启用 -> 修改为禁用
+            wrapper.set(Lesson::getCodeIsForbidden,1)
+                    .eq(Lesson::getId,lessonId);
+            this.update(wrapper);
+            // 返回
+            HashMap<String, String> map = new HashMap<>(1);
+            map.put("status","off");
+            return Result.ok(map);
+        }else{
+            // 6.2 说明已禁用 -> 修改为启用
+            wrapper.set(Lesson::getCodeIsForbidden,0)
+                    .eq(Lesson::getId,lessonId);
+            this.update(wrapper);
+            // 返回
+            HashMap<String, String> map = new HashMap<>(2);
+            map.put("status","on");
+            map.put("tchInviteCode",CipherUtils.encrypt(lessonId+"-"+codeInfo.getTchInviteCode()));
+            return Result.ok(map);
+        }
+
     }
 }
