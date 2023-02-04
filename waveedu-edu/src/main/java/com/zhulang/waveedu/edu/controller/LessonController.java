@@ -52,4 +52,15 @@ public class LessonController {
     public Result getTchInviteCode(@PathVariable("lessonId") Long lessonId){
         return lessonService.getTchInviteCode(lessonId);
     }
+
+    /**
+     * 修改教师邀请码
+     *
+     * @param lessonId 课程id
+     * @return 修改后的加密邀请码
+     */
+    @PutMapping("/modify/tchInviteCode/{lessonId}")
+    public Result modifyTchInviteCode(@PathVariable("lessonId") Long lessonId){
+        return lessonService.modifyTchInviteCode(lessonId);
+    }
 }

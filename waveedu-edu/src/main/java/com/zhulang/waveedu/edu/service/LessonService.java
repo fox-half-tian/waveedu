@@ -46,4 +46,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 邀请码信息
      */
     TchInviteCodeQuery getTchInviteCodeById(Long lessonId);
+
+    /**
+     * 修改教师邀请码
+     *
+     * @param lessonId 课程id
+     * @return 修改后的加密邀请码
+     */
+    Result modifyTchInviteCode(Long lessonId);
 }
