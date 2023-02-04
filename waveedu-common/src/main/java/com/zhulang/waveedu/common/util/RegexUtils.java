@@ -76,6 +76,11 @@ public class RegexUtils {
          * 课程名正则，1-24个字符，不允许\n
          */
         public static final String LESSON_NAME_REGEX = "^.{1,24}$";
+
+        /**
+         * 注销原因正则，0-255个字符，不允许\n
+         */
+        public static final String LOGOFF_REASON_REGEX = "^.{0,255}$";
     }
 
     /**
@@ -108,19 +113,6 @@ public class RegexUtils {
         return mismatch(code, RegexPatterns.VERIFY_CODE_REGEX);
     }
 
-    /**
-     * 校验是否不符合正则格式
-     *
-     * @param str   字符串
-     * @param regex 正则表达式
-     * @return true:符合  false:不符合
-     */
-    private static boolean mismatch(String str, String regex) {
-        if (StrUtil.isBlank(str)) {
-            return true;
-        }
-        return !str.matches(regex);
-    }
 
     /**
      * 是否是无效uuid格式
@@ -211,8 +203,34 @@ public class RegexUtils {
         return mismatch(introduce, RegexPatterns.LESSON_NAME_REGEX);
     }
 
+    /**
+     * 是否是无效注销原因字符格式
+     *
+     * @param logoffReason 注销原因
+     * @return true:符合，false：不符合
+     */
+    public static boolean isLogoffReasonInvalid(String logoffReason) {
+        return mismatch(logoffReason, RegexPatterns.LOGOFF_REASON_REGEX);
+    }
+
     public static void main(String[] args) {
-        System.out.println(isLessonIntroduceInvalid("  "));
+        System.out.println(isLogoffReasonInvalid(""));
+        System.out.println("    ".matches(RegexPatterns.LESSON_NAME_REGEX));
+    }
+
+
+    /**
+     * 校验是否不符合正则格式
+     *
+     * @param str   字符串
+     * @param regex 正则表达式
+     * @return true:符合  false:不符合
+     */
+    private static boolean mismatch(String str, String regex) {
+        if (StrUtil.isBlank(str)) {
+            return true;
+        }
+        return !str.matches(regex);
     }
 
 }

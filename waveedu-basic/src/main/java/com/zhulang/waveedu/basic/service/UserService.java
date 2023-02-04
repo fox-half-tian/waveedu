@@ -3,6 +3,7 @@ package com.zhulang.waveedu.basic.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.basic.po.User;
 import com.zhulang.waveedu.basic.po.UserInfo;
+import com.zhulang.waveedu.basic.vo.LogoffVO;
 import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
@@ -60,10 +61,10 @@ public interface UserService extends IService<User> {
     /**
      * 用户注销
      *
-     * @param code 验证码
+     * @param logoffVO 验证码
      * @return 注销状况
      */
-    Result logoff(String code);
+    Result logoff(LogoffVO logoffVO);
 
     /**
      * 修改密码

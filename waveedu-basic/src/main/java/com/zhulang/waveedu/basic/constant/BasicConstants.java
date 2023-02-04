@@ -26,4 +26,9 @@ public class BasicConstants {
      * 注销时最大验证code的次数
      */
     public static final int LOGOFF_MAX_VERIFY_CODE_COUNT = 7;
+
+    /**
+     * 注销冻结天数，7天后将无法通过登录修改状态（真正注销）
+     */
+    public static final int LOGOFF_FROZEN_DAY = 7;
 }
