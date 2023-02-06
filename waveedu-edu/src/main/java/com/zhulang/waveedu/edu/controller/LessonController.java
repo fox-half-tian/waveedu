@@ -2,12 +2,15 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * 与课程相关的统一controller
@@ -35,24 +38,26 @@ public class LessonController {
     /**
      * 获取课程基本信息：课程 id，课程名，课程封面，创建时间，创建人id，创建人头像
      *
-     * @param object 课程id
+     * @param lessonId 课程id
      * @return 基本信息
      */
     @GetMapping("/get/basicInfo")
-    public Result getInfo(@RequestBody JSONObject object) {
-        Long lessonId = Long.parseLong(object.getString("lessonId"));
+    public Result getInfo(@NotBlank(message = "课程id不允许为空")
+                          @Pattern(regexp = RegexUtils.RegexPatterns.SNOW_ID_REGEX, message = "找不到课程信息")
+                          @RequestParam("lessonId") Long lessonId) {
         return lessonService.getBasicInfo(lessonId);
     }
 
     /**
      * 获取教师邀请码
      *
-     * @param object 课程id
+     * @param lessonId 课程id
      * @return 邀请码
      */
     @GetMapping("/get/tchInviteCode")
-    public Result getTchInviteCode(@RequestBody JSONObject object){
-        Long lessonId = Long.parseLong(object.getString("lessonId"));
+    public Result getTchInviteCode(@NotBlank(message = "课程id不允许为空")
+                                       @Pattern(regexp = RegexUtils.RegexPatterns.SNOW_ID_REGEX, message = "找不到课程信息")
+                                       @RequestParam("lessonId") Long lessonId) {
         return lessonService.getTchInviteCode(lessonId);
     }
 
@@ -63,7 +68,7 @@ public class LessonController {
      * @return 修改后的加密邀请码
      */
     @PutMapping("/modify/tchInviteCode")
-    public Result modifyTchInviteCode(@RequestBody JSONObject object){
+    public Result modifyTchInviteCode(@RequestBody JSONObject object) {
         Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.modifyTchInviteCode(lessonId);
     }
