@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.basic.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.service.UserInfoService;
 import com.zhulang.waveedu.basic.vo.UpdateUserInfoVO;
@@ -33,11 +34,11 @@ public class UserInfoController {
     /**
      * 通过id来获取其他用户的信息
      *
-     * @param id 用户id
+     * @param id 传入的是id
      * @return 用户信息
      */
-    @GetMapping("/get/info/{id}")
-    public Result getUserInfoByName(@PathVariable("id") Long id) {
+    @GetMapping("/get/info/id")
+    public Result getUserInfoByid(@RequestParam("id") Long id) {
         return userInfoService.getUserInfoById(id);
     }
 

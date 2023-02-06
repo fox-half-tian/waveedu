@@ -68,6 +68,9 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
         IdentityWrapper.eq(Identity::getUserId, id);
         Identity R = identityMapper.selectOne(IdentityWrapper);
+        if(R == null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "该用户身份尚未添加");
+        }
         // 3.返回结果
         return Result.ok(R);
     }

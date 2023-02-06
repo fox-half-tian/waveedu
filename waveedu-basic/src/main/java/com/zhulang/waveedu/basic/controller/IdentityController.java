@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.basic.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.basic.service.IdentityService;
 import com.zhulang.waveedu.basic.vo.IdentityVO;
 import com.zhulang.waveedu.common.entity.Result;
@@ -43,11 +44,11 @@ public class IdentityController {
 
     /**
      * 查询到该id的用户身份信息
-     * @param id
+     * @param id 传入的是id
      * @return 查询结果(包含身份信息)
      */
-    @GetMapping("/get/{id}")
-    public Result getIdentityByUserId(@PathVariable("id") Long id){
+    @GetMapping("/get/id")
+    public Result getIdentityByUserId(@RequestParam("id") Long id){
         return identityService.getIdentityUserId(id);
     }
 }
