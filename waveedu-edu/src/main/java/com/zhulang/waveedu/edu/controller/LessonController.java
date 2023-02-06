@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
@@ -34,33 +35,36 @@ public class LessonController {
     /**
      * 获取课程基本信息：课程 id，课程名，课程封面，创建时间，创建人id，创建人头像
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 基本信息
      */
-    @GetMapping("/get/basicInfo/{lessonId}")
-    public Result getInfo(@PathVariable("lessonId") Long lessonId) {
+    @GetMapping("/get/basicInfo")
+    public Result getInfo(@RequestBody JSONObject object) {
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.getBasicInfo(lessonId);
     }
 
     /**
      * 获取教师邀请码
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 邀请码
      */
-    @GetMapping("/get/tchInviteCode/{lessonId}")
-    public Result getTchInviteCode(@PathVariable("lessonId") Long lessonId){
+    @GetMapping("/get/tchInviteCode")
+    public Result getTchInviteCode(@RequestBody JSONObject object){
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.getTchInviteCode(lessonId);
     }
 
     /**
      * 修改教师邀请码
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 修改后的加密邀请码
      */
-    @PutMapping("/modify/tchInviteCode/{lessonId}")
-    public Result modifyTchInviteCode(@PathVariable("lessonId") Long lessonId){
+    @PutMapping("/modify/tchInviteCode")
+    public Result modifyTchInviteCode(@RequestBody JSONObject object){
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.modifyTchInviteCode(lessonId);
     }
 
@@ -68,11 +72,12 @@ public class LessonController {
      * 启用/禁用教学邀请码
      * sw：switch的缩写
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 状态，如果启用，则还会返回教学邀请码
      */
-    @PutMapping("/sw/tchInviteCode/{lessonId}")
-    public Result switchTchInviteCode(@PathVariable("lessonId") Long lessonId) {
+    @PutMapping("/sw/tchInviteCode")
+    public Result switchTchInviteCode(@RequestBody JSONObject object) {
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.switchTchInviteCode(lessonId);
     }
 }
