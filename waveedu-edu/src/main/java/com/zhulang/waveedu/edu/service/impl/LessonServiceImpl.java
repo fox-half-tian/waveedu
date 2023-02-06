@@ -68,9 +68,6 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
     @Override
     public Result getBasicInfo(Long lessonId) {
-        if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");
-        }
         LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lessonId);
         if (info == null) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "找不到课程信息");

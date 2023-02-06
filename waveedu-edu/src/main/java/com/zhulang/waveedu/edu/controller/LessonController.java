@@ -1,12 +1,16 @@
 package com.zhulang.waveedu.edu.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * 与课程相关的统一controller
@@ -37,8 +41,10 @@ public class LessonController {
      * @param lessonId 课程id
      * @return 基本信息
      */
-    @GetMapping("/get/basicInfo/{lessonId}")
-    public Result getInfo(@PathVariable("lessonId") Long lessonId) {
+    @GetMapping("/get/basicInfo")
+    public Result getInfo(@NotBlank(message = "课程id不允许为空")
+                          @Pattern(regexp = RegexUtils.RegexPatterns.SNOW_ID_REGEX, message = "找不到课程信息")
+                          @RequestParam("lessonId") Long lessonId) {
         return lessonService.getBasicInfo(lessonId);
     }
 
@@ -48,19 +54,22 @@ public class LessonController {
      * @param lessonId 课程id
      * @return 邀请码
      */
-    @GetMapping("/get/tchInviteCode/{lessonId}")
-    public Result getTchInviteCode(@PathVariable("lessonId") Long lessonId){
+    @GetMapping("/get/tchInviteCode")
+    public Result getTchInviteCode(@NotBlank(message = "课程id不允许为空")
+                                       @Pattern(regexp = RegexUtils.RegexPatterns.SNOW_ID_REGEX, message = "找不到课程信息")
+                                       @RequestParam("lessonId") Long lessonId) {
         return lessonService.getTchInviteCode(lessonId);
     }
 
     /**
      * 修改教师邀请码
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 修改后的加密邀请码
      */
-    @PutMapping("/modify/tchInviteCode/{lessonId}")
-    public Result modifyTchInviteCode(@PathVariable("lessonId") Long lessonId){
+    @PutMapping("/modify/tchInviteCode")
+    public Result modifyTchInviteCode(@RequestBody JSONObject object) {
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.modifyTchInviteCode(lessonId);
     }
 
@@ -68,11 +77,12 @@ public class LessonController {
      * 启用/禁用教学邀请码
      * sw：switch的缩写
      *
-     * @param lessonId 课程id
+     * @param object 课程id
      * @return 状态，如果启用，则还会返回教学邀请码
      */
-    @PutMapping("/sw/tchInviteCode/{lessonId}")
-    public Result switchTchInviteCode(@PathVariable("lessonId") Long lessonId) {
+    @PutMapping("/sw/tchInviteCode")
+    public Result switchTchInviteCode(@RequestBody JSONObject object) {
+        Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.switchTchInviteCode(lessonId);
     }
 }
