@@ -1,15 +1,11 @@
 package com.zhulang.waveedu.basic.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
 
 /**
  * @author 飒沓流星
@@ -27,7 +23,7 @@ public class IdentityVO {
     /**
      * 院校id
      */
-    private Integer collegeId;
+    private String collegeName;
 
     /**
      * 身份类型 1为教师/0为学生

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author 狐狸半面添
  * @create 2023-02-02 3:11
  */
-@TableName("edu_college")
+@TableName("basic_college")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

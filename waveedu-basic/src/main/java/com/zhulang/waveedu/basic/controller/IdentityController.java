@@ -3,6 +3,7 @@ package com.zhulang.waveedu.basic.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.basic.service.IdentityService;
 import com.zhulang.waveedu.basic.vo.IdentityVO;
+import com.zhulang.waveedu.basic.vo.UpdateUserInfoVO;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import org.springframework.validation.annotation.Validated;
@@ -50,5 +51,12 @@ public class IdentityController {
     @GetMapping("/get/id")
     public Result getIdentityByUserId(@RequestParam("id") Long id){
         return identityService.getIdentityUserId(id);
+    }
+
+    @PutMapping("/modify")
+    public Result modifyUserInfo(@Validated @RequestBody IdentityVO identityVO) {
+        // 拿到本用户的id，加进去
+        identityVO.setUserId(UserHolderUtils.getUserId());
+        return identityService.modifyIdentity(identityVO);
     }
 }

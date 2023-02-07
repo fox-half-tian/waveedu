@@ -29,4 +29,11 @@ public interface IdentityService extends IService<Identity> {
      * @return 查询结果
      */
     Result getIdentityUserId(Long id);
+
+    /**
+     * 修改该身份
+     * @param identityVO
+     * @return 修改结果
+     */
+    Result modifyIdentity(IdentityVO identityVO);
 }
