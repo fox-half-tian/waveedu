@@ -18,7 +18,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChunkFileVO {
+public class CheckChunkFileVO {
     /**
      * 需要上传的文件的md5值
      */

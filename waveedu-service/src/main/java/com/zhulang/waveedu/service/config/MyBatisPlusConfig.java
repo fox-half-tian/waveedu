@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan("com.zhulang.waveedu.sms.dao")
+@MapperScan("com.zhulang.waveedu.service.dao")
 public class MyBatisPlusConfig {
     @Bean
     public MetaObjectHandler metaObjectHandler(){
