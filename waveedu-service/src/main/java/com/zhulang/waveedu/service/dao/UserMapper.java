@@ -1,9 +1,8 @@
-package com.zhulang.waveedu.sms.dao;
-import java.util.List;
+package com.zhulang.waveedu.service.dao;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.sms.po.User;
+import com.zhulang.waveedu.service.po.User;
 
 /**
  * @author 狐狸半面添

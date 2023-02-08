@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.config;
+package com.zhulang.waveedu.service.config;
 
 import com.zhulang.waveedu.common.exception.WaveEduExceptionHandler;
 import org.springframework.context.annotation.Bean;

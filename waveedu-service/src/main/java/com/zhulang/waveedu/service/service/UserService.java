@@ -1,8 +1,8 @@
-package com.zhulang.waveedu.sms.service;
+package com.zhulang.waveedu.service.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.sms.po.User;
+import com.zhulang.waveedu.service.po.User;
 
 /**
  * @author 狐狸半面添

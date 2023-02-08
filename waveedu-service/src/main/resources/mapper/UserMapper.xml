@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zhulang.waveedu.sms.dao.UserMapper">
+<mapper namespace="com.zhulang.waveedu.service.dao.UserMapper">
     <select id="selectPhoneById" resultType="java.lang.String">
         SELECT phone
         FROM basic_user

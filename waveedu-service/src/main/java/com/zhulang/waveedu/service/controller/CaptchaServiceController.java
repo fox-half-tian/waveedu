@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.controller;
+package com.zhulang.waveedu.service.controller;
 
 import com.google.code.kaptcha.Producer;
 import com.zhulang.waveedu.common.constant.RedisConstants;

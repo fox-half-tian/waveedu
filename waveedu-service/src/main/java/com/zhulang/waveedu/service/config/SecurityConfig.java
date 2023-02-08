@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.config;
+package com.zhulang.waveedu.service.config;
 
 import com.zhulang.waveedu.common.filter.AuthenticationTokenFilter;
 import com.zhulang.waveedu.common.handler.AccessDeniedHandlerImpl;

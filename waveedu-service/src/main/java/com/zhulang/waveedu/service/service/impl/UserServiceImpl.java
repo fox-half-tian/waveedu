@@ -1,8 +1,6 @@
-package com.zhulang.waveedu.sms.service.impl;
+package com.zhulang.waveedu.service.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -10,10 +8,10 @@ import com.zhulang.waveedu.common.util.RedisCacheUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.sms.dao.UserMapper;
-import com.zhulang.waveedu.sms.po.User;
-import com.zhulang.waveedu.sms.util.SmsTemplateUtils;
-import com.zhulang.waveedu.sms.service.UserService;
+import com.zhulang.waveedu.service.dao.UserMapper;
+import com.zhulang.waveedu.service.po.User;
+import com.zhulang.waveedu.service.util.SmsTemplateUtils;
+import com.zhulang.waveedu.service.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

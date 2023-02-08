@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms;
+package com.zhulang.waveedu.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

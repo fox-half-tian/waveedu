@@ -62,6 +62,15 @@ sms:
   loginTemplateId: 1671035
   # 注销短信模板的id
   logoffTemplateId: 1675463
+minio:
+  # 指定连接的ip和端口
+  endpoint: http://8.134.136.211:9000
+  # 指定 访问秘钥（也称用户id）
+  accessKey: minioadmin
+  # 指定 私有秘钥（也称密码）
+  secretKey: minioadmin
+  # 指定存储的桶
+  bucket: waveedu
 
 
 

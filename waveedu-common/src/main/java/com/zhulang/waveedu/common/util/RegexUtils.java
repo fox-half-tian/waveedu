@@ -87,6 +87,11 @@ public class RegexUtils {
          * 注销原因正则，0-255个字符，不允许\n
          */
         public static final String LOGOFF_REASON_REGEX = "^.{0,255}$";
+
+        /**
+         * md5十六进制正则：32个字符
+         */
+        public static final String MD5_HEX_REGEX = "^[0-9abcdef]{32}$";
     }
 
     /**
@@ -222,8 +227,18 @@ public class RegexUtils {
         return mismatch(introduce, RegexPatterns.LESSON_NAME_REGEX);
     }
 
+    /**
+     * 是否是无效十六进制md5格式
+     *
+     * @param md5Hex md5的十六进制
+     * @return true:符合，false：不符合
+     */
+    public static boolean isMd5HexInvalid(String md5Hex){
+        return mismatch(md5Hex,RegexPatterns.MD5_HEX_REGEX);
+    }
+
     public static void main(String[] args) {
-        System.out.println(isLessonIntroduceInvalid("  "));
+        System.out.println(isMd5HexInvalid("8u70d8ab2768f232ebe874175065ead3"));
     }
 
 }

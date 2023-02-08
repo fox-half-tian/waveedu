@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.constant;
+package com.zhulang.waveedu.service.constant;
 
 /**
  * 短信服务的常量信息

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms;
+package com.zhulang.waveedu.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

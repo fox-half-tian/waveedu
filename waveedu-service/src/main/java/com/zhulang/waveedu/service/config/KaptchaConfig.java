@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.config;
+package com.zhulang.waveedu.service.config;
 
 import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.impl.DefaultKaptcha;

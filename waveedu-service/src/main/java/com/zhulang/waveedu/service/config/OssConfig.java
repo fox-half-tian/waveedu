@@ -1,7 +1,7 @@
-package com.zhulang.waveedu.sms.config;
+package com.zhulang.waveedu.service.config;
 
 import com.aliyun.oss.OSS;
-import com.zhulang.waveedu.sms.util.OssClientUtils;
+import com.zhulang.waveedu.service.util.OssClientUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

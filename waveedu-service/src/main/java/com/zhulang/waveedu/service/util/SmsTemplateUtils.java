@@ -1,9 +1,9 @@
-package com.zhulang.waveedu.sms.util;
+package com.zhulang.waveedu.service.util;
 
 
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
-import com.zhulang.waveedu.sms.constant.SmsConstants;
+import com.zhulang.waveedu.service.constant.SmsConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,9 +1,9 @@
-package com.zhulang.waveedu.sms.controller;
+package com.zhulang.waveedu.service.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.sms.service.UserService;
+import com.zhulang.waveedu.service.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

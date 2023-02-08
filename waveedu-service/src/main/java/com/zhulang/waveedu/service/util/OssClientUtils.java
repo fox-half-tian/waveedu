@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.util;
+package com.zhulang.waveedu.service.util;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.common.utils.BinaryUtil;

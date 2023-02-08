@@ -1,6 +1,6 @@
-package com.zhulang.waveedu.sms.config;
+package com.zhulang.waveedu.service.config;
 
-import com.zhulang.waveedu.sms.util.SmsTemplateUtils;
+import com.zhulang.waveedu.service.util.SmsTemplateUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

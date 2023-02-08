@@ -1,10 +1,9 @@
-package com.zhulang.waveedu.sms.controller;
+package com.zhulang.waveedu.service.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.sms.constant.OssConstants;
-import com.zhulang.waveedu.sms.util.OssClientUtils;
+import com.zhulang.waveedu.service.constant.OssConstants;
+import com.zhulang.waveedu.service.util.OssClientUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.sms.po;
+package com.zhulang.waveedu.service.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
