@@ -96,6 +96,6 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
      * @return 分块文件所在目录
      */
     private String getChunkFileFolderPath(String fileMd5) {
-        return fileMd5.substring(0, 1) + "/" + fileMd5.substring(1, 2) + "/" + fileMd5 + "/" + "chunk" + "/";
+        return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + "chunk" + "/";
     }
 }
