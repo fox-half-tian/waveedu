@@ -23,7 +23,7 @@ public class IdentityController {
      * 添加改用户的身份信息
      *
      * @param identityVO
-     * @return
+     * @return 添加身份
      */
     @PostMapping("/add")
     public Result addIdentity(@Validated @RequestBody IdentityVO identityVO) {
@@ -37,7 +37,7 @@ public class IdentityController {
      *
      * @return 删除状况
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public Result deleteIdentityByUserId() {
         Long id = UserHolderUtils.getUserId();
         return identityService.removeIdentityUserId(id);
