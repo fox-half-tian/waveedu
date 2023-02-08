@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.service.config;
 
+import com.zhulang.waveedu.common.util.MinioClientUtils;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,5 +35,10 @@ public class MinioConfig {
                 .endpoint(endpoint)
                 .credentials(accessKey, secretKey)
                 .build();
+    }
+
+    @Bean
+    public MinioClientUtils minioClientUtils(MinioClient minioClient){
+        return new MinioClientUtils(minioClient);
     }
 }

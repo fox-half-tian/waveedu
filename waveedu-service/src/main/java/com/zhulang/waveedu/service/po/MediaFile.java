@@ -36,9 +36,14 @@ public class MediaFile implements Serializable {
     private String fileName;
 
     /**
-     * 文件类型(0-视频，1-音频)
+     * 文件类型：文本，图片，音频，视频，其它
      */
-    private Integer fileType;
+    private String fileType;
+
+    /**
+     * 文件格式
+     */
+    private String fileFormat;
 
     /**
      * 标签
@@ -59,6 +64,11 @@ public class MediaFile implements Serializable {
      * 文件的md5值
      */
     private String fileMd5;
+
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
 
     /**
      * 上传人id

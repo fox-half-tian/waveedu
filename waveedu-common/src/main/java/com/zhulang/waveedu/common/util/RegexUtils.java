@@ -92,6 +92,16 @@ public class RegexUtils {
          * md5十六进制正则：32个字符
          */
         public static final String MD5_HEX_REGEX = "^[0-9abcdef]{32}$";
+
+        /**
+         * 文件名称正则：最多255个字符
+         */
+        public static final String FILE_NAME_REGEX = "^.{1,255}$";
+
+        /**
+         * 文件标签正则：最多32个字符
+         */
+        public static final String FILE_TAG_REGEX = "^.{1,32}$";
     }
 
     /**
@@ -235,6 +245,26 @@ public class RegexUtils {
      */
     public static boolean isMd5HexInvalid(String md5Hex){
         return mismatch(md5Hex,RegexPatterns.MD5_HEX_REGEX);
+    }
+
+    /**
+     * 是否是无效文件名称格式
+     *
+     * @param fileName 文件名称
+     * @return true:符合，false：不符合
+     */
+    public static boolean isFileNameInvalid(String fileName){
+        return mismatch(fileName,RegexPatterns.FILE_NAME_REGEX);
+    }
+
+    /**
+     * 是否是无效文件标签格式
+     *
+     * @param fileTag 文件标签
+     * @return true:符合，false：不符合
+     */
+    public static boolean isFileTagInvalid(String fileTag){
+        return mismatch(fileTag,RegexPatterns.FILE_TAG_REGEX);
     }
 
     public static void main(String[] args) {

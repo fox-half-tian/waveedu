@@ -3,17 +3,17 @@ package com.zhulang.waveedu.service.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.MinioClientUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.service.po.MediaFile;
 import com.zhulang.waveedu.service.dao.MediaFileMapper;
 import com.zhulang.waveedu.service.service.MediaFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -29,7 +29,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
     @Resource
     private MediaFileMapper mediaFileMapper;
     @Resource
-    private MinioClient minioClient;
+    private MinioClientUtils minioClientUtils;
     @Value("${minio.bucket}")
     private String bucket;
 
@@ -50,9 +50,8 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
             return Result.ok(false);
         }
         // 2.2 判断是否在文件系统存在
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket(mediaFile.getBucket()).object(mediaFile.getFilePath()).build();
         try {
-            InputStream inputStream = minioClient.getObject(getObjectArgs);
+            InputStream inputStream = minioClientUtils.getObject(mediaFile.getBucket(), mediaFile.getFilePath());
             if (inputStream == null) {
                 // 文件不存在
                 return Result.ok(false);
@@ -73,9 +72,8 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
         String chunkFilePath = chunkFileFolderPath + chunkIndex;
 
         // 3.查看是否在文件系统存在
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket(bucket).object(chunkFilePath).build();
         try {
-            InputStream inputStream = minioClient.getObject(getObjectArgs);
+            InputStream inputStream = minioClientUtils.getObject(bucket, chunkFilePath);
             if (inputStream == null) {
                 //文件不存在
                 return Result.ok(false);
@@ -87,6 +85,53 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
 
         // 4.走到这里说明文件已存在，返回true
         return Result.ok(true);
+    }
+
+    @Override
+    public Result uploadChunk(String fileMd5, Integer chunkIndex, byte[] bytes) {
+        // 1.得到分块文件所在目录
+        String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
+        // 2.分块文件的路径
+        String chunkFilePath = chunkFileFolderPath + chunkIndex;
+
+        try {
+            // 3.将分块上传到文件系统
+            minioClientUtils.uploadFile(bytes, bucket, chunkFilePath);
+            // 4.上传成功
+            return Result.ok();
+        } catch (Exception e) {
+            // 上传失败
+            return Result.error();
+        }
+    }
+
+    @Override
+    public Result uploadMergeChunks(String fileMd5, String fileName, String tag, Integer chunkTotal) {
+        return null;
+    }
+
+    /**
+     * 下载所有的块文件
+     *
+     * @param fileMd5    源文件的md5值
+     * @param chunkTotal 块总数
+     * @return 所有块文件
+     */
+    private File[] downloadChunkFilesFromMinio(String fileMd5, int chunkTotal) throws Exception {
+        // 1.得到分块文件所在目录
+        String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
+        // 2.分块文件数组
+        File[] chunkFiles = new File[chunkTotal];
+        // 3.开始逐个下载
+        for (int i = 0; i < chunkTotal; i++) {
+            // 3.1 得到分块文件的路径
+            String chunkFilePath = chunkFileFolderPath + i;
+            // 3.2 下载分块文件
+            chunkFiles[i] = minioClientUtils.downloadFile("chunk", null, bucket, chunkFilePath);
+        }
+
+        // 4.返回所有块文件
+        return chunkFiles;
     }
 
     /**

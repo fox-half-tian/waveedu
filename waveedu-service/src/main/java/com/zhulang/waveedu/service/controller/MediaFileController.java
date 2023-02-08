@@ -3,6 +3,7 @@ package com.zhulang.waveedu.service.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.service.service.MediaFileService;
 import com.zhulang.waveedu.service.vo.CheckChunkFileVO;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 /**
  * <p>
@@ -59,14 +62,29 @@ public class MediaFileController {
      * @param fileMd5    原文件md5值
      * @param chunkIndex 分块文件索引
      * @return 上传情况
-     * @throws Exception
      */
     @PostMapping("/upload/uploadChunk")
     public Result uploadChunk(@RequestParam("file") MultipartFile file,
-                              @RequestParam("fileMd5") String fileMd5,
-                              @RequestParam("chunkIndex") Integer chunkIndex) throws Exception {
-        // mediaFileService.uploadChunk(fileMd5, chunkIndex, file.getBytes());
-        return null;
+                              @RequestParam("fileMd5") @Pattern(regexp = RegexUtils.RegexPatterns.MD5_HEX_REGEX, message = "文件md5格式错误") String fileMd5,
+                              @RequestParam("chunkIndex") @Min(value = 0, message = "索引必须大于等于0") Integer chunkIndex) throws Exception {
+        return mediaFileService.uploadChunk(fileMd5, chunkIndex, file.getBytes());
+    }
 
+    /**
+     * 合并分块文件
+     *
+     * @param fileMd5    文件的md5十六进制值
+     * @param fileName   文件名
+     * @param tag        文件标签
+     * @param chunkTotal 文件块总数
+     * @return 合并与上传情况
+     */
+    @PostMapping("/upload/uploadMergeChunks")
+    public Result uploadMergeChunks(@RequestParam("fileMd5") @Pattern(regexp = RegexUtils.RegexPatterns.MD5_HEX_REGEX, message = "文件md5格式错误") String fileMd5,
+                                    @RequestParam("fileName") @Pattern(regexp = RegexUtils.RegexPatterns.FILE_NAME_REGEX, message = "文件名最多255个字符") String fileName,
+                                    @RequestParam("tag") @Pattern(regexp = RegexUtils.RegexPatterns.FILE_TAG_REGEX, message = "文件标签最多32个字符") String tag,
+                                    @RequestParam("chunkTotal") @Min(value = 1, message = "块总数必须大于等于1") Integer chunkTotal) {
+
+        return mediaFileService.uploadMergeChunks(fileMd5, fileName, tag, chunkTotal);
     }
 }
