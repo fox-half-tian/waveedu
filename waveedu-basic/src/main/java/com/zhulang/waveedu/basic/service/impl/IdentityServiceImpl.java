@@ -30,27 +30,22 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
     private CollegeMapper collegeMapper;
     @Override
     public Result addIdentity(IdentityVO identityVO) {
-        // 0.检查是否添加过
-        LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
-        IdentityWrapper.eq(Identity::getUserId, identityVO.getUserId());
-        IdentityWrapper.eq(Identity::getIsDeleted, 0);
-        Identity R0 = identityMapper.selectOne(IdentityWrapper);
-        if(R0 !=null){
-            return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(),"已经添加过身份");
-        }
         // 1.判断是否是无效id
         if (RegexUtils.isSnowIdInvalid(identityVO.getUserId())) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效id");
         }
-        // 2.判断type是否符合要求
-        if(!(identityVO.getType()==1||identityVO.getType()==0)){
-            return Result.error("type参数有误，应为0或1");
+        // 2.检查是否添加过
+        LambdaQueryWrapper<Identity> identityWrapper = new LambdaQueryWrapper<>();
+        identityWrapper.eq(Identity::getUserId, identityVO.getUserId());
+        Identity r0 = identityMapper.selectOne(identityWrapper);
+        if(r0 !=null){
+            return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(),"已经添加过身份");
         }
         // 3.对象转换
         Identity identity = new Identity();
-        LambdaQueryWrapper<College> CollegeWrapper = new LambdaQueryWrapper<>();
-        CollegeWrapper.eq(College::getName, identityVO.getCollegeName());
-        College college = collegeMapper.selectOne(CollegeWrapper);
+        LambdaQueryWrapper<College> collegeWrapper = new LambdaQueryWrapper<>();
+        collegeWrapper.eq(College::getName, identityVO.getCollegeName());
+        College college = collegeMapper.selectOne(collegeWrapper);
         identity.setCollegeId(college.getId());
         identity.setNumber(identityVO.getNumber());
         identity.setType(identityVO.getType());
@@ -58,25 +53,28 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         // 4.添加用户的身份信息
         identityMapper.insert(identity);
         // 5.查询出刚刚添加的身份信息
-        Identity R = identityMapper.selectOne(IdentityWrapper);
+        Identity result = identityMapper.selectOne(identityWrapper);
         // 6.返回刚刚添加的身份信息
         IdentityQuery identityQuery=new IdentityQuery();
-        identityQuery.setUserId(R.getUserId());
+        identityQuery.setUserId(result.getUserId());
         identityQuery.setCollegeName(college.getName());
-        identityQuery.setNumber(R.getNumber());
-        identityQuery.setType(R.getType());
-        identityQuery.setCollegeId(R.getCollegeId());
+        identityQuery.setNumber(result.getNumber());
+        identityQuery.setType(result.getType());
+        identityQuery.setCollegeId(result.getCollegeId());
         return Result.ok(identityQuery);
     }
 
     @Override
     public Result removeIdentityUserId(Long id) {
 
-        LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
-        IdentityWrapper.eq(Identity::getUserId, id);
-        identityMapper.delete(IdentityWrapper);
-
-        return Result.ok("删除成功");
+        LambdaQueryWrapper<Identity> identityWrapper = new LambdaQueryWrapper<>();
+        identityWrapper.eq(Identity::getUserId, id);
+        // 逻辑删除
+        int result = identityMapper.delete(identityWrapper);
+        if (result == 0){
+            return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(),"当前用户已无身份，删除失败");
+        }
+        return Result.ok();
     }
 
     @Override

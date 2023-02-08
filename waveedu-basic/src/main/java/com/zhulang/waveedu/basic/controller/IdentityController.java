@@ -39,8 +39,7 @@ public class IdentityController {
      */
     @DeleteMapping("/delete")
     public Result deleteIdentityByUserId() {
-        Long id = UserHolderUtils.getUserId();
-        return identityService.removeIdentityUserId(id);
+        return identityService.removeIdentityUserId(UserHolderUtils.getUserId());
     }
 
     /**
