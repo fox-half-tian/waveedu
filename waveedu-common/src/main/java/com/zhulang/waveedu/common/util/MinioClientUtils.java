@@ -5,6 +5,7 @@ import com.j256.simplemagic.ContentInfoUtil;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.UploadObjectArgs;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.MediaType;
 
@@ -72,6 +73,23 @@ public class MinioClientUtils {
                 .build();
         // 上传
         minioClient.putObject(putObjectArgs);
+    }
+
+    /**
+     * 根据文件路径将文件上传到文件系统
+     *
+     * @param naiveFilePath 本地文件路径
+     * @param bucket        桶
+     * @param minioFilePath 保存到minio的文件路径位置
+     * @throws Exception 异常
+     */
+    public void uploadFile(String naiveFilePath, String bucket, String minioFilePath) throws Exception {
+        UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder()
+                .bucket(bucket)
+                .object(minioFilePath)
+                .filename(naiveFilePath)
+                .build();
+        minioClient.uploadObject(uploadObjectArgs);
     }
 
     /**

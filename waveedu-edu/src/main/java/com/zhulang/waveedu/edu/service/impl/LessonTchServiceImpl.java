@@ -4,6 +4,7 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.dao.LessonTchMapper;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
@@ -42,7 +43,8 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效邀请码");
         }
         // 3.解密邀请码
-        String[] decrypt = CipherUtils.decrypt(encryptCode);
+        String codeInfo = CipherUtils.decrypt(encryptCode);
+        String[] decrypt = WaveStrUtils.strSplitToArr(codeInfo,"-");
         // 4.为空说明无效
         if (decrypt==null){
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效邀请码");

@@ -66,9 +66,13 @@ public class MediaFile implements Serializable {
     private String fileMd5;
 
     /**
-     * 文件大小
+     * 文件字节大小
      */
-    private Long fileSize;
+    private Long fileByteSize;
+    /**
+     * 文件格式化大小
+     */
+    private String fileFormatSize;
 
     /**
      * 上传人id

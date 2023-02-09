@@ -8,6 +8,7 @@ import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.common.util.WebUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +30,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     private RedisCacheUtils redisCacheUtils;
 
-    public AuthenticationTokenFilter(RedisCacheUtils redisCacheUtils){
+    public AuthenticationTokenFilter(RedisCacheUtils redisCacheUtils) {
         this.redisCacheUtils = redisCacheUtils;
     }
 
@@ -44,9 +45,14 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         // 解析token
-        String[] info = CipherUtils.decrypt(token);
-        if (info==null){
-            WebUtils.renderString(response,Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(),HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
+        String decrypt = CipherUtils.decrypt(token);
+        if (decrypt == null) {
+            WebUtils.renderString(response, Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
+            return;
+        }
+        String[] info = WaveStrUtils.strSplitToArr(decrypt, "-");
+        if (info.length != 2) {
+            WebUtils.renderString(response, Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
             return;
         }
         // 从redis中获取用户信息
@@ -69,10 +75,10 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             (System.currentTimeMillis() - redisUser.getTime())/1000：上一次设置ttl距离现在的时长，这个时差肯定没有超过LOGIN_USER_INFO_TTL
             RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
          */
-        if (RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime())/1000 <= RedisConstants.LOGIN_USER_INFO_REFRESH_TTL){
+        if (RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()) / 1000 <= RedisConstants.LOGIN_USER_INFO_REFRESH_TTL) {
             // 距离过期90分钟不到，就刷新缓存
             redisUser.setTime(System.currentTimeMillis());
-            redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY+info[0],redisUser,RedisConstants.LOGIN_USER_INFO_TTL);
+            redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + info[0], redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
         }
 
         // 存入SecurityContextHolder

@@ -1,11 +1,16 @@
 package com.zhulang.waveedu.common.util;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * AES加密解密工具
@@ -99,7 +104,7 @@ public class CipherUtils {
      * 加密
      *
      * @param content 加密内容
-     * @return
+     * @return 加密结果
      */
     public static String encrypt(String content) {
         return aESEncode(content, SECRET_KEY);
@@ -109,19 +114,14 @@ public class CipherUtils {
      * 解密
      *
      * @param content 解密内容
-     * @return
+     * @return 解密结果
      */
-    public static String[] decrypt(String content) {
+    public static String decrypt(String content) {
         try {
-            return WaveStrUtils.strSplitToArr(AESDecode(content, SECRET_KEY),"-");
+            return AESDecode(content, SECRET_KEY);
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(encrypt("1719621144116133892-3").length());
-        System.out.println(decrypt("0WIBVHBJR1j9jAg_87hJhTG-nQRVdP4JRwiq-H4iU60=").toString());
     }
 }
 

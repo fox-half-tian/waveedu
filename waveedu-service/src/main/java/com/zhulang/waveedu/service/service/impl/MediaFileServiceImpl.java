@@ -1,20 +1,22 @@
 package com.zhulang.waveedu.service.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.MinioClientUtils;
-import com.zhulang.waveedu.common.util.RegexUtils;
+import com.zhulang.waveedu.common.util.*;
 import com.zhulang.waveedu.service.po.MediaFile;
 import com.zhulang.waveedu.service.dao.MediaFileMapper;
 import com.zhulang.waveedu.service.service.MediaFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.InputStream;
+import javax.print.attribute.standard.Media;
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * <p>
@@ -35,6 +37,8 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
 
     @Override
     public Result checkFile(String fileMd5) {
+        HashMap<String, Object> resultMap = new HashMap<>();
+
         // 1.校验 fileMd5 合法性
         if (RegexUtils.isMd5HexInvalid(fileMd5)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件md5格式错误");
@@ -43,25 +47,47 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
         // 2.在文件表存在，并且在文件系统存在，此文件才存在
         // 2.1 判断是否在文件表中存在
         LambdaQueryWrapper<MediaFile> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(MediaFile::getFileMd5, fileMd5)
-                .select(MediaFile::getBucket, MediaFile::getFilePath);
+        wrapper.eq(MediaFile::getFileMd5, fileMd5);
         MediaFile mediaFile = mediaFileMapper.selectOne(wrapper);
         if (mediaFile == null) {
-            return Result.ok(false);
+            resultMap.put("exist", false);
+            return Result.ok(resultMap);
         }
         // 2.2 判断是否在文件系统存在
         try {
             InputStream inputStream = minioClientUtils.getObject(mediaFile.getBucket(), mediaFile.getFilePath());
             if (inputStream == null) {
                 // 文件不存在
-                return Result.ok(false);
+                resultMap.put("exist", false);
+                return Result.ok(resultMap);
             }
         } catch (Exception e) {
             // 文件不存在
-            return Result.ok(false);
+            resultMap.put("exist", false);
+            return Result.ok(resultMap);
         }
         // 3.走到这里说明文件已存在，返回true
-        return Result.ok(true);
+        resultMap.put("exist", true);
+        // 4.封装文件信息
+        resultMap.put("info", encodeFileInfo(mediaFile));
+        // 5.返回结果
+        return Result.ok(resultMap);
+    }
+
+    /**
+     * 将 部分信息进行封装加密
+     *
+     * @param mediaFile 媒资对象
+     * @return 加密结果
+     */
+    private String encodeFileInfo(MediaFile mediaFile) {
+        HashMap<String, Object> fileMap = new HashMap<>(5);
+        fileMap.put("fileType", mediaFile.getFileType());
+        fileMap.put("filePath", mediaFile.getBucket() + mediaFile.getFilePath());
+        fileMap.put("fileFormat", mediaFile.getFileFormat());
+        fileMap.put("fileByteSize", mediaFile.getFileByteSize());
+        fileMap.put("fileFormatSize", mediaFile.getFileFormatSize());
+        return CipherUtils.encrypt(JSON.toJSONString(fileMap));
     }
 
     @Override
@@ -107,7 +133,108 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
 
     @Override
     public Result uploadMergeChunks(String fileMd5, String fileName, String tag, Integer chunkTotal) {
-        return null;
+        try {
+            // 1.下载分块
+            File[] chunkFiles = downloadChunkFilesFromMinio(fileMd5, chunkTotal);
+
+            // 2.根据文件名得到合并后文件的扩展名
+            int index = fileName.lastIndexOf(".");
+            String extension = index != -1 ? fileName.substring(index) : "";
+            File tempMergeFile = null;
+            try {
+                try {
+                    // 3.创建一个临时文件作为合并文件
+                    tempMergeFile = File.createTempFile("merge", extension);
+                } catch (IOException e) {
+                    return Result.error(HttpStatus.HTTP_INTERNAL_ERROR.getCode(), "创建临时合并文件出错");
+                }
+
+                // 4.创建合并文件的流对象
+                try (RandomAccessFile rafWrite = new RandomAccessFile(tempMergeFile, "rw")) {
+                    byte[] b = new byte[1024];
+                    for (File file : chunkFiles) {
+                        // 5.读取分块文件的流对象
+                        try (RandomAccessFile rafRead = new RandomAccessFile(file, "r");) {
+                            int len = -1;
+                            while ((len = rafRead.read(b)) != -1) {
+                                // 6.向合并文件写数据
+                                rafWrite.write(b, 0, len);
+                            }
+                        }
+
+                    }
+                } catch (IOException e) {
+                    return Result.error(HttpStatus.HTTP_INTERNAL_ERROR.getCode(), "合并文件过程出错");
+                }
+
+
+                // 7.校验合并后的文件是否正确
+                try (
+                        // 7.1 获取合并后文件的流对象
+                        FileInputStream mergeFileStream = new FileInputStream(tempMergeFile);
+                ) {
+
+                    // 7.2 获取合并文件的md5十六进制值
+                    String mergeMd5Hex = DigestUtils.md5Hex(mergeFileStream);
+                    // 7.3 校验
+                    if (!fileMd5.equals(mergeMd5Hex)) {
+                        return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "合并文件校验不通过");
+                    }
+                } catch (IOException e) {
+                    return Result.error(HttpStatus.HTTP_INTERNAL_ERROR.getCode(), "合并文件校验出错");
+                }
+
+                // 8.得到 mimetype
+                String mimeType = FileTypeUtils.getMimeType(tempMergeFile);
+
+                // 9.拿到合并文件在minio的存储路径
+                String mergeFilePath = getFilePathByMd5(fileMd5, extension);
+                // 10.将合并后的文件上传到文件系统
+                minioClientUtils.uploadFile(tempMergeFile.getAbsolutePath(), bucket, mergeFilePath);
+
+                // 11.设置需要入库的文件信息
+                MediaFile mediaFile = new MediaFile();
+                // 11.1 文件名
+                mediaFile.setFileName(WaveStrUtils.removeBlank(fileName));
+                // 11.2 文件类型
+                mediaFile.setFileType(FileTypeUtils.getSimpleType(mimeType));
+                // 11.3 文件格式
+                mediaFile.setFileFormat(mimeType);
+                // 11.4 文件标签
+                mediaFile.setTag(WaveStrUtils.removeBlank(tag));
+                // 11.5 存储桶
+                mediaFile.setBucket(bucket);
+                // 11.6 存储路径
+                mediaFile.setFilePath(mergeFilePath);
+                // 11.7 设置md5值
+                mediaFile.setFileMd5(fileMd5);
+                // 11.8 设置合并文件大小（单位：字节）
+                mediaFile.setFileByteSize(tempMergeFile.length());
+                // 11.9 设置文件格式大小
+                mediaFile.setFileFormatSize(FileFormatUtils.formatFileSize(mediaFile.getFileByteSize()));
+                // 11.10 设置上传者
+                mediaFile.setUserId(UserHolderUtils.getUserId());
+                // 12.保存至数据库
+                this.save(mediaFile);
+
+                // 15.返回成功
+                return Result.ok(encodeFileInfo(mediaFile));
+            } finally {
+                // 13.删除临时分块文件
+                for (File chunkFile : chunkFiles) {
+                    if (chunkFile.exists()) {
+                        chunkFile.delete();
+                    }
+                }
+                // 14.删除合并的临时文件
+                if (tempMergeFile != null) {
+                    tempMergeFile.delete();
+                }
+
+            }
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_INTERNAL_ERROR.getCode(), e.getMessage());
+        }
     }
 
     /**
@@ -142,5 +269,16 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
      */
     private String getChunkFileFolderPath(String fileMd5) {
         return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + "chunk" + "/";
+    }
+
+    /**
+     * 得到合并文件的路径
+     *
+     * @param fileMd5 文件的md5十六进制值
+     * @param fileExt 文件的扩展名
+     * @return 合并文件路径
+     */
+    private String getFilePathByMd5(String fileMd5, String fileExt) {
+        return fileMd5.substring(0, 1) + "/" + fileMd5.substring(1, 2) + "/" + fileMd5 + "/" + fileMd5 + fileExt;
     }
 }
