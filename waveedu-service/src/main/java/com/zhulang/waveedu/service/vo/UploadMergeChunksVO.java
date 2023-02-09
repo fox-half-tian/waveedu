@@ -11,25 +11,27 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
- * 分块文件上传检查封装类
- *
  * @author 狐狸半面添
- * @create 2023-02-08 16:54
+ * @create 2023-02-09 22:56
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckChunkFileVO {
-    /**
-     * 需要上传的文件的md5值
-     */
+public class UploadMergeChunksVO {
     @NotBlank(message = "文件md5不能为空")
     @Pattern(regexp = RegexUtils.RegexPatterns.MD5_HEX_REGEX, message = "文件md5格式错误")
     private String fileMd5;
-    /**
-     * 该分块文件的索引
-     */
-    @NotNull(message = "分块文件索引不能为空")
-    @Min(value = 0, message = "分块文件索引必须是大于等于0的整数")
-    private Integer chunkIndex;
+
+    @NotBlank(message = "文件名不能为空")
+    @Pattern(regexp = RegexUtils.RegexPatterns.FILE_NAME_REGEX, message = "文件名最多255个字符")
+    private String fileName;
+
+    @NotBlank(message = "文件标签不能为空")
+    @Pattern(regexp = RegexUtils.RegexPatterns.FILE_TAG_REGEX, message = "文件标签最多32个字符")
+    private String tag;
+
+    @NotNull(message = "分块文件数不能为空")
+    @Min(value = 1, message = "块总数必须大于等于1")
+    private Integer chunkTotal;
+
 }

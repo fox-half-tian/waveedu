@@ -123,5 +123,11 @@ public class CipherUtils {
             return null;
         }
     }
+
+    public static void main(String[] args) {
+        String str = "ydhnPjgKLfApIlK9Wvvi2fR77raBlSsrOcWCe0AeFXWXn2Ofnep3TLrsT13LWuha9ylmAlJrMVWvu-IY-RC64LouMkALDGVCmRgwEdiORnz00bwFknbGRJ7bDgyTFb-xshPARLxmbKGUYn63nWQizo-aA3_UgHYYlOpAWwSZMCgi-SoSKJiT71PFvhTNIFwqtKYavy8QsSZV0gab7elBzi3cet36GPwe93YtHUkUCGbveOlG3ogO6UKn90fKOIWA";
+        HashMap hashMap = JSON.parseObject(decrypt(str), HashMap.class);
+        System.out.println(hashMap);
+    }
 }
 

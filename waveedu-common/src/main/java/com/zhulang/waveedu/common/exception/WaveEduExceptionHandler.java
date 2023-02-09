@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 /**
  * 1. @ResponseBody 以json格式返回数据
@@ -25,6 +27,11 @@ public class WaveEduExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleValidException(MethodArgumentNotValidException e){
         return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), e.getBindingResult().getFieldErrors().get(0).getDefaultMessage());
+    }
+
+    @ExceptionHandler(value = MultipartException.class)
+    public Result exception(MaxUploadSizeExceededException e) {
+        return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"文件过大");
     }
 
     /**

@@ -4,6 +4,10 @@ server:
   servlet:
     context-path: /service
 spring:
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 5MB
   cloud:
     alicloud:
       access-key: LTAI5tKcWoeuxTK8ibWoqW2J

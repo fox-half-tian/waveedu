@@ -83,7 +83,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
     private String encodeFileInfo(MediaFile mediaFile) {
         HashMap<String, Object> fileMap = new HashMap<>(5);
         fileMap.put("fileType", mediaFile.getFileType());
-        fileMap.put("filePath", mediaFile.getBucket() + mediaFile.getFilePath());
+        fileMap.put("filePath", mediaFile.getBucket() + "/" + mediaFile.getFilePath());
         fileMap.put("fileFormat", mediaFile.getFileFormat());
         fileMap.put("fileByteSize", mediaFile.getFileByteSize());
         fileMap.put("fileFormatSize", mediaFile.getFileFormatSize());
@@ -115,6 +115,12 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
 
     @Override
     public Result uploadChunk(String fileMd5, Integer chunkIndex, byte[] bytes) {
+        if (RegexUtils.isMd5HexInvalid(fileMd5)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件md5格式错误");
+        }
+        if (chunkIndex == null || chunkIndex < 0) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "索引必须大于等于0");
+        }
         // 1.得到分块文件所在目录
         String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
         // 2.分块文件的路径
