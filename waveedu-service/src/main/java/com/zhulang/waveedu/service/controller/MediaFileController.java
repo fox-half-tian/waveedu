@@ -7,11 +7,8 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.service.service.MediaFileService;
 import com.zhulang.waveedu.service.vo.CheckChunkFileVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -26,7 +23,7 @@ import javax.validation.constraints.Pattern;
  * @author 狐狸半面添
  * @since 2023-02-08
  */
-@Controller
+@RestController
 @RequestMapping("/media-file")
 public class MediaFileController {
     @Resource

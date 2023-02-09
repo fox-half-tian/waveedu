@@ -24,11 +24,11 @@ public class CheckChunkFileVO {
      */
     @NotNull(message = "文件md5不能为空")
     @Pattern(regexp = RegexUtils.RegexPatterns.MD5_HEX_REGEX, message = "文件md5格式错误")
-    String fileMd5;
+    private String fileMd5;
     /**
      * 该分块文件的索引
      */
     @NotNull(message = "分块文件索引不能为空")
     @Min(value = 0, message = "分块文件索引必须是大于等于0的整数")
-    Integer chunkIndex;
+    private Integer chunkIndex;
 }
