@@ -14,6 +14,7 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
+import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * 课程表 服务实现类
@@ -218,6 +220,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
     @Override
     public Result getCreateLessonSimpleInfoList() {
-
+        List<CreateLessonSimpleInfoQuery> infoList = lessonMapper.selectCreateLessonSimpleInfoList(UserHolderUtils.getUserId());
+        return Result.ok(infoList);
     }
 }

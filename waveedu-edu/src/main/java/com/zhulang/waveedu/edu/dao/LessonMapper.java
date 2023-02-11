@@ -2,9 +2,12 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
+import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 课程表 Mapper 接口
@@ -38,4 +41,13 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @return 创建者id
      */
     Long selectCreatorIdById(@Param("id") Long id);
+
+    /**
+     * 查询用户创建的课程的简单信息，按照时间由近到远进行排序
+     * 课程id + 课程名 +  课程封面 + 课程创建时间
+     *
+     * @param creatorId 创建者id
+     * @return 简答信息列表
+     */
+    List<CreateLessonSimpleInfoQuery> selectCreateLessonSimpleInfoList(@Param("creatorId") Long creatorId);
 }
