@@ -85,4 +85,25 @@ public class LessonController {
         Long lessonId = Long.parseLong(object.getString("lessonId"));
         return lessonService.switchTchInviteCode(lessonId);
     }
+
+    /**
+     * 删除课程
+     *
+     * @param object 课程id
+     * @return 状况
+     */
+    @DeleteMapping("/delLesson")
+    public Result delLesson(@RequestBody JSONObject object){
+        return lessonService.removeLesson(Long.parseLong(object.getString("lessonId")));
+    }
+
+    /**
+     * 获取用户创建的所有课程的简单信息
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/get/createLessonSimpleInfoList")
+    public Result getCreateLessonSimpleInfoList(){
+        return lessonService.getCreateLessonSimpleInfoList();
+    }
 }

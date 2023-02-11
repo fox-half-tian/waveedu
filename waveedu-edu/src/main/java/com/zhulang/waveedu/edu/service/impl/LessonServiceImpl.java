@@ -193,4 +193,31 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     public Long getCreatorIdByLessonId(Long id) {
         return lessonMapper.selectCreatorIdById(id);
     }
+
+    @Override
+    public Result removeLesson(Long lessonId) {
+        // 1.校验id
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程id");
+        }
+        // 2.获取课程的创建者
+        Long creatorId = lessonMapper.selectCreatorIdById(lessonId);
+        // 3.判断课程是否存在
+        if (creatorId==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"课程不存在");
+        }
+        // 4.判断是否为课程创建者
+        if (creatorId.longValue() != UserHolderUtils.getUserId().longValue()){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 5.删除课程
+        lessonMapper.deleteById(lessonId);
+        // 6.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result getCreateLessonSimpleInfoList() {
+
+    }
 }

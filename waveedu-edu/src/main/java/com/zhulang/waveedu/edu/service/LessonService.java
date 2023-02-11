@@ -71,4 +71,19 @@ public interface LessonService extends IService<Lesson> {
      * @return 创建者id
      */
     Long getCreatorIdByLessonId(Long id);
+
+    /**
+     * 删除课程
+     *
+     * @param lessonId 课程id
+     * @return 状况
+     */
+    Result removeLesson(Long lessonId);
+
+    /**
+     * 获取用户创建的所有课程的简单信息
+     *
+     * @return 信息列表
+     */
+    Result getCreateLessonSimpleInfoList();
 }
