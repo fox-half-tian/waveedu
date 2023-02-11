@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.common.util;
 
 import cn.hutool.core.util.StrUtil;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * 校验格式工具类
@@ -68,9 +69,9 @@ public class RegexUtils {
         public static final String IMAGE_REGEX = "^https://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?\\.(png|jpg|jpeg)$";
 
         /**
-         * 课程介绍正则，0-255个字符，不允许\n
+         * 课程介绍正则，0-512个字符，不允许\n
          */
-        public static final String LESSON_INTRO__REGEX = "^.{0,255}$";
+        public static final String LESSON_INTRO__REGEX = "^.{0,512}$";
 
         /**
          * 课程名正则，1-24个字符，不允许\n
@@ -175,6 +176,9 @@ public class RegexUtils {
      * @return true:符合，false：不符合
      */
     public static boolean isSnowIdInvalid(Long id) {
+        if (id == null){
+            return true;
+        }
         return mismatch(id.toString(), RegexPatterns.SNOW_ID_REGEX);
     }
 

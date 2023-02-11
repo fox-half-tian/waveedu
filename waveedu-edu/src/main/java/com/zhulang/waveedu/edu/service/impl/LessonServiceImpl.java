@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -19,9 +21,11 @@ import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
+import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -222,5 +226,30 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     public Result getCreateLessonSimpleInfoList() {
         List<CreateLessonSimpleInfoQuery> infoList = lessonMapper.selectCreateLessonSimpleInfoList(UserHolderUtils.getUserId());
         return Result.ok(infoList);
+    }
+
+    @Override
+    public Result modifyLessonBasicInfo(ModifyLessonBasicInfoVO modifyLessonBasicInfoVO) {
+        // 0.校验文件名
+        String name = modifyLessonBasicInfoVO.getName();
+        if (name!=null){
+            name = WaveStrUtils.removeBlank(name);
+            if (!StringUtils.hasText(name)){
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程名格式错误");
+            }
+            modifyLessonBasicInfoVO.setName(name);
+        }
+        // 1.判断是否为教学团队成员
+        Result result = lessonTchService.isLessonTch(modifyLessonBasicInfoVO.getId(), UserHolderUtils.getUserId());
+        if (result!=null){
+            return result;
+        }
+        // 2.修改信息
+        Lesson lesson = BeanUtil.copyProperties(modifyLessonBasicInfoVO, Lesson.class);
+        lessonMapper.updateById(lesson);
+        // 3.获取修改后的新信息
+        LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lesson.getId());
+        // 4.返回
+        return Result.ok(info);
     }
 }

@@ -21,7 +21,6 @@ public class SaveLessonFileVO {
     /**
      * 课程id
      */
-    @NotNull(message = "文件名不能为空")
     @SnowIdValidate(message = "课程id无效")
     private Long lessonId;
 

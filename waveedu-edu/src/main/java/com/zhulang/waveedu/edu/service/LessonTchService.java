@@ -1,6 +1,9 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,4 +32,13 @@ public interface LessonTchService extends IService<LessonTch> {
      * @return 是否加入
      */
     Result joinTchTeam(String code);
+
+    /**
+     * 判断是否为该课程的教师成员
+     *
+     * @param lessonId 课程id
+     * @param userId   用户id
+     * @return null-是的，如果not null，则不是
+     */
+    Result isLessonTch(Long lessonId, Long userId);
 }

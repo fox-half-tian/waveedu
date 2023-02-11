@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 
@@ -86,4 +87,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 信息列表
      */
     Result getCreateLessonSimpleInfoList();
+
+    /**
+     * 修改课程的基本信息
+     *
+     * @param modifyLessonBasicInfoVO 课程id + 课程名 + 课程介绍 + 课程封面
+     * @return 修改后的课程基本信息
+     */
+    Result modifyLessonBasicInfo(ModifyLessonBasicInfoVO modifyLessonBasicInfoVO);
 }

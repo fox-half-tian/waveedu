@@ -1,10 +1,12 @@
 package com.zhulang.waveedu.edu.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.dao.LessonTchMapper;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
@@ -75,5 +77,20 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
         this.save(lessonTch);
         // 10.成功返回，将课程id返回
         return Result.ok(lessonId);
+    }
+
+    @Override
+    public Result isLessonTch(Long lessonId, Long userId) {
+        // 1.课程是否存在
+        long count = lessonService.count(new LambdaQueryWrapper<Lesson>().eq(Lesson::getId, lessonId));
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程不存在");
+        }
+        // 2.当前用户是否在教学团队中
+        boolean exist = this.isExistByLessonAndUser(lessonId, userId);
+        if (!exist) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        return null;
     }
 }

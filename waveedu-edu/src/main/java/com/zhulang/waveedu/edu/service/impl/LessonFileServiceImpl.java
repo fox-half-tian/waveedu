@@ -45,7 +45,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     @Override
     public Result saveFile(SaveLessonFileVO saveLessonFileVO) {
         // 0.判断是否为该课程的教师成员
-        Result result = isLessonTch(saveLessonFileVO.getLessonId(), saveLessonFileVO.getUserId());
+        Result result = lessonTchService.isLessonTch(saveLessonFileVO.getLessonId(), saveLessonFileVO.getUserId());
         if (result != null) {
             return result;
         }
@@ -87,7 +87,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程资料id");
         }
         // 4.判断是否为该课程的教师成员
-        Result result = isLessonTch(lessonId, UserHolderUtils.getUserId());
+        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
         if (result != null) {
             return result;
         }
@@ -98,25 +98,5 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         return Result.ok();
     }
 
-    /**
-     * 判断是否为该课程的教师成员
-     *
-     * @param lessonId 课程id
-     * @param userId   用户id
-     * @return null-是的，如果not null，则不是
-     */
-    private Result isLessonTch(Long lessonId, Long userId) {
-        // 0.1 课程是否存在
-        long count = lessonService.count(new LambdaQueryWrapper<Lesson>().eq(Lesson::getId, lessonId));
-        if (count == 0) {
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程不存在");
-        }
-        // 0.2 当前用户是否在教学团队中
-        boolean exist = lessonTchService.isExistByLessonAndUser(lessonId, userId);
-        if (!exist) {
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
-        }
-        return null;
-    }
 
 }

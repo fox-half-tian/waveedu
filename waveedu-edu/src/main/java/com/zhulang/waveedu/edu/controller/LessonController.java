@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.edu.service.LessonService;
+import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -105,5 +106,16 @@ public class LessonController {
     @GetMapping("/get/createLessonSimpleInfoList")
     public Result getCreateLessonSimpleInfoList(){
         return lessonService.getCreateLessonSimpleInfoList();
+    }
+
+    /**
+     * 修改课程的基本信息
+     *
+     * @param modifyLessonBasicInfoVO 课程id + 课程名 + 课程介绍 + 课程封面
+     * @return 修改后的课程基本信息
+     */
+    @PutMapping("/modify/lessonBasicInfo")
+    public Result modifyLessonBasicInfo(@Validated @RequestBody ModifyLessonBasicInfoVO modifyLessonBasicInfoVO){
+        return lessonService.modifyLessonBasicInfo(modifyLessonBasicInfoVO);
     }
 }
