@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonFileDTO {
+    /**
+     * 主键id（雪花算法）
+     */
+    private Long id;
 
     /**
      * 课程id

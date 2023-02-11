@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
-import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.Lesson;
@@ -46,14 +45,22 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     public Result saveFile(SaveLessonFileVO saveLessonFileVO) {
         // 0.判断是否为该课程的教师成员
         Result result = isLessonTch(saveLessonFileVO.getLessonId(), saveLessonFileVO.getUserId());
-        if (result!=null){
+        if (result != null) {
             return result;
         }
 
         // 1.解密文件信息
-        LessonFile lessonFile = JSON.parseObject(CipherUtils.decrypt(saveLessonFileVO.getFileInfo()), LessonFile.class);
+        LessonFile lessonFile;
+        try {
+            lessonFile = JSON.parseObject(CipherUtils.decrypt(saveLessonFileVO.getFileInfo()), LessonFile.class);
+            if (lessonFile == null) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
+            }
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
+        }
         // 2.封装信息
-        BeanUtils.copyProperties(saveLessonFileVO,lessonFile);
+        BeanUtils.copyProperties(saveLessonFileVO, lessonFile);
         // 3.简单处理，前后无空格
         lessonFile.setFileName(lessonFile.getFileName().trim());
         lessonFile.setDownloadCount(0);
@@ -67,43 +74,37 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     }
 
     @Override
-    public Result removeFile(Long lessonId) {
-        // 1.校验id
-        if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程id");
-        }
+    public Result removeFile(Long lessonId, Long lessonFileId) {
 
-        // 2.获取课程的创建者
-        Long creatorId = lessonService.getCreatorIdByLessonId(lessonId);
-        // 3.判断课程是否存在
-        if (creatorId==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"课程不存在");
+        // 1.判断是否为该课程的教师成员
+        Result result = isLessonTch(lessonId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
         }
-        // 4.判断是否为创建者
-        if (creatorId.longValue() != lessonId.longValue()){
+        // 3.删除资料
+        lessonFileMapper.deleteById(lessonFileId);
 
-        }
-        return null;
-
+        // 4.返回成功
+        return Result.ok();
     }
 
     /**
      * 判断是否为该课程的教师成员
      *
      * @param lessonId 课程id
-     * @param userId 用户id
+     * @param userId   用户id
      * @return null-是的，如果not null，则不是
      */
-    private Result isLessonTch(Long lessonId,Long userId){
+    private Result isLessonTch(Long lessonId, Long userId) {
         // 0.1 课程是否存在
         long count = lessonService.count(new LambdaQueryWrapper<Lesson>().eq(Lesson::getId, lessonId));
-        if (count==0){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"课程不存在");
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程不存在");
         }
         // 0.2 当前用户是否在教学团队中
-        boolean exist = lessonTchService.isExistByLessonAndUser(lessonId,userId);
-        if (!exist){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        boolean exist = lessonTchService.isExistByLessonAndUser(lessonId, userId);
+        if (!exist) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         return null;
     }

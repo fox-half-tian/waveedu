@@ -29,7 +29,8 @@ public interface LessonFileService extends IService<LessonFile> {
      * 删除课程的资料
      *
      * @param lessonId 课程id
+     * @param lessonFileId  课程资料id
      * @return 删除状况
      */
-    Result removeFile(Long lessonId);
+    Result removeFile(Long lessonId,Long lessonFileId);
 }

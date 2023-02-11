@@ -25,10 +25,10 @@ public class LessonFile implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 自增id
+     * 主键id（雪花算法）
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 课程id

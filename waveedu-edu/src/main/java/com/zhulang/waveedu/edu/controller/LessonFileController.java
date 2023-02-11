@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonFileService;
+import com.zhulang.waveedu.edu.vo.RemoveLessonFileVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +41,12 @@ public class LessonFileController {
     /**
      * 删除课程的资料
      *
-     * @param object 课程id
+     * @param removeLessonFileVO 课程id + 课程资料id
      * @return 删除状况
      */
     @DeleteMapping("/delFile")
-    public Result delFile(@RequestBody JSONObject object){
-        return lessonFileService.removeFile(Long.parseLong(object.getString("lessonId")));
+    public Result delFile(@Validated @RequestBody RemoveLessonFileVO removeLessonFileVO){
+        return lessonFileService.removeFile(removeLessonFileVO.getLessonId(),removeLessonFileVO.getLessonFileId());
     }
 
 }
