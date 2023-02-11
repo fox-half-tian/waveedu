@@ -20,6 +20,17 @@ public class UserHolderUtils {
     }
 
     /**
+     * 通过前端传过来的token来获取当前登录的用户名
+     *
+     * @return 用户名
+     */
+    public static String getUserName() {
+        return ((RedisUser) ((SecurityContextHolder.getContext().getAuthentication())
+                .getPrincipal()))
+                .getName();
+    }
+
+    /**
      * 获取当前登录用户缓存在redis中的信息
      *
      * @return 用户基础信息

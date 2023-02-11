@@ -30,4 +30,12 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @return 教师邀请码与是否禁用
      */
     TchInviteCodeQuery selectTchInviteCodeById(@Param("id") Long id);
+
+    /**
+     * 通过课程id获取创建者id
+     *
+     * @param id 课程id
+     * @return 创建者id
+     */
+    Long selectCreatorIdById(@Param("id") Long id);
 }

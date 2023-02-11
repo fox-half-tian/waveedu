@@ -21,4 +21,10 @@
         WHERE id = #{id}
           AND is_deleted = 0
     </select>
+    <select id="selectCreatorIdById" resultType="java.lang.Long">
+        SELECT creator_id
+        FROM `edu_lesson`
+        WHERE `id` = #{id}
+          AND is_deleted = 0
+    </select>
 </mapper>

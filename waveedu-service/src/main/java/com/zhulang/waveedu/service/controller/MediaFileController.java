@@ -3,18 +3,14 @@ package com.zhulang.waveedu.service.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.service.service.MediaFileService;
 import com.zhulang.waveedu.service.vo.CheckChunkFileVO;
 import com.zhulang.waveedu.service.vo.UploadMergeChunksVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 
 /**
  * <p>

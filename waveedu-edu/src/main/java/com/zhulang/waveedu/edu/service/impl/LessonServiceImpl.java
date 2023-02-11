@@ -188,4 +188,9 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         }
 
     }
+
+    @Override
+    public Long getCreatorIdByLessonId(Long id) {
+        return lessonMapper.selectCreatorIdById(id);
+    }
 }
