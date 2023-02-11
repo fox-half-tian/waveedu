@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.Lesson;
@@ -74,17 +75,26 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     }
 
     @Override
-    public Result removeFile(Long lessonId, Long lessonFileId) {
-
-        // 1.判断是否为该课程的教师成员
+    public Result removeFile(Long lessonFileId) {
+        // 1.校验lessonFileId 是否合理
+        if (RegexUtils.isSnowIdInvalid(lessonFileId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程资料id");
+        }
+        // 2.获取该课程资料对应的课程id
+        Long lessonId = lessonFileMapper.selectLessonIdById(lessonFileId);
+        // 3.课程id为空说明不存在该课程资料id
+        if (lessonId==null){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程资料id");
+        }
+        // 4.判断是否为该课程的教师成员
         Result result = isLessonTch(lessonId, UserHolderUtils.getUserId());
         if (result != null) {
             return result;
         }
-        // 3.删除资料
+        // 5.删除资料
         lessonFileMapper.deleteById(lessonFileId);
 
-        // 4.返回成功
+        // 6.返回成功
         return Result.ok();
     }
 
