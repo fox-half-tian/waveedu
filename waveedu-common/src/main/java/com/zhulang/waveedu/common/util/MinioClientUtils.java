@@ -47,7 +47,6 @@ public class MinioClientUtils {
      * @param filePath 存储在桶中的文件路径
      */
     public void uploadFile(byte[] bytes, String bucket, String filePath) throws Exception {
-
         // 1.指定资源的媒体类型，默认未知二进制流
         String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
@@ -64,6 +63,7 @@ public class MinioClientUtils {
 
         // 3.以分片形式上传至minio
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        System.out.println(System.currentTimeMillis());
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                 .bucket(bucket)
                 .object(filePath)
@@ -73,6 +73,7 @@ public class MinioClientUtils {
                 .build();
         // 上传
         minioClient.putObject(putObjectArgs);
+        System.out.println(System.currentTimeMillis());
     }
 
     /**
@@ -119,4 +120,27 @@ public class MinioClientUtils {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+//    public File downloadFile(String tempFilePrefix, String tempFileSuffix, String bucket, String filePath) throws Exception {
+//        // 1.创建空文件，临时保存下载下来的分块文件数据
+//        File tempFile = File.createTempFile(tempFilePrefix, tempFileSuffix);
+//        try {
+//            Long start = System.currentTimeMillis();
+//            minioClient.downloadObject(
+//                    DownloadObjectArgs.builder()
+//                            // 指定 bucket 存储桶
+//                            .bucket(bucket)
+//                            // 指定 哪个文件
+//                            .object(filePath)
+//                            // 指定存放位置与名称
+//                            .filename(tempFile.getPath())
+//                            .build());
+//            Long end = System.currentTimeMillis();
+//            System.out.println("下载分块时间："+(end-start)+"ms");
+//            // 5.返回保存了数据的临时文件
+//            return tempFile;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 }
