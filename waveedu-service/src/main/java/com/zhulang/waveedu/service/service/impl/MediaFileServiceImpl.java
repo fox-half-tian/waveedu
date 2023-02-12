@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.print.attribute.standard.Media;
 import java.io.*;
 import java.util.HashMap;
 
@@ -97,9 +96,11 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
         // 2.分块文件的路径
         String chunkFilePath = chunkFileFolderPath + chunkIndex;
 
-        // 3.查看是否在文件系统存在
-        try {
-            InputStream inputStream = minioClientUtils.getObject(bucket, chunkFilePath);
+        // 3.查看是否在文件系统存在（注意关闭流）
+        try (
+                InputStream inputStream = minioClientUtils.getObject(bucket, chunkFilePath)
+        ) {
+
             if (inputStream == null) {
                 //文件不存在
                 return Result.ok(false);
@@ -128,7 +129,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
 
         try {
             // 3.将分块上传到文件系统
-            minioClientUtils.uploadFile(bytes, bucket, chunkFilePath);
+            minioClientUtils.uploadChunkFile(bytes, bucket, chunkFilePath);
             // 4.上传成功
             return Result.ok();
         } catch (Exception e) {
@@ -141,8 +142,10 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
     public Result uploadMergeChunks(String fileMd5, String fileName, String tag, Integer chunkTotal) {
         try {
             // 1.下载分块
+            Long start = System.currentTimeMillis();
             File[] chunkFiles = downloadChunkFilesFromMinio(fileMd5, chunkTotal);
-
+            Long end = System.currentTimeMillis();
+            System.out.println("下载分块耗时：" + (end - start) + " ms");
             // 2.根据文件名得到合并后文件的扩展名
             int index = fileName.lastIndexOf(".");
             String extension = index != -1 ? fileName.substring(index) : "";
@@ -196,7 +199,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
                 // 9.拿到合并文件在minio的存储路径
                 String mergeFilePath = getFilePathByMd5(fileMd5, extension);
                 // 10.将合并后的文件上传到文件系统
-                minioClientUtils.uploadFile(tempMergeFile.getAbsolutePath(), bucket, mergeFilePath);
+                minioClientUtils.uploadChunkFile(tempMergeFile.getAbsolutePath(), bucket, mergeFilePath);
 
                 // 11.设置需要入库的文件信息
                 MediaFile mediaFile = new MediaFile();

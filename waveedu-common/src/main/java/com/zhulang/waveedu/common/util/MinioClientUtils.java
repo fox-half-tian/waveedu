@@ -9,10 +9,7 @@ import io.minio.UploadObjectArgs;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.MediaType;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * 操作minio的工具类
@@ -40,6 +37,32 @@ public class MinioClientUtils {
     }
 
     /**
+     * 将分块文件上传到分布式文件系统
+     *
+     * @param bytes    文件的字节数组
+     * @param bucket   桶
+     * @param filePath 存储在桶中的文件路径
+     */
+    public void uploadChunkFile(byte[] bytes, String bucket, String filePath) throws Exception {
+        // 1.指定资源的媒体类型为未知二进制流，以分片形式上传至minio
+        try (
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)
+        ) {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(filePath)
+                            // InputStream stream, long objectSize 对象大小, long partSize 分片大小(-1表示5M,最大不要超过5T，最多10000)
+                            .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * 将文件上传到分布式文件系统
      *
      * @param bytes    文件的字节数组
@@ -58,12 +81,11 @@ public class MinioClientUtils {
             if (extensionMatch != null) {
                 contentType = extensionMatch.getMimeType();
             }
-
         }
 
         // 3.以分片形式上传至minio
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        System.out.println(System.currentTimeMillis());
+
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                 .bucket(bucket)
                 .object(filePath)
@@ -73,8 +95,8 @@ public class MinioClientUtils {
                 .build();
         // 上传
         minioClient.putObject(putObjectArgs);
-        System.out.println(System.currentTimeMillis());
     }
+
 
     /**
      * 根据文件路径将文件上传到文件系统
@@ -84,7 +106,7 @@ public class MinioClientUtils {
      * @param minioFilePath 保存到minio的文件路径位置
      * @throws Exception 异常
      */
-    public void uploadFile(String naiveFilePath, String bucket, String minioFilePath) throws Exception {
+    public void uploadChunkFile(String naiveFilePath, String bucket, String minioFilePath) throws Exception {
         UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder()
                 .bucket(bucket)
                 .object(minioFilePath)

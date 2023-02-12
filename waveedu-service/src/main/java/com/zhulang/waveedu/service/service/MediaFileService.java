@@ -4,6 +4,8 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.service.po.MediaFile;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.IOException;
+
 /**
  * <p>
  * 第三方服务-媒资文件表 服务类
