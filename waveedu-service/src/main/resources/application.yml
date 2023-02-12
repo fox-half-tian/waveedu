@@ -69,7 +69,7 @@ sms:
 minio:
   # 指定连接的ip和端口
 #  endpoint: http://8.134.136.211:9000
-  endpoint: http://192.168.65.130:9000
+  endpoint: http://8.134.136.211:9000
   # 指定 访问秘钥（也称用户id）
   accessKey: minioadmin
   # 指定 私有秘钥（也称密码）

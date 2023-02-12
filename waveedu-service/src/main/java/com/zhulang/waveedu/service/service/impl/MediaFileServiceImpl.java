@@ -15,7 +15,12 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -142,10 +147,10 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
     public Result uploadMergeChunks(String fileMd5, String fileName, String tag, Integer chunkTotal) {
         try {
             // 1.下载分块
-            Long start = System.currentTimeMillis();
+//            Long start = System.currentTimeMillis();
             File[] chunkFiles = downloadChunkFilesFromMinio(fileMd5, chunkTotal);
-            Long end = System.currentTimeMillis();
-            System.out.println("下载分块耗时：" + (end - start) + " ms");
+//            Long end = System.currentTimeMillis();
+//            System.out.println("下载分块耗时：" + (end - start) + " ms");
             // 2.根据文件名得到合并后文件的扩展名
             int index = fileName.lastIndexOf(".");
             String extension = index != -1 ? fileName.substring(index) : "";
@@ -247,6 +252,11 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
     }
 
     /**
+     * 创建10个线程数量的线程池
+     */
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+
+    /**
      * 下载所有的块文件
      *
      * @param fileMd5    源文件的md5值
@@ -258,17 +268,65 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFileMapper, MediaFile
         String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
         // 2.分块文件数组
         File[] chunkFiles = new File[chunkTotal];
-        // 3.开始逐个下载
+        // 3.设置计数器
+        CountDownLatch countDownLatch = new CountDownLatch(chunkTotal);
+        // 4.开始逐个下载
         for (int i = 0; i < chunkTotal; i++) {
-            // 3.1 得到分块文件的路径
-            String chunkFilePath = chunkFileFolderPath + i;
-            // 3.2 下载分块文件
-            chunkFiles[i] = minioClientUtils.downloadFile("chunk", null, bucket, chunkFilePath);
+            int index = i;
+            threadPool.execute(() -> {
+                // 4.1 得到分块文件的路径
+                String chunkFilePath = chunkFileFolderPath + index;
+                // 4.2 下载分块文件
+                try {
+                    chunkFiles[index] = minioClientUtils.downloadFile("chunk", null, bucket, chunkFilePath);
+                } catch (Exception e) {
+                    // 计数器减1
+                    countDownLatch.countDown();
+                    throw new RuntimeException(e);
+                }
+                // 计数器减1
+                countDownLatch.countDown();
+            });
         }
+
+        /*
+            阻塞到任务执行完成,当countDownLatch计数器归零，这里的阻塞解除等待,
+            给一个充裕的超时时间,防止无限等待，到达超时时间还没有处理完成则结束任务
+         */
+        countDownLatch.await(30, TimeUnit.MINUTES);
 
         // 4.返回所有块文件
         return chunkFiles;
     }
+
+    //    private File[] downloadChunkFilesFromMinio(String fileMd5, int chunkTotal) throws Exception {
+//        // 1.得到分块文件所在目录
+//        String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
+//        // 2.分块文件数组
+//        File[] chunkFiles = new File[chunkTotal];
+//        // 3.设置计数器
+//        CountDownLatch countDownLatch = new CountDownLatch(chunkTotal);
+//        // 4.开始逐个下载
+//        for (int i = 0; i < 10; i++) {
+//            int index = i;
+//            threadPool.execute(() -> {
+//                for (int k = index;k<chunkTotal;k += 10) {
+//                        // 4.1 得到分块文件的路径
+//                        String chunkFilePath = chunkFileFolderPath + k;
+//                    // 4.2 下载分块文件
+//                    try {
+//                        chunkFiles[k] = minioClientUtils.downloadFile("chunk", null, bucket, chunkFilePath);
+//                    } catch (Exception e) {
+//                        // 计数器减1
+//                        countDownLatch.countDown();
+//                        throw new RuntimeException(e);
+//                    }
+//                    // 计数器减1
+//                    countDownLatch.countDown();
+//                    System.out.println("第 " + k + "块下载完毕");
+//                }
+//            });
+//        }
 
     /**
      * 得到分块文件的目录
