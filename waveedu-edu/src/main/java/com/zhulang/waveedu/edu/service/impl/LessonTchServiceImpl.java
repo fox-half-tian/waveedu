@@ -1,7 +1,6 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
@@ -9,7 +8,6 @@ import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
-import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.dao.LessonTchMapper;
 import com.zhulang.waveedu.edu.query.LessonCacheQuery;
@@ -17,13 +15,10 @@ import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -61,8 +56,8 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
         }
         // 5.获取 课程id 和 教学邀请码
-        Long lessonId = null;
-        String tchInviteCode = null;
+        Long lessonId;
+        String tchInviteCode;
         try {
             lessonId = Long.parseLong(decrypt[0]);
             tchInviteCode = decrypt[1];
@@ -94,7 +89,7 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
         boolean lessonExist = redisCacheUtils.existKey(RedisConstants.LESSON_INFO_KEY + lessonId);
         // 2.缓存中不存在，就去数据库中找
         if (!lessonExist) {
-            LessonCacheQuery cacheInfo = lessonService.getCacheInfo(lessonId);
+            LessonCacheQuery cacheInfo = lessonService.getNeedCacheInfo(lessonId);
             if (cacheInfo == null) {
                 // 2.1 数据库中没找到，说明不存在
                 return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程不存在");

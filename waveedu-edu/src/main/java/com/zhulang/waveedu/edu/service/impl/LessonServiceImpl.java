@@ -3,8 +3,6 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -15,7 +13,6 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
-import com.zhulang.waveedu.edu.po.UserInfo;
 import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonCacheQuery;
@@ -25,7 +22,6 @@ import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.service.UserInfoService;
 import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,7 +30,6 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * 课程表 服务实现类
@@ -250,10 +245,11 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         if (creatorId.longValue() != UserHolderUtils.getUserId().longValue()) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 5.从缓存中移除
-        redisCacheUtils.deleteObject(RedisConstants.LESSON_INFO_KEY + lessonId);
-        // 6.逻辑删除课程
+
+        // 5.逻辑删除课程
         lessonMapper.deleteById(lessonId);
+        // 6.从缓存中移除
+        redisCacheUtils.deleteObject(RedisConstants.LESSON_INFO_KEY + lessonId);
         // 7.返回
         return Result.ok();
     }
@@ -285,12 +281,23 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         lessonMapper.updateById(lesson);
         // 3.获取修改后的新信息
         LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lesson.getId());
-        // 4.返回
+        // 4.修改缓存信息
+        HashMap<String, Object> map = new HashMap<>();
+        if (modifyLessonBasicInfoVO.getName()!=null){
+            map.put("name",info.getName());
+        }
+        if (modifyLessonBasicInfoVO.getIntroduce()!=null){
+            map.put("introduce",info.getIntroduce());
+        }
+        if (modifyLessonBasicInfoVO.getCover()!=null){
+            map.put("cover",info.getCover());
+        }
+        redisCacheUtils.setCacheMap(RedisConstants.LESSON_INFO_KEY+info.getId(),map);
         return Result.ok(info);
     }
 
     @Override
-    public LessonCacheQuery getCacheInfo(Long lessonId) {
-        return lessonMapper.selectCacheInfo(lessonId);
+    public LessonCacheQuery getNeedCacheInfo(Long lessonId) {
+        return lessonMapper.selectNeedCacheInfo(lessonId);
     }
 }

@@ -7,7 +7,6 @@ import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.query.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
-import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonVO;
 
 /**
@@ -103,5 +102,5 @@ public interface LessonService extends IService<Lesson> {
      * @param lessonId lesson主键
      * @return 信息
      */
-    LessonCacheQuery getCacheInfo(Long lessonId);
+    LessonCacheQuery getNeedCacheInfo(Long lessonId);
 }

@@ -58,5 +58,5 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @param id lesson主键
      * @return 信息
      */
-    LessonCacheQuery selectCacheInfo(@Param("id") Long id);
+    LessonCacheQuery selectNeedCacheInfo(@Param("id") Long id);
 }

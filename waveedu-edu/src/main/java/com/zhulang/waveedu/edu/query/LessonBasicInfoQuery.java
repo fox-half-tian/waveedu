@@ -28,7 +28,7 @@ public class LessonBasicInfoQuery {
     private String name;
 
     /**
-     * 课程介绍，最多255长度
+     * 课程介绍，最多512长度
      */
     private String introduce;
 
