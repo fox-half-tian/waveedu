@@ -64,5 +64,9 @@ public class RedisConstants {
      */
     public static final String PWD_CODE_KEY = "pwd:code:";
     public static final Long PWD_CODE_TTL = 60 * 2L;
+    /**
+     * 课程信息
+     */
+    public static final String LESSON_INFO_KEY = "lesson:info:";
 
 }

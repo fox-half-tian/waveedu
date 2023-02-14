@@ -4,6 +4,7 @@ package com.zhulang.waveedu.edu.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.Lesson;
+import com.zhulang.waveedu.edu.query.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
@@ -95,4 +96,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 修改后的课程基本信息
      */
     Result modifyLessonBasicInfo(ModifyLessonBasicInfoVO modifyLessonBasicInfoVO);
+
+    /**
+     * 查询缓存到redis的lesson信息：课程id + 课程名 + 课程介绍 + 课程封面 + 创建人id + 创建时间
+     *
+     * @param lessonId lesson主键
+     * @return 信息
+     */
+    LessonCacheQuery getCacheInfo(Long lessonId);
 }

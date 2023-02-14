@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.common.util;
 
+import cn.hutool.core.util.BooleanUtil;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -240,5 +241,15 @@ public class RedisCacheUtils {
      */
     public Collection<String> keys(final String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 判断某个键是否存在
+     *
+     * @param key 键
+     * @return true-存在 false-不存在
+     */
+    public boolean existKey(final String key){
+        return BooleanUtil.isTrue(redisTemplate.hasKey(key));
     }
 }

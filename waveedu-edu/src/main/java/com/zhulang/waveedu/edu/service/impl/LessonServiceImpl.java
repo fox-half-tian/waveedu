@@ -18,6 +18,7 @@ import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
@@ -251,5 +252,10 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lesson.getId());
         // 4.返回
         return Result.ok(info);
+    }
+
+    @Override
+    public LessonCacheQuery getCacheInfo(Long lessonId) {
+        return lessonMapper.selectCacheInfo(lessonId);
     }
 }

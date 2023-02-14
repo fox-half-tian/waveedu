@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,4 +51,12 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @return 简答信息列表
      */
     List<CreateLessonSimpleInfoQuery> selectCreateLessonSimpleInfoList(@Param("creatorId") Long creatorId);
+
+    /**
+     * 查询缓存到redis的lesson信息：课程id + 课程名 + 课程介绍 + 课程封面 + 创建人id + 创建时间
+     *
+     * @param id lesson主键
+     * @return 信息
+     */
+    LessonCacheQuery selectCacheInfo(@Param("id") Long id);
 }

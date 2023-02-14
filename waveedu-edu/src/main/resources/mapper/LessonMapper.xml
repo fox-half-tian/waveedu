@@ -35,4 +35,10 @@
           AND is_deleted = 0
         ORDER BY `create_time` DESC
     </select>
+    <select id="selectCacheInfo" resultType="com.zhulang.waveedu.edu.query.LessonCacheQuery">
+        SELECT `id`, `name`, `cover`, `introduce`, `creator_id`, `create_time`
+        FROM `edu_lesson`
+        WHERE `id` = #{id}
+          AND is_deleted = 0
+    </select>
 </mapper>

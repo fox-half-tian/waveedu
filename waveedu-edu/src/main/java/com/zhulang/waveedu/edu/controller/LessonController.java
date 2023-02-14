@@ -43,7 +43,7 @@ public class LessonController {
      * @return 基本信息
      */
     @GetMapping("/get/basicInfo")
-    public Result getInfo(@NotBlank(message = "课程id不允许为空")
+    public Result getBasicInfo(@NotBlank(message = "课程id不允许为空")
                           @Pattern(regexp = RegexUtils.RegexPatterns.SNOW_ID_REGEX, message = "找不到课程信息")
                           @RequestParam("lessonId") Long lessonId) {
         return lessonService.getBasicInfo(lessonId);
