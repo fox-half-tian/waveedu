@@ -41,4 +41,13 @@ public interface LessonFileService extends IService<LessonFile> {
      * @return 修改状况
      */
     Result modifyFileName(Long fileId, String fileName);
+
+    /**
+     * 获取简单的课程文件信息，主要用于在课程主页展示
+     *
+     * @param lessonId 课程id
+     * @param fileId   文件id
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件大小 + 上传的时间，按照时间由近到远排序
+     */
+    Result getSimpleInfoList(Long lessonId, Long fileId);
 }

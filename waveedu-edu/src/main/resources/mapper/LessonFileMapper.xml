@@ -7,4 +7,14 @@
         FROM `edu_lesson_file`
         WHERE `id` = #{id}
     </select>
+    <select id="selectSimpleInfoList" resultType="com.zhulang.waveedu.edu.vo.LessonFileSimpleInfoVO">
+        SELECT `id`, `file_name`, `file_type`, `file_format`, `file_format_size`, `create_time`
+        FROM `edu_lesson_file`
+        WHERE `lesson_id` = #{lessonId}
+        <if test="fileId != null">
+            AND `id` > #{fileId}
+        </if>
+        ORDER BY `create_time` DESC
+        LIMIT #{queryLimit}
+    </select>
 </mapper>

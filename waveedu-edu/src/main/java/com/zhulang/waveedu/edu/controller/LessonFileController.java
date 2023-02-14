@@ -3,7 +3,9 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.common.valid.SnowIdValidate;
 import com.zhulang.waveedu.edu.service.LessonFileService;
 import com.zhulang.waveedu.edu.vo.ModifyFileNameVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
@@ -33,7 +35,7 @@ public class LessonFileController {
      * @return 结果
      */
     @PostMapping("/saveFile")
-    public Result saveFile(@Validated @RequestBody SaveLessonFileVO saveLessonFileVO){
+    public Result saveFile(@Validated @RequestBody SaveLessonFileVO saveLessonFileVO) {
         saveLessonFileVO.setUserId(UserHolderUtils.getUserId());
         return lessonFileService.saveFile(saveLessonFileVO);
     }
@@ -45,7 +47,7 @@ public class LessonFileController {
      * @return 删除状况
      */
     @DeleteMapping("/delFile")
-    public Result delFile(@RequestBody JSONObject object){
+    public Result delFile(@RequestBody JSONObject object) {
         return lessonFileService.removeFile(Long.parseLong(object.getString("lessonFileId")));
     }
 
@@ -56,8 +58,23 @@ public class LessonFileController {
      * @return 修改状况
      */
     @PutMapping("/modify/fileName")
-    public Result modifyFileName(@Validated @RequestBody ModifyFileNameVO modifyFileNameVO){
+    public Result modifyFileName(@Validated @RequestBody ModifyFileNameVO modifyFileNameVO) {
         return lessonFileService.modifyFileName(modifyFileNameVO.getFileId(), modifyFileNameVO.getFileName());
     }
 
+
+    /**
+     * 获取简单的课程文件信息，主要用于在课程主页展示
+     *
+     * @param lessonId 课程id
+     * @param fileId   文件id
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间，按照时间由近到远排序
+     */
+    @GetMapping("/get/simpleInfoList")
+    public Result getSimpleInfoList(
+            @RequestParam(value = "lessonId") String lessonId,
+            @RequestParam(value = "fileId", required = false) Long fileId
+    ) {
+        return lessonFileService.getSimpleInfoList(Long.parseLong(lessonId), fileId);
+    }
 }
