@@ -28,8 +28,17 @@ public interface LessonFileService extends IService<LessonFile> {
     /**
      * 删除课程的资料
      *
-     * @param lessonFileId  课程资料id
+     * @param lessonFileId 课程资料id
      * @return 删除状况
      */
     Result removeFile(Long lessonFileId);
+
+    /**
+     * 修改课程文件的文件名
+     *
+     * @param fileId   课程文件id
+     * @param fileName 新的课程文件名
+     * @return 修改状况
+     */
+    Result modifyFileName(Long fileId, String fileName);
 }

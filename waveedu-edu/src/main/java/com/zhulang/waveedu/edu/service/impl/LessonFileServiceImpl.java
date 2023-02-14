@@ -2,14 +2,13 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
-import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.zhulang.waveedu.edu.dao.LessonFileMapper;
 import com.zhulang.waveedu.edu.service.LessonFileService;
@@ -77,26 +76,49 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     @Override
     public Result removeFile(Long lessonFileId) {
         // 1.校验lessonFileId 是否合理
-        if (RegexUtils.isSnowIdInvalid(lessonFileId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程资料id");
+        if (RegexUtils.isSnowIdInvalid(lessonFileId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效课程资料id");
         }
-        // 2.获取该课程资料对应的课程id
-        Long lessonId = lessonFileMapper.selectLessonIdById(lessonFileId);
-        // 3.课程id为空说明不存在该课程资料id
-        if (lessonId==null){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效课程资料id");
-        }
-        // 4.判断是否为该课程的教师成员
-        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        // 2.校验只有老师才能操作
+        Result result = verifyOfTch(lessonFileId);
         if (result != null) {
             return result;
         }
-        // 5.删除资料
+        // 3.删除资料
         lessonFileMapper.deleteById(lessonFileId);
 
-        // 6.返回成功
+        // 4.返回成功
         return Result.ok();
     }
 
+    @Override
+    public Result modifyFileName(Long fileId, String fileName) {
+        // 1.校验只有老师才能操作
+        Result result = verifyOfTch(fileId);
+        if (result != null) {
+            return result;
+        }
+        // 2.修改文件名
+        LambdaUpdateWrapper<LessonFile> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(LessonFile::getId, fileId)
+                .set(LessonFile::getFileName, fileName);
+        return this.update(wrapper) ? Result.ok() : Result.error();
+    }
 
+    /**
+     * 校验只有老师才能操作
+     *
+     * @param lessonFileId 文件id
+     * @return 结果
+     */
+    private Result verifyOfTch(Long lessonFileId) {
+        // 1.获取该课程资料对应的课程id
+        Long lessonId = lessonFileMapper.selectLessonIdById(lessonFileId);
+        // 2.课程id为空说明不存在该课程资料id
+        if (lessonId == null) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效课程资料id");
+        }
+        // 3.判断是否为该课程的教师成员
+        return lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+    }
 }
