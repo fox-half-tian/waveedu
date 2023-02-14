@@ -19,7 +19,7 @@ import java.util.List;
 public interface LessonMapper extends BaseMapper<Lesson> {
 
     /**
-     * 查询课程基本信息：课程 id，课程名，课程封面，创建时间，创建人id，创建人头像
+     * 查询课程基本信息：课程 id，课程名，课程介绍，课程封面，创建时间，创建人id，创建人头像
      *
      * @param lessonId 课程id
      * @return 课程基本情况

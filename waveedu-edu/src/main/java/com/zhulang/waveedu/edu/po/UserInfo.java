@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.basic.po;
+package com.zhulang.waveedu.edu.po;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

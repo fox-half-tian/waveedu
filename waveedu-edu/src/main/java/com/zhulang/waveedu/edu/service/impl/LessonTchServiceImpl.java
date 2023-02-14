@@ -99,8 +99,9 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
                 // 2.1 数据库中没找到，说明不存在
                 return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程不存在");
             } else {
-                // 2.2 数据库中找到，就缓存到redis中
+                // 2.2 数据库中找到，就缓存到redis中，ttl为10分钟
                 redisCacheUtils.setCacheMap(RedisConstants.LESSON_INFO_KEY + lessonId, BeanUtil.beanToMap(cacheInfo, false, true));
+                redisCacheUtils.expire(RedisConstants.LESSON_INFO_KEY + lessonId,RedisConstants.LESSON_INFO_TTL);
             }
         }
         // 3.判断当前用户是否在教学团队中
