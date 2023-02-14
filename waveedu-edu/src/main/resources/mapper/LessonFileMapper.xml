@@ -7,7 +7,7 @@
         FROM `edu_lesson_file`
         WHERE `id` = #{id}
     </select>
-    <select id="selectSimpleInfoList" resultType="com.zhulang.waveedu.edu.vo.LessonFileSimpleInfoVO">
+    <select id="selectSimpleInfoList" resultType="com.zhulang.waveedu.edu.query.LessonFileSimpleInfoQuery">
         SELECT `id`, `file_name`, `file_type`, `file_format`, `file_format_size`, `create_time`
         FROM `edu_lesson_file`
         WHERE `lesson_id` = #{lessonId}
@@ -15,6 +15,26 @@
             AND `id` > #{fileId}
         </if>
         ORDER BY `create_time` DESC
+        LIMIT #{queryLimit}
+    </select>
+    <select id="selectDetailInfoList" resultType="com.zhulang.waveedu.edu.query.LessonFileDetailInfoQuery">
+        SELECT e.`id`,
+        e.`file_name`,
+        e.`file_type`,
+        e.`file_format`,
+        e.`file_format_size`,
+        e.`create_time`,
+        e.`download_count`,
+        e.`file_path`,
+        e.`user_id`,
+        b.`name` AS `userName`
+        FROM `edu_lesson_file` e,`basic_user_info` b
+        WHERE e.`lesson_id` = #{lessonId}
+        <if test="fileId != null">
+            AND e.`id` > #{fileId}
+        </if>
+        AND b.`id` = e.`user_id`
+        ORDER BY e.`create_time` DESC
         LIMIT #{queryLimit}
     </select>
 </mapper>

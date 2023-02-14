@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
-import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
@@ -18,7 +17,8 @@ import com.zhulang.waveedu.edu.service.LessonFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
-import com.zhulang.waveedu.edu.vo.LessonFileSimpleInfoVO;
+import com.zhulang.waveedu.edu.query.LessonFileDetailInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonFileSimpleInfoQuery;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -113,8 +113,8 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     @Override
     public Result getSimpleInfoList(Long lessonId, Long fileId) {
         // 0.校验课程格式
-        if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程id格式错误");
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
         }
 
         // 1.判断 非空的fileId 是否格式正确
@@ -122,9 +122,26 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
             fileId = null;
         }
         // 2.查询信息，按照时间由近及远
-        List<LessonFileSimpleInfoVO> simpleInfoList = lessonFileMapper.selectSimpleInfoList(lessonId, fileId, EduConstants.DEFAULT_LESSON_SIMPLE_FILE_LIST_QUERY_LIMIT);
+        List<LessonFileSimpleInfoQuery> simpleInfoList = lessonFileMapper.selectSimpleInfoList(lessonId, fileId, EduConstants.DEFAULT_LESSON_SIMPLE_FILE_LIST_QUERY_LIMIT);
         // 3.返回
         return Result.ok(simpleInfoList);
+    }
+
+    @Override
+    public Result getDetailInfoList(Long lessonId, Long fileId) {
+        // 0.校验课程格式
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
+        }
+
+        // 1.判断 非空的fileId 是否格式正确
+        if (fileId != null && RegexUtils.isSnowIdInvalid(fileId)) {
+            fileId = null;
+        }
+        // 2.查询信息，按照时间由近及远
+        List<LessonFileDetailInfoQuery> detailInfoList = lessonFileMapper.selectDetailInfoList(lessonId, fileId, EduConstants.DEFAULT_LESSON_DETAIL_FILE_LIST_QUERY_LIMIT);
+        // 3.返回
+        return Result.ok(detailInfoList);
     }
 
     /**

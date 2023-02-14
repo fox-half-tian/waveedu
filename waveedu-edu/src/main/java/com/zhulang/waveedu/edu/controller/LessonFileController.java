@@ -3,9 +3,7 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.common.valid.SnowIdValidate;
 import com.zhulang.waveedu.edu.service.LessonFileService;
 import com.zhulang.waveedu.edu.vo.ModifyFileNameVO;
 import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
@@ -72,9 +70,25 @@ public class LessonFileController {
      */
     @GetMapping("/get/simpleInfoList")
     public Result getSimpleInfoList(
-            @RequestParam(value = "lessonId") String lessonId,
+            @RequestParam(value = "lessonId") Long lessonId,
             @RequestParam(value = "fileId", required = false) Long fileId
     ) {
-        return lessonFileService.getSimpleInfoList(Long.parseLong(lessonId), fileId);
+        return lessonFileService.getSimpleInfoList(lessonId, fileId);
+    }
+
+
+    /**
+     * 获取详细的课程文件信息
+     *
+     * @param lessonId 课程id
+     * @param fileId   文件id
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 文件路径 + 下载次数，按照时间由近到远排序
+     */
+    @GetMapping("/get/detailInfoList")
+    public Result getDetailInfoList(
+            @RequestParam(value = "lessonId") Long lessonId,
+            @RequestParam(value = "fileId", required = false) Long fileId
+    ) {
+        return lessonFileService.getDetailInfoList(lessonId, fileId);
     }
 }

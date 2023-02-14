@@ -2,7 +2,8 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.vo.LessonFileSimpleInfoVO;
+import com.zhulang.waveedu.edu.query.LessonFileDetailInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonFileSimpleInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,7 +35,19 @@ public interface LessonFileMapper extends BaseMapper<LessonFile> {
      * @param queryLimit 查询最大条数
      * @return 文件id，文件名，文件类型，文件格式，文件格式大小，上传时间
      */
-    List<LessonFileSimpleInfoVO> selectSimpleInfoList(@Param("lessonId") Long lessonId,
-                                                      @Param("fileId") Long fileId,
-                                                      @Param("queryLimit") Integer queryLimit);
+    List<LessonFileSimpleInfoQuery> selectSimpleInfoList(@Param("lessonId") Long lessonId,
+                                                         @Param("fileId") Long fileId,
+                                                         @Param("queryLimit") Integer queryLimit);
+
+    /**
+     * 获取详细的课程文件信息
+     *
+     * @param lessonId   课程id
+     * @param fileId     文件id
+     * @param queryLimit 查询最大条数
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 文件路径 + 下载次数，按照时间由近到远排序
+     */
+    List<LessonFileDetailInfoQuery> selectDetailInfoList(@Param("lessonId") Long lessonId,
+                                                         @Param("fileId") Long fileId,
+                                                         @Param("queryLimit") Integer queryLimit);
 }
