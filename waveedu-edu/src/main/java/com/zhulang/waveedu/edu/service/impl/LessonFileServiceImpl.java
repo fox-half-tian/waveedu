@@ -8,6 +8,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.zhulang.waveedu.edu.dao.LessonFileMapper;
@@ -62,7 +63,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         // 2.封装信息
         BeanUtils.copyProperties(saveLessonFileVO, lessonFile);
         // 3.简单处理，前后无空格
-        lessonFile.setFileName(lessonFile.getFileName().trim());
+        lessonFile.setFileName(WaveStrUtils.removeBlank(lessonFile.getFileName()));
         lessonFile.setDownloadCount(0);
         // 4.保存到数据库
         lessonFileMapper.insert(lessonFile);
@@ -101,7 +102,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         // 2.修改文件名
         LambdaUpdateWrapper<LessonFile> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(LessonFile::getId, fileId)
-                .set(LessonFile::getFileName, fileName);
+                .set(LessonFile::getFileName, WaveStrUtils.removeBlank(fileName));
         return this.update(wrapper) ? Result.ok() : Result.error();
     }
 

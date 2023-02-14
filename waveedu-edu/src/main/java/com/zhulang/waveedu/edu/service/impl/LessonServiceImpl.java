@@ -262,7 +262,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
     @Override
     public Result modifyLessonBasicInfo(ModifyLessonBasicInfoVO modifyLessonBasicInfoVO) {
-        // 0.校验文件名
+        // 0.校验课程名
         String name = modifyLessonBasicInfoVO.getName();
         if (name != null) {
             name = WaveStrUtils.removeBlank(name);
