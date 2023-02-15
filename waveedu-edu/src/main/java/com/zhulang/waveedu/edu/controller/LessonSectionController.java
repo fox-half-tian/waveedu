@@ -1,17 +1,13 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonSectionService;
-import com.zhulang.waveedu.edu.vo.SaveChapterVO;
 import com.zhulang.waveedu.edu.vo.SaveSectionVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -35,9 +31,25 @@ public class LessonSectionController {
      * @param saveSectionVO 章节id + 小节名
      * @return 创建状况
      */
-    @PostMapping("/saveSection")
+    @PostMapping("/save/section")
     public Result saveSection(@Validated @RequestBody SaveSectionVO saveSectionVO){
         return lessonSectionService.saveSection(saveSectionVO.getChapterId(),saveSectionVO.getName());
+    }
+
+    /**
+     * 删除小节
+     *
+     * @param object 小节id
+     * @return 删除状况
+     */
+    @DeleteMapping("/del/section")
+    public Result delSection(@RequestBody JSONObject object){
+        try {
+            Integer sectionId = Integer.valueOf(object.getString("sectionId"));
+            return lessonSectionService.removeSection(sectionId);
+        }catch (Exception e){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"小节id格式错误");
+        }
     }
 
 }

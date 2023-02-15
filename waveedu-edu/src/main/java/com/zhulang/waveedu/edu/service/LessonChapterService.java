@@ -30,7 +30,7 @@ public interface LessonChapterService extends IService<LessonChapter> {
      * @param id 章节id
      * @return 删除结果
      */
-    Result delChapter(Integer id);
+    Result removeChapter(Integer id);
 
     /**
      * 根据章节id获取课程id

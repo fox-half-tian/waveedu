@@ -22,4 +22,12 @@ public interface LessonSectionService extends IService<LessonSection> {
      * @return 创建状况
      */
     Result saveSection(Integer chapterId, String name);
+
+    /**
+     * 删除小节
+     *
+     * @param sectionId 小节id
+     * @return 删除状况
+     */
+    Result removeSection(Integer sectionId);
 }

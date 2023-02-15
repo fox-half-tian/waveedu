@@ -7,4 +7,9 @@
         FROM edu_lesson_section
         WHERE chapter_id = #{chapterId}
     </select>
+    <select id="selectChapterIdById" resultType="java.lang.Integer">
+        SELECT chapter_id
+        FROM edu_lesson_section
+        WHERE id = #{id}
+    </select>
 </mapper>

@@ -52,10 +52,10 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
         Integer maxOrderBy = lessonSectionMapper.getMaxOrderByOfChapterId(chapterId);
         // 4.设置当前小节的序号
         int orderBy;
-        if (maxOrderBy==null){
+        if (maxOrderBy == null) {
             orderBy = 1;
-        }else{
-            orderBy =  maxOrderBy + 1;
+        } else {
+            orderBy = maxOrderBy + 1;
         }
         // 5.封装信息
         LessonSection lessonSection = new LessonSection();
@@ -73,5 +73,31 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
         // 7.返回小节的id
         return Result.ok(lessonSection.getId());
 
+    }
+
+    @Override
+    public Result removeSection(Integer sectionId) {
+        // 1.判断sectionId是否合法
+        if (sectionId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "小节id格式错误");
+        }
+        // 2.获取该小节的章节id
+        Integer chapterId = lessonSectionMapper.selectChapterIdById(sectionId);
+        if (chapterId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "小节不存在");
+        }
+
+        // 3.判断是否为教学团队成员
+        Long lessonId = lessonChapterService.getLessonIdById(chapterId);
+        if (lessonId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
+        }
+        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+
+        // 4.删除小节并返回
+        return lessonSectionMapper.deleteById(sectionId) != 0 ? Result.ok() : Result.error();
     }
 }

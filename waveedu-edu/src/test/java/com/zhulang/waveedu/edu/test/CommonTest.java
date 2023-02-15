@@ -12,7 +12,11 @@ import java.util.HashMap;
  */
 public class CommonTest {
     public static void main(String[] args) {
-        test02();
+        test03();
+    }
+
+    public static void test03(){
+        System.out.println(Integer.parseInt(null));
     }
     public static void test02(){
         Long a=1623220363309776897L;
@@ -28,4 +32,6 @@ public class CommonTest {
         LessonFile lessonFile = JSON.parseObject(CipherUtils.decrypt(str), LessonFile.class);
         System.out.println(lessonFile);
     }
+
+
 }

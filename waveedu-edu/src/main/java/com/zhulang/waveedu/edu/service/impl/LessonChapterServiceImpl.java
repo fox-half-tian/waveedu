@@ -63,7 +63,7 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
     }
 
     @Override
-    public Result delChapter(Integer id) {
+    public Result removeChapter(Integer id) {
         // 1.校验 chapterId
         if (id < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "章节id格式错误");

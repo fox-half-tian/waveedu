@@ -8,8 +8,6 @@ import com.zhulang.waveedu.edu.vo.SaveChapterVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
 
 /**
@@ -46,7 +44,7 @@ public class LessonChapterController {
      */
     @DeleteMapping("/delChapter")
     public Result delChapter(@RequestBody JSONObject object){
-        return lessonChapterService.delChapter(Integer.parseInt(object.getString("chapterId")));
+        return lessonChapterService.removeChapter(Integer.parseInt(object.getString("chapterId")));
     }
 
     /**

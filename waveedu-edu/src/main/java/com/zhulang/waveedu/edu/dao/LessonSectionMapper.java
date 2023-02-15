@@ -20,4 +20,12 @@ public interface LessonSectionMapper extends BaseMapper<LessonSection> {
      * @return 小节序号
      */
     Integer getMaxOrderByOfChapterId(Integer chapterId);
+
+    /**
+     * 获取当前小节的章节id
+     *
+     * @param sectionId 小节id
+     * @return 章节id
+     */
+    Integer selectChapterIdById(Integer sectionId);
 }
