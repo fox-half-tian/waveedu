@@ -1,7 +1,8 @@
-package com.zhulang.waveedu.edu.mapper;
+package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonChapter;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface LessonChapterMapper extends BaseMapper<LessonChapter> {
 
+    /**
+     * 获取课程的最大章节号
+     *
+     * @param lessonId 课程id
+     * @return 最大章节号
+     */
+    Integer getMaxOrderByOfLessonId(@Param("lessonId") Long lessonId);
 }

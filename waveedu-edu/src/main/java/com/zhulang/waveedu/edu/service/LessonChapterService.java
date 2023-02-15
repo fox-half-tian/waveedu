@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonChapter;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface LessonChapterService extends IService<LessonChapter> {
 
+    /**
+     * 创建新章节
+     *
+     * @param lessonId 课程id
+     * @param name     章节名
+     * @return 创建状况
+     */
+    Result saveChapter(Long lessonId, String name);
 }

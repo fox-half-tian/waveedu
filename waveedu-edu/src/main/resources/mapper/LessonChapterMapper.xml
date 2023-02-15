@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhulang.waveedu.edu.mapper.LessonChapterMapper">
+<mapper namespace="com.zhulang.waveedu.edu.dao.LessonChapterMapper">
 
+    <select id="getMaxOrderByOfLessonId" resultType="java.lang.Integer">
+        SELECT MAX(`order_by`)
+        FROM `edu_lesson_chapter`
+        WHERE lesson_id = #{lessonId}
+    </select>
 </mapper>

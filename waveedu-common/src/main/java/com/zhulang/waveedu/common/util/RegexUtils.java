@@ -103,6 +103,14 @@ public class RegexUtils {
          * 文件标签正则：最多32个字符
          */
         public static final String FILE_TAG_REGEX = "^.{1,32}$";
+        /**
+         * 课程章节名正则，1-24个字符，不允许\n
+         */
+        public static final String LESSON_CHAPTER_NAME_REGEX = "^.{1,24}$";
+        /**
+         * 课程小节名正则，1-24个字符，不允许\n
+         */
+        public static final String LESSON_SECTION_NAME_REGEX = "^.{1,24}$";
     }
 
     /**
