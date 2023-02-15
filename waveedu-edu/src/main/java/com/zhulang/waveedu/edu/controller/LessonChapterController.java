@@ -4,6 +4,8 @@ package com.zhulang.waveedu.edu.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonChapterService;
+import com.zhulang.waveedu.edu.vo.ModifyChapterNameVO;
+import com.zhulang.waveedu.edu.vo.ModifySectionNameVO;
 import com.zhulang.waveedu.edu.vo.SaveChapterVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +47,17 @@ public class LessonChapterController {
     @DeleteMapping("/delChapter")
     public Result delChapter(@RequestBody JSONObject object){
         return lessonChapterService.removeChapter(Integer.parseInt(object.getString("chapterId")));
+    }
+
+    /**
+     * 修改章节的名字
+     *
+     * @param modifyChapterNameVO 章节id + 新的章节name
+     * @return 修改状况
+     */
+    @PutMapping("/modify/chapterName")
+    public Result modifySectionName(@Validated @RequestBody ModifyChapterNameVO modifyChapterNameVO){
+        return lessonChapterService.modifyChapterName(modifyChapterNameVO.getChapterId(),modifyChapterNameVO.getChapterName());
     }
 
     /**

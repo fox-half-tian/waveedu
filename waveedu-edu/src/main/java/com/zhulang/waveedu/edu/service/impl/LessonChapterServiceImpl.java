@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
@@ -50,7 +51,7 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
         // 4.1 设置课程id
         lessonChapter.setLessonId(lessonId);
         // 4.2 设置课程的章节名
-        lessonChapter.setName(WaveStrUtils.removeBlank(name));
+        lessonChapter.setName(name.trim());
         // 4.3 设置顺序
         lessonChapter.setOrderBy(orderBy);
         // 4.4 设置创建者为当前用户
@@ -63,29 +64,23 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
     }
 
     @Override
-    public Result removeChapter(Integer id) {
+    public Result removeChapter(Integer chapterId) {
         // 1.校验 chapterId
-        if (id < 1) {
+        if (chapterId < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "章节id格式错误");
         }
 
-        // 2.获取章节的课程id
-        Long lessonId = lessonChapterMapper.selectLessonIdById(id);
-        if (lessonId == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
-        }
-
-        // 3.校验是否为教学团队成员
-        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        // 2.判断是否是教师团队成员，并一带判断章节、课程是否存在
+        Result result = this.isLessonTch(chapterId, UserHolderUtils.getUserId());
         if (result != null) {
             return result;
         }
 
-        // 4.判断所有小节是否已删除
+        // 3.判断所有小节是否已删除
         // todo
 
-        // 5.删除章节并返回
-        return lessonChapterMapper.deleteById(id) != 0?Result.ok():Result.error();
+        // 4.删除章节并返回
+        return lessonChapterMapper.deleteById(chapterId) != 0 ? Result.ok() : Result.error();
     }
 
     @Override
@@ -101,17 +96,29 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
      * @return null-合法，否则非合法操作
      */
     @Override
-    public Result isLessonTch(Integer chapterId,Long userId){
+    public Result isLessonTch(Integer chapterId, Long userId) {
         // 1.判断章节是否存在
         Long lessonId = this.getLessonIdById(chapterId);
         if (lessonId == null) {
             return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
         }
         // 2.判断是否为教学团队成员
-        Result result = lessonTchService.isLessonTch(lessonId, userId);
+        return lessonTchService.isLessonTch(lessonId, userId);
+    }
+
+    @Override
+    public Result modifyChapterName(Integer chapterId, String chapterName) {
+        // 1.判断是否是教师团队成员，并一带判断章节、课程是否存在
+        Result result = this.isLessonTch(chapterId, UserHolderUtils.getUserId());
         if (result != null) {
             return result;
         }
-        return null;
+        // 2.修改名称
+        LambdaUpdateWrapper<LessonChapter> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(LessonChapter::getId, chapterId)
+                .set(LessonChapter::getName, chapterName.trim());
+        lessonChapterMapper.update(null, wrapper);
+        // 3.返回
+        return Result.ok();
     }
 }

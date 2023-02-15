@@ -49,4 +49,13 @@ public interface LessonChapterService extends IService<LessonChapter> {
      * @return null-合法，否则非合法操作
      */
     Result isLessonTch(Integer chapterId, Long userId);
+
+    /**
+     * 修改章节的名字
+     *
+     * @param chapterId   章节id
+     * @param chapterName 新的章节name
+     * @return 修改状况
+     */
+    Result modifyChapterName(Integer chapterId, String chapterName);
 }

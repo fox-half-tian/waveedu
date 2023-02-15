@@ -123,10 +123,6 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
             return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
         }
         // 2.判断是否为教学团队成员
-        Result result = lessonTchService.isLessonTch(lessonId, userId);
-        if (result != null) {
-            return result;
-        }
-        return null;
+        return lessonTchService.isLessonTch(lessonId, userId);
     }
 }
