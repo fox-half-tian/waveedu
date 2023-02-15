@@ -22,4 +22,13 @@ public interface LessonChapterService extends IService<LessonChapter> {
      * @return 创建状况
      */
     Result saveChapter(Long lessonId, String name);
+
+    /**
+     * 删除章节
+     * 规则；必须先删除章节下的所有小节才能删除该章节
+     *
+     * @param chapterId 章节id
+     * @return 删除结果
+     */
+    Result delChapter(Long chapterId);
 }

@@ -7,4 +7,9 @@
         FROM `edu_lesson_chapter`
         WHERE lesson_id = #{lessonId}
     </select>
+    <select id="selectLessonIdById" resultType="java.lang.Long">
+        select lesson_id
+        from `edu_lesson_chapter`
+        where `id` = #{id}
+    </select>
 </mapper>

@@ -21,4 +21,12 @@ public interface LessonChapterMapper extends BaseMapper<LessonChapter> {
      * @return 最大章节号
      */
     Integer getMaxOrderByOfLessonId(@Param("lessonId") Long lessonId);
+
+    /**
+     * 根据章节id获取课程id
+     *
+     * @param id 章节id
+     * @return 课程id
+     */
+    Long selectLessonIdById(@Param("id") Long id);
 }

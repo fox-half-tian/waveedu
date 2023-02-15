@@ -1,16 +1,14 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonChapterService;
 import com.zhulang.waveedu.edu.vo.SaveChapterVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -37,5 +35,27 @@ public class LessonChapterController {
     @PostMapping("/saveChapter")
     public Result saveChapter(@Validated @RequestBody SaveChapterVO saveChapterVO){
         return lessonChapterService.saveChapter(saveChapterVO.getLessonId(),saveChapterVO.getName());
+    }
+
+    /**
+     * 删除章节
+     * 规则；必须先删除章节下的所有小节才能删除该章节
+     *
+     * @param object 章节id
+     * @return 删除结果
+     */
+    @DeleteMapping("/delChapter")
+    public Result delChapter(@RequestBody JSONObject object){
+        return lessonChapterService.delChapter(Long.parseLong(object.getString("chapterId")));
+    }
+
+    /**
+     * 获取全部章节和小节的名字信息列表
+     *
+     * @return 章节+小节 id与name信息
+     */
+    @GetMapping("/get/chapterSectionNameList")
+    public Result getChapterSectionNameList(){
+        return null;
     }
 }

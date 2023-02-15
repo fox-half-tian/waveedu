@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service.impl;
 
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
@@ -39,9 +40,9 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
         Integer maxOrderBy = lessonChapterMapper.getMaxOrderByOfLessonId(lessonId);
         // 3.设置当前章节的序号
         int orderBy;
-        if (maxOrderBy == null){
+        if (maxOrderBy == null) {
             orderBy = 1;
-        }else{
+        } else {
             orderBy = maxOrderBy + 1;
         }
         // 4.封装信息
@@ -59,5 +60,34 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
         lessonChapterMapper.insert(lessonChapter);
         // 6.返回章节的id
         return Result.ok(lessonChapter.getId());
+    }
+
+    @Override
+    public Result delChapter(Long chapterId) {
+        // 1.校验 chapterId
+        if (chapterId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "章节id格式错误");
+        }
+
+        // 2.获取章节的课程id
+        Long lessonId = lessonChapterMapper.selectLessonIdById(chapterId);
+        if (lessonId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"章节不存在");
+        }
+
+        // 3.校验是否为教学团队成员
+        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+
+        // 4.判断所有小节是否已删除
+        // todo
+
+        // 5.删除章节
+        lessonChapterMapper.deleteById(chapterId);
+
+        // 6.返回
+        return Result.ok();
     }
 }
