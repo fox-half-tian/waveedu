@@ -22,8 +22,8 @@ public class IdentityQuery {
      * 院校id
      */
     private Integer collegeId;
-    /*
-    院校名称
+    /**
+     * 院校名称
      */
     private String collegeName;
     /**

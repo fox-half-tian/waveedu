@@ -2,7 +2,10 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.LessonTchInfoQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,12 @@ public interface LessonTchMapper extends BaseMapper<LessonTch> {
      * @return null 表示不存在，非空表示存在
      */
     Integer isExistByLessonAndUser(@Param("lessonId") Long lessonId,@Param("userId") Long userId);
+
+    /**
+     * 获取某个课程的教学团队
+     *
+     * @param lessonId 课程id
+     * @return 教学团队信息：用户id + 用户名 + 用户头像 + 用户所在单位单位名
+     */
+    List<LessonTchInfoQuery> selectTchTeamInfo(@Param("lessonId")Long lessonId);
 }

@@ -8,4 +8,16 @@
         WHERE lesson_id = #{lessonId}
           AND user_id = #{userId}
     </select>
+    <select id="selectTchTeamInfo" resultType="com.zhulang.waveedu.edu.query.LessonTchInfoQuery">
+        SELECT u.id           AS userId,
+               u.name         AS userName,
+               u.icon         AS icon,
+               i.college_name AS collegeName
+        FROM edu_lesson_tch t,
+             `basic_user_info` u,
+             `basic_identity` i
+        WHERE t.lesson_id = #{lessonId}
+          AND t.user_id = u.id
+          AND u.id = i.user_id
+    </select>
 </mapper>

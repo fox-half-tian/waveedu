@@ -4,13 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.CipherUtils;
-import com.zhulang.waveedu.common.util.RedisCacheUtils;
-import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.common.util.*;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.dao.LessonTchMapper;
 import com.zhulang.waveedu.edu.query.LessonCacheQuery;
+import com.zhulang.waveedu.edu.query.LessonTchInfoQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -96,7 +96,7 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
             } else {
                 // 2.2 数据库中找到，就缓存到redis中，ttl为10分钟
                 redisCacheUtils.setCacheMap(RedisConstants.LESSON_INFO_KEY + lessonId, BeanUtil.beanToMap(cacheInfo, false, true));
-                redisCacheUtils.expire(RedisConstants.LESSON_INFO_KEY + lessonId,RedisConstants.LESSON_INFO_TTL);
+                redisCacheUtils.expire(RedisConstants.LESSON_INFO_KEY + lessonId, RedisConstants.LESSON_INFO_TTL);
             }
         }
         // 3.判断当前用户是否在教学团队中
@@ -105,5 +105,35 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         return null;
+    }
+
+    @Override
+    public Result getTchTeam(Long lessonId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
+        }
+        // 2.查询创建者
+        Long creatorId = lessonService.getCreatorIdByLessonId(lessonId);
+        if (creatorId == null) {
+            // 为空说明不存在或者课程已被删除
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "未找到课程信息");
+        }
+        // 2.查询教学团队 --> 由于上面代码的判断则 infoList 不可能为空
+        List<LessonTchInfoQuery> infoList = lessonTchMapper.selectTchTeamInfo(lessonId);
+
+        // 4.判断是否为创建者
+        for (int i = 0; i < infoList.size(); i++) {
+            if (infoList.get(i).getUserId().longValue() == creatorId.longValue()) {
+                if (i != 0) {
+                    Collections.swap(infoList, 0, i);
+                }
+                break;
+            }
+        }
+        // 5.返回
+        return Result.ok(infoList);
+
+
     }
 }

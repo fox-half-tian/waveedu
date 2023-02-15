@@ -33,6 +33,10 @@ public class Identity {
      */
     private Integer collegeId;
     /**
+     * 院校名称
+     */
+    private String collegeName;
+    /**
      * 身份类型，0代表学生，1代表老师
      */
     private Integer type;
@@ -49,12 +53,10 @@ public class Identity {
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 }
