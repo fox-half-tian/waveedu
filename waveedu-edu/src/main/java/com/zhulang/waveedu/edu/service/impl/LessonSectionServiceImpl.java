@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
@@ -35,15 +36,10 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
 
     @Override
     public Result saveSection(Integer chapterId, String name) {
-        // 1.判断章节是否存在
-        Long lessonId = lessonChapterService.getLessonIdById(chapterId);
-        if (lessonId == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
-        }
-
+        // 1.获取当前用户
         Long userId = UserHolderUtils.getUserId();
-        // 2.判断是否为教学团队成员
-        Result result = lessonTchService.isLessonTch(lessonId, userId);
+        // 2.判断是否是教师团队成员，并一带判断章节、课程是否存在
+        Result result = lessonChapterService.isLessonTch(chapterId, userId);
         if (result != null) {
             return result;
         }
@@ -81,23 +77,56 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
         if (sectionId < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "小节id格式错误");
         }
-        // 2.获取该小节的章节id
-        Integer chapterId = lessonSectionMapper.selectChapterIdById(sectionId);
-        if (chapterId == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "小节不存在");
-        }
-
-        // 3.判断是否为教学团队成员
-        Long lessonId = lessonChapterService.getLessonIdById(chapterId);
-        if (lessonId == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
-        }
-        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        // 2.判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
+        Result result = this.isLessonTch(sectionId, UserHolderUtils.getUserId());
         if (result != null) {
             return result;
         }
 
-        // 4.删除小节并返回
+        // 3.删除小节并返回
         return lessonSectionMapper.deleteById(sectionId) != 0 ? Result.ok() : Result.error();
+    }
+
+    @Override
+    public Result modifySectionName(Integer sectionId, String sectionName) {
+        // 1.判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
+        Result result = this.isLessonTch(sectionId, UserHolderUtils.getUserId());
+        if (result!=null){
+            return result;
+        }
+        // 2.修改名称
+        LambdaUpdateWrapper<LessonSection> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(LessonSection::getId,sectionId)
+                .set(LessonSection::getName,sectionName.trim());
+        lessonSectionMapper.update(null,wrapper);
+        // 3.返回
+        return Result.ok();
+    }
+
+    /**
+     * 判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
+     *
+     * @param sectionId 小节id
+     * @param userId    用户Id
+     * @return null-合法，否则非合法操作
+     */
+    @Override
+    public Result isLessonTch(Integer sectionId, Long userId) {
+        // 1.判断该小节是否存在
+        Integer chapterId = lessonSectionMapper.selectChapterIdById(sectionId);
+        if (chapterId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "小节不存在");
+        }
+        // 2.判断章节是否存在
+        Long lessonId = lessonChapterService.getLessonIdById(chapterId);
+        if (lessonId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
+        }
+        // 2.判断是否为教学团队成员
+        Result result = lessonTchService.isLessonTch(lessonId, userId);
+        if (result != null) {
+            return result;
+        }
+        return null;
     }
 }

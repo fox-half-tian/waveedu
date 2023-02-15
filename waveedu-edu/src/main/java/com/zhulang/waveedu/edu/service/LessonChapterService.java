@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonChapter;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -39,4 +40,13 @@ public interface LessonChapterService extends IService<LessonChapter> {
      * @return 课程id
      */
     Long getLessonIdById(Integer id);
+
+    /**
+     * 判断是否是教师团队成员，并一带判断章节、课程是否存在
+     *
+     * @param chapterId 章节id
+     * @param userId    用户Id
+     * @return null-合法，否则非合法操作
+     */
+    Result isLessonTch(Integer chapterId, Long userId);
 }

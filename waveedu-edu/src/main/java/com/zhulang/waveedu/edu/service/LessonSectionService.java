@@ -30,4 +30,23 @@ public interface LessonSectionService extends IService<LessonSection> {
      * @return 删除状况
      */
     Result removeSection(Integer sectionId);
+
+    /**
+     * 修改小节的名字
+     *
+     * @param sectionId   小节id
+     * @param sectionName 新的小节name
+     * @return 修改状况
+     */
+    Result modifySectionName(Integer sectionId, String sectionName);
+
+    /**
+     * 判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
+     *
+     * @param sectionId 小节id
+     * @param userId 用户Id
+     * @return null-合法，否则非合法操作
+     */
+    Result isLessonTch(Integer sectionId,Long userId);
+
 }

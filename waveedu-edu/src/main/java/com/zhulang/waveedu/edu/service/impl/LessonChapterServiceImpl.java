@@ -92,4 +92,26 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
     public Long getLessonIdById(Integer id) {
         return lessonChapterMapper.selectLessonIdById(id);
     }
+
+    /**
+     * 判断是否是教师团队成员，并一带判断章节、课程是否存在
+     *
+     * @param chapterId 章节id
+     * @param userId    用户Id
+     * @return null-合法，否则非合法操作
+     */
+    @Override
+    public Result isLessonTch(Integer chapterId,Long userId){
+        // 1.判断章节是否存在
+        Long lessonId = this.getLessonIdById(chapterId);
+        if (lessonId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
+        }
+        // 2.判断是否为教学团队成员
+        Result result = lessonTchService.isLessonTch(lessonId, userId);
+        if (result != null) {
+            return result;
+        }
+        return null;
+    }
 }

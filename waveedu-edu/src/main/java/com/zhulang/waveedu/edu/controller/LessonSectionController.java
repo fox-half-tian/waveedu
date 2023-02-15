@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonSectionService;
+import com.zhulang.waveedu.edu.vo.ModifySectionNameVO;
 import com.zhulang.waveedu.edu.vo.SaveSectionVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,17 @@ public class LessonSectionController {
         }catch (Exception e){
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"小节id格式错误");
         }
+    }
+
+    /**
+     * 修改小节的名字
+     *
+     * @param modifySectionNameVO 小节id + 新的小节name
+     * @return 修改状况
+     */
+    @PutMapping("/modify/sectionName")
+    public Result modifySectionName(@Validated @RequestBody ModifySectionNameVO modifySectionNameVO){
+        return lessonSectionService.modifySectionName(modifySectionNameVO.getSectionId(),modifySectionNameVO.getSectionName());
     }
 
 }
