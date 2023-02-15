@@ -28,7 +28,6 @@ public class EduConstants {
      * 3：创建者
      */
     public static final Integer LESSON_IDENTITY_VISITOR = 0;
-
     public static final Integer LESSON_IDENTITY_COMMON = 1;
     public static final Integer LESSON_IDENTITY_TCH = 2;
     public static final Integer LESSON_IDENTITY_CREATOR = 3;

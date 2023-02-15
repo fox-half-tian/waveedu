@@ -49,4 +49,11 @@ public interface LessonSectionService extends IService<LessonSection> {
      */
     Result isLessonTch(Integer sectionId,Long userId);
 
+    /**
+     * 判断是否存在为该章节id的小节
+     *
+     * @param chapterId 章节Id
+     * @return true-存在，false-不存在
+     */
+    boolean existSectionByChapterId(Integer chapterId);
 }

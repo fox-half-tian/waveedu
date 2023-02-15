@@ -91,14 +91,14 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
     public Result modifySectionName(Integer sectionId, String sectionName) {
         // 1.判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
         Result result = this.isLessonTch(sectionId, UserHolderUtils.getUserId());
-        if (result!=null){
+        if (result != null) {
             return result;
         }
         // 2.修改名称
         LambdaUpdateWrapper<LessonSection> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(LessonSection::getId,sectionId)
-                .set(LessonSection::getName,sectionName.trim());
-        lessonSectionMapper.update(null,wrapper);
+        wrapper.eq(LessonSection::getId, sectionId)
+                .set(LessonSection::getName, sectionName.trim());
+        lessonSectionMapper.update(null, wrapper);
         // 3.返回
         return Result.ok();
     }
@@ -124,5 +124,10 @@ public class LessonSectionServiceImpl extends ServiceImpl<LessonSectionMapper, L
         }
         // 2.判断是否为教学团队成员
         return lessonTchService.isLessonTch(lessonId, userId);
+    }
+
+    @Override
+    public boolean existSectionByChapterId(Integer chapterId) {
+        return lessonSectionMapper.existSectionByChapterId(chapterId) != null;
     }
 }

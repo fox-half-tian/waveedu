@@ -32,7 +32,7 @@ public class LessonChapterController {
      * @param saveChapterVO 课程id + 章节名
      * @return 创建状况
      */
-    @PostMapping("/saveChapter")
+    @PostMapping("/save/chapter")
     public Result saveChapter(@Validated @RequestBody SaveChapterVO saveChapterVO){
         return lessonChapterService.saveChapter(saveChapterVO.getLessonId(),saveChapterVO.getName());
     }
@@ -44,9 +44,13 @@ public class LessonChapterController {
      * @param object 章节id
      * @return 删除结果
      */
-    @DeleteMapping("/delChapter")
+    @DeleteMapping("/del/chapter")
     public Result delChapter(@RequestBody JSONObject object){
-        return lessonChapterService.removeChapter(Integer.parseInt(object.getString("chapterId")));
+        try {
+            return lessonChapterService.removeChapter(Integer.parseInt(object.getString("chapterId")));
+        }catch (Exception e){
+            return Result.error();
+        }
     }
 
     /**

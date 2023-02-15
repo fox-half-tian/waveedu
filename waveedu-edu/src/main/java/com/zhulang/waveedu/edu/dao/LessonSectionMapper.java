@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonSection;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -28,4 +29,12 @@ public interface LessonSectionMapper extends BaseMapper<LessonSection> {
      * @return 章节id
      */
     Integer selectChapterIdById(Integer sectionId);
+
+    /**
+     * 判断是否存在为该章节id的小节
+     *
+     * @param chapterId 章节Id
+     * @return null-不存在，not null-存在
+     */
+    Integer existSectionByChapterId(@Param("chapterId") Integer chapterId);
 }

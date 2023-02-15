@@ -41,7 +41,6 @@ public class DesDemo {
             byte[] decryResult = DesDemo.decrypt(result, password);
             System.out.println("解密后：" + new String(decryResult));
         } catch (UnsupportedEncodingException e2) {
-// TODO Auto-generated catch block
             e2.printStackTrace();
         } catch (Exception e1) {
             e1.printStackTrace();

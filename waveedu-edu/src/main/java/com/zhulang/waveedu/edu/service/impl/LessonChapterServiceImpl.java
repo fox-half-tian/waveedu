@@ -7,8 +7,10 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.po.LessonChapter;
 import com.zhulang.waveedu.edu.dao.LessonChapterMapper;
+import com.zhulang.waveedu.edu.po.LessonSection;
 import com.zhulang.waveedu.edu.service.LessonChapterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhulang.waveedu.edu.service.LessonSectionService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
     private LessonChapterMapper lessonChapterMapper;
     @Resource
     private LessonTchService lessonTchService;
+    @Resource
+    private LessonSectionService lessonSectionService;
 
     @Override
     public Result saveChapter(Long lessonId, String name) {
@@ -77,10 +81,13 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
         }
 
         // 3.判断所有小节是否已删除
-        // todo
+        boolean exist = lessonSectionService.existSectionByChapterId(chapterId);
+        if (exist){
+            return Result.ok(false);
+        }
 
         // 4.删除章节并返回
-        return lessonChapterMapper.deleteById(chapterId) != 0 ? Result.ok() : Result.error();
+        return lessonChapterMapper.deleteById(chapterId) != 0 ? Result.ok(true) : Result.error();
     }
 
     @Override
