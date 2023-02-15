@@ -28,5 +28,5 @@ public interface LessonChapterMapper extends BaseMapper<LessonChapter> {
      * @param id 章节id
      * @return 课程id
      */
-    Long selectLessonIdById(@Param("id") Long id);
+    Long selectLessonIdById(@Param("id") Integer id);
 }

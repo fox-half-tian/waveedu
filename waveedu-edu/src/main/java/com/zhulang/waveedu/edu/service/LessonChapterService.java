@@ -27,8 +27,16 @@ public interface LessonChapterService extends IService<LessonChapter> {
      * 删除章节
      * 规则；必须先删除章节下的所有小节才能删除该章节
      *
-     * @param chapterId 章节id
+     * @param id 章节id
      * @return 删除结果
      */
-    Result delChapter(Long chapterId);
+    Result delChapter(Integer id);
+
+    /**
+     * 根据章节id获取课程id
+     *
+     * @param id 章节id
+     * @return 课程id
+     */
+    Long getLessonIdById(Integer id);
 }

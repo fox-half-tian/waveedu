@@ -46,7 +46,7 @@ public class LessonChapterController {
      */
     @DeleteMapping("/delChapter")
     public Result delChapter(@RequestBody JSONObject object){
-        return lessonChapterService.delChapter(Long.parseLong(object.getString("chapterId")));
+        return lessonChapterService.delChapter(Integer.parseInt(object.getString("chapterId")));
     }
 
     /**

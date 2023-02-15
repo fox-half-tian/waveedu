@@ -63,16 +63,16 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
     }
 
     @Override
-    public Result delChapter(Long chapterId) {
+    public Result delChapter(Integer id) {
         // 1.校验 chapterId
-        if (chapterId < 1) {
+        if (id < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "章节id格式错误");
         }
 
         // 2.获取章节的课程id
-        Long lessonId = lessonChapterMapper.selectLessonIdById(chapterId);
+        Long lessonId = lessonChapterMapper.selectLessonIdById(id);
         if (lessonId == null) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"章节不存在");
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "章节不存在");
         }
 
         // 3.校验是否为教学团队成员
@@ -84,10 +84,12 @@ public class LessonChapterServiceImpl extends ServiceImpl<LessonChapterMapper, L
         // 4.判断所有小节是否已删除
         // todo
 
-        // 5.删除章节
-        lessonChapterMapper.deleteById(chapterId);
+        // 5.删除章节并返回
+        return lessonChapterMapper.deleteById(id) != 0?Result.ok():Result.error();
+    }
 
-        // 6.返回
-        return Result.ok();
+    @Override
+    public Long getLessonIdById(Integer id) {
+        return lessonChapterMapper.selectLessonIdById(id);
     }
 }
