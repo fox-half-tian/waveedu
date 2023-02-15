@@ -19,4 +19,17 @@ public class EduConstants {
      * 默认的课程简单文件信息列表最大查询条数
      */
     public static final Integer DEFAULT_LESSON_DETAIL_FILE_LIST_QUERY_LIMIT = 25;
+
+    /**
+     * 课程中用户的身份表示
+     * 0：非课程成员，游客
+     * 1：班级普通成员
+     * 2：教学团队成员
+     * 3：创建者
+     */
+    public static final Integer LESSON_IDENTITY_VISITOR = 0;
+
+    public static final Integer LESSON_IDENTITY_COMMON = 1;
+    public static final Integer LESSON_IDENTITY_TCH = 2;
+    public static final Integer LESSON_IDENTITY_CREATOR = 3;
 }

@@ -300,4 +300,40 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     public LessonCacheQuery getNeedCacheInfo(Long lessonId) {
         return lessonMapper.selectNeedCacheInfo(lessonId);
     }
+
+    @Override
+    public Result getIdentity(Long lessonId) {
+        // 1.校验lessonId
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程id格式错误");
+        }
+
+        Long userId = UserHolderUtils.getUserId();
+
+        // 2.查询是否为课程创建者
+        // 2.1 查询课程创建者的id
+        Long creatorId = lessonMapper.selectCreatorIdById(lessonId);
+        // 2.2 为空说明课程不存在
+        if (creatorId==null){
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"课程不存在");
+        }
+        // 2.3 相等则说明是创建者
+        if (creatorId.longValue()==userId.longValue()){
+            return Result.ok(EduConstants.LESSON_IDENTITY_CREATOR);
+        }
+
+        // 3.查询是否为教学团队成员
+        long count = lessonTchService.count(new LambdaUpdateWrapper<LessonTch>()
+                .eq(LessonTch::getLessonId, lessonId)
+                .eq(LessonTch::getUserId, userId));
+        // 存在说明是教师
+        if (count != 0){
+            return Result.ok(EduConstants.LESSON_IDENTITY_TCH);
+        }
+
+        // todo  4.查询是否为班级普通成员
+
+        // 5.如果都不是则说明对该课程而言是游客
+        return Result.ok(EduConstants.LESSON_IDENTITY_VISITOR);
+    }
 }

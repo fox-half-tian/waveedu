@@ -118,4 +118,19 @@ public class LessonController {
     public Result modifyLessonBasicInfo(@Validated @RequestBody ModifyLessonBasicInfoVO modifyLessonBasicInfoVO){
         return lessonService.modifyLessonBasicInfo(modifyLessonBasicInfoVO);
     }
+
+    /**
+     * 查看当前用户对于该课程的身份
+     * 0：非课程成员，游客
+     * 1：班级普通成员
+     * 2：教学团队成员
+     * 3：创建者
+     *
+     * @param lessonId 课程id
+     * @return 身份
+     */
+    @GetMapping("/get/identity")
+    public Result getIdentity(@RequestParam("lessonId")Long lessonId){
+        return lessonService.getIdentity(lessonId);
+    }
 }

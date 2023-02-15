@@ -44,4 +44,6 @@ public class LessonTchController {
     public Result getTchTeam(@RequestParam("lessonId")Long lessonId){
         return lessonTchService.getTchTeam(lessonId);
     }
+
+
 }
