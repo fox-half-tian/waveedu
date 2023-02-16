@@ -38,7 +38,7 @@ public class LessonSectionFile implements Serializable {
     /**
      * 文件类型：0代表视频，1代表资料
      */
-    private Boolean type;
+    private Integer type;
 
     /**
      * 文件名，不可超过255长度

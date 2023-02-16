@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonSectionFile;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
 
 /**
  * <p>
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface LessonSectionFileService extends IService<LessonSectionFile> {
 
+    /**
+     * 保存小节的视频资料
+     *
+     * @param saveSectionFileVO 用户id + 小节id + 文件名  + 文件加密信息
+     * @return 保存结果
+     */
+    Result saveVideoFile(SaveSectionFileVO saveSectionFileVO);
 }
