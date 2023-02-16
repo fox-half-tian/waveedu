@@ -41,4 +41,24 @@
         WHERE `id` = #{id}
           AND is_deleted = 0
     </select>
+    <resultMap id="chapterAndSectionInfoResultMap"
+               type="com.zhulang.waveedu.edu.query.ChapterNameInfoWithSectionListQuery">
+        <id column="chapter_id" property="chapterId"/>
+        <result column="chapter_name" property="chapterName"/>
+        <collection property="sectionList" ofType="com.zhulang.waveedu.edu.query.SectionNameInfoQuery">
+            <id column="section_id" property="sectionId"/>
+            <result column="section_name" property="sectionName"/>
+        </collection>
+    </resultMap>
+    <select id="selectChapterAndSectionInfo" resultMap="chapterAndSectionInfoResultMap">
+        SELECT c.id   AS chapter_id,
+               c.name AS chapter_name,
+               s.id   AS section_id,
+               s.name AS section_name
+        FROM `edu_lesson_chapter` c
+                 LEFT JOIN `edu_lesson_section` s
+                           ON c.id = s.chapter_id
+        WHERE c.lesson_id = #{lessonId}
+        ORDER BY c.order_by, s.order_by
+    </select>
 </mapper>

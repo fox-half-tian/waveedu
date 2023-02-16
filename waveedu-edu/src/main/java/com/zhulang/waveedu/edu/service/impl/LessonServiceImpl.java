@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -13,10 +14,7 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
-import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonCacheQuery;
-import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.*;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.service.UserInfoService;
@@ -335,5 +333,22 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
         // 5.如果都不是则说明对该课程而言是游客
         return Result.ok(EduConstants.LESSON_IDENTITY_VISITOR);
+    }
+
+    @Override
+    public Result getChapterAndSectionInfo(Long lessonId) {
+        // 1.校验lessonId
+        if (RegexUtils.isSnowIdInvalid(lessonId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程id格式错误");
+        }
+        // 2.判断课程是否存在
+        boolean exists = lessonMapper.exists(new LambdaQueryWrapper<Lesson>().eq(Lesson::getId, lessonId));
+        if (!exists){
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "课程不存在");
+        }
+        // 3.查询章节信息
+        List<ChapterNameInfoWithSectionListQuery> infoList = lessonMapper.selectChapterAndSectionInfo(lessonId);
+        // 4.返回
+        return Result.ok(infoList);
     }
 }

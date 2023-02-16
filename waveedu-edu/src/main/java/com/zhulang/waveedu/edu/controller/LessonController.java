@@ -133,4 +133,16 @@ public class LessonController {
     public Result getIdentity(@RequestParam("lessonId")Long lessonId){
         return lessonService.getIdentity(lessonId);
     }
+
+    /**
+     * 获取课程章节和小节的列表信息
+     * 包括：章节id，小节id,章节name,小节name
+     *
+     * @param lessonId 课程id
+     * @return 信息列表
+     */
+    @GetMapping("/get/chapterAndSectionInfo")
+    public Result getChapterAndSectionInfo(@RequestParam("lessonId")Long lessonId){
+        return lessonService.getChapterAndSectionInfo(lessonId);
+    }
 }

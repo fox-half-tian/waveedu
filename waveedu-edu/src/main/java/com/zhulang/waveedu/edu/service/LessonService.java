@@ -115,4 +115,12 @@ public interface LessonService extends IService<Lesson> {
      * @return 身份
      */
     Result getIdentity(Long lessonId);
+
+    /**
+     * 获取课程章节和小节的列表信息
+     *
+     * @param lessonId 课程id
+     * @return 信息列表
+     */
+    Result getChapterAndSectionInfo(Long lessonId);
 }

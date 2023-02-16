@@ -2,10 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
-import com.zhulang.waveedu.edu.query.CreateLessonSimpleInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonBasicInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonCacheQuery;
-import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -59,4 +56,13 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @return 信息
      */
     LessonCacheQuery selectNeedCacheInfo(@Param("id") Long id);
+
+    /**
+     * 查询章节和小节列表信息
+     * 包括：章节id，小节id,章节name,小节name
+     *
+     * @param lessonId 课程id
+     * @return 信息列表
+     */
+    List<ChapterNameInfoWithSectionListQuery> selectChapterAndSectionInfo(@Param("lessonId") Long lessonId);
 }
