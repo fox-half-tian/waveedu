@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.InviteCodeConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.*;
@@ -126,7 +127,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         }
 
         // 6.对邀请码进行处理
-        String encryptCode = CipherUtils.encrypt(lessonId + "-" + tchInviteCodeQuery.getTchInviteCode());
+        String encryptCode = CipherUtils.encrypt(InviteCodeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + tchInviteCodeQuery.getTchInviteCode());
 
         // 6.获取邀请码，成功返回
         return Result.ok(encryptCode);
@@ -170,7 +171,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
                 .eq(Lesson::getId, lessonId);
         this.update(wrapper);
         // 9.返回给前端加密后的邀请码
-        return Result.ok(CipherUtils.encrypt(lessonId + "-" + code));
+        return Result.ok(CipherUtils.encrypt(InviteCodeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + code));
     }
 
     @Override
@@ -281,16 +282,16 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lesson.getId());
         // 4.修改缓存信息
         HashMap<String, Object> map = new HashMap<>();
-        if (modifyLessonBasicInfoVO.getName()!=null){
-            map.put("name",info.getName());
+        if (modifyLessonBasicInfoVO.getName() != null) {
+            map.put("name", info.getName());
         }
-        if (modifyLessonBasicInfoVO.getIntroduce()!=null){
-            map.put("introduce",info.getIntroduce());
+        if (modifyLessonBasicInfoVO.getIntroduce() != null) {
+            map.put("introduce", info.getIntroduce());
         }
-        if (modifyLessonBasicInfoVO.getCover()!=null){
-            map.put("cover",info.getCover());
+        if (modifyLessonBasicInfoVO.getCover() != null) {
+            map.put("cover", info.getCover());
         }
-        redisCacheUtils.setCacheMap(RedisConstants.LESSON_INFO_KEY+info.getId(),map);
+        redisCacheUtils.setCacheMap(RedisConstants.LESSON_INFO_KEY + info.getId(), map);
         return Result.ok(info);
     }
 
@@ -302,8 +303,8 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     @Override
     public Result getIdentity(Long lessonId) {
         // 1.校验lessonId
-        if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程id格式错误");
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
         }
 
         Long userId = UserHolderUtils.getUserId();
@@ -312,11 +313,11 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         // 2.1 查询课程创建者的id
         Long creatorId = lessonMapper.selectCreatorIdById(lessonId);
         // 2.2 为空说明课程不存在
-        if (creatorId==null){
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"课程不存在");
+        if (creatorId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "课程不存在");
         }
         // 2.3 相等则说明是创建者
-        if (creatorId.longValue()==userId.longValue()){
+        if (creatorId.longValue() == userId.longValue()) {
             return Result.ok(EduConstants.LESSON_IDENTITY_CREATOR);
         }
 
@@ -325,7 +326,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
                 .eq(LessonTch::getLessonId, lessonId)
                 .eq(LessonTch::getUserId, userId));
         // 存在说明是教师
-        if (count != 0){
+        if (count != 0) {
             return Result.ok(EduConstants.LESSON_IDENTITY_TCH);
         }
 
@@ -338,12 +339,12 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     @Override
     public Result getChapterAndSectionInfo(Long lessonId) {
         // 1.校验lessonId
-        if (RegexUtils.isSnowIdInvalid(lessonId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程id格式错误");
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
         }
         // 2.判断课程是否存在
         boolean exists = lessonMapper.exists(new LambdaQueryWrapper<Lesson>().eq(Lesson::getId, lessonId));
-        if (!exists){
+        if (!exists) {
             return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "课程不存在");
         }
         // 3.查询章节信息

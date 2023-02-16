@@ -2,7 +2,10 @@ package com.zhulang.waveedu.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 import static com.zhulang.waveedu.common.constant.HttpStatus.HTTP_INTERNAL_ERROR;
 import static com.zhulang.waveedu.common.constant.HttpStatus.HTTP_OK;
@@ -16,8 +19,9 @@ import static com.zhulang.waveedu.common.constant.HttpStatus.HTTP_OK;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Result {
+public class Result implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
