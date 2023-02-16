@@ -31,4 +31,12 @@ public class EduConstants {
     public static final Integer LESSON_IDENTITY_COMMON = 1;
     public static final Integer LESSON_IDENTITY_TCH = 2;
     public static final Integer LESSON_IDENTITY_CREATOR = 3;
+
+    /**
+     * 课程小节的文件类型
+     * 0：视频
+     * 1：其它
+     */
+    public static final Integer LESSON_SECTION_FILE_TYPE_VIDEO = 0;
+    public static final Integer LESSON_SECTION_FILE_TYPE_OTHER = 1;
 }

@@ -7,4 +7,12 @@
         FROM `edu_lesson_section_file`
         WHERE id = #{id}
     </select>
+    <select id="selectFileInfoBySectionIdAndType"
+            resultType="com.zhulang.waveedu.edu.query.SectionFileInfoQuery">
+        SELECT `id`, `file_name`, `file_path`, `file_format`, `file_format_size`
+        FROM `edu_lesson_section_file`
+        WHERE section_id = #{sectionId}
+          AND `type` = #{type}
+        ORDER BY `create_time`
+    </select>
 </mapper>

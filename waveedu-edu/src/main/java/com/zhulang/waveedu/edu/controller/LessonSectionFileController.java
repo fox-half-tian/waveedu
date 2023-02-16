@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 
 /**
  * <p>
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/lesson-section-file")
+@Validated
 public class LessonSectionFileController {
     @Resource
     private LessonSectionFileService lessonSectionFileService;
@@ -56,12 +58,13 @@ public class LessonSectionFileController {
 
     /**
      * 获取某小节的资料列表
+     * 信息：文件id,文件名，文件路径，文件格式大小，文件格式
      *
      * @param sectionId 小节id
      * @return 返回两个列表，第一歌列表是视频，第二个列表是资料
      */
-    @GetMapping("/get/section/list")
-    public Result getSectionList(@RequestParam("sectionId")Integer sectionId){
-        return null;
+    @GetMapping("/get/section/fileList")
+    public Result getSectionFileList(@RequestParam("sectionId")Integer sectionId){
+        return lessonSectionFileService.getSectionFileList(sectionId);
     }
 }

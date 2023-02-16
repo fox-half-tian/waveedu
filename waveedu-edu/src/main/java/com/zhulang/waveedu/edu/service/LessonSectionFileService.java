@@ -30,4 +30,12 @@ public interface LessonSectionFileService extends IService<LessonSectionFile> {
      * @return 删除状况
      */
     Result removeFile(Integer fileId);
+
+    /**
+     * 获取某小节的资料列表
+     *
+     * @param sectionId 小节id
+     * @return 返回两个列表，第一歌列表是视频，第二个列表是资料
+     */
+    Result getSectionFileList(Integer sectionId);
 }

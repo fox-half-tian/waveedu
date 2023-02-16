@@ -5,20 +5,20 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.common.util.WaveStrUtils;
-import com.zhulang.waveedu.edu.dao.LessonSectionMapper;
-import com.zhulang.waveedu.edu.po.LessonFile;
+import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonSectionFile;
 import com.zhulang.waveedu.edu.dao.LessonSectionFileMapper;
+import com.zhulang.waveedu.edu.query.SectionFileInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonSectionFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonSectionService;
 import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>
@@ -53,9 +53,9 @@ public class LessonSectionFileServiceImpl extends ServiceImpl<LessonSectionFileM
             // 判断类型
             if ("video".equals(lessonSectionFile.getFileFormat().split("/")[0])) {
                 // 将类型设置为0-视频
-                lessonSectionFile.setType(0);
-            }else{
-                lessonSectionFile.setType(1);
+                lessonSectionFile.setType(EduConstants.LESSON_SECTION_FILE_TYPE_VIDEO);
+            } else {
+                lessonSectionFile.setType(EduConstants.LESSON_SECTION_FILE_TYPE_OTHER);
             }
 
         } catch (Exception e) {
@@ -86,5 +86,22 @@ public class LessonSectionFileServiceImpl extends ServiceImpl<LessonSectionFileM
         // 3.删除文件
         int recordCount = lessonSectionFileMapper.deleteById(fileId);
         return recordCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "找不到该文件");
+    }
+
+    @Override
+    public Result getSectionFileList(Integer sectionId) {
+        // 0.校验Id
+        if (sectionId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "小节id校验错误");
+        }
+        // 1.获取视频信息列表
+        List<SectionFileInfoQuery> videoList = lessonSectionFileMapper.selectFileInfoBySectionIdAndType(sectionId, EduConstants.LESSON_SECTION_FILE_TYPE_VIDEO);
+        // 2.获取其它信息列表
+        List<SectionFileInfoQuery> otherList = lessonSectionFileMapper.selectFileInfoBySectionIdAndType(sectionId, EduConstants.LESSON_SECTION_FILE_TYPE_OTHER);
+        // 3.返回
+        HashMap<String, List<SectionFileInfoQuery>> map = new HashMap<>(2);
+        map.put("video", videoList);
+        map.put("other", otherList);
+        return Result.ok(map);
     }
 }
