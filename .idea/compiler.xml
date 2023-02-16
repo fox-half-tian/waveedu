@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="waveedu-service" />
         <module name="waveedu-basic" />
+        <module name="waveedu-dispatch" />
         <module name="waveedu-common" />
         <module name="waveedu-edu" />
         <module name="waveedu-generator" />
@@ -19,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="waveedu-basic" options="-parameters" />
       <module name="waveedu-common" options="" />
+      <module name="waveedu-dispatch" options="-parameters" />
       <module name="waveedu-edu" options="-parameters" />
       <module name="waveedu-service" options="-parameters" />
     </option>

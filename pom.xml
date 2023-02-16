@@ -19,6 +19,7 @@
         <module>waveedu-service</module>
         <module>waveedu-edu</module>
         <module>waveedu-generator</module>
+        <module>waveedu-dispatch</module>
     </modules>
 
 </project>
