@@ -63,5 +63,5 @@ public class LessonSectionController {
     public Result modifySectionName(@Validated @RequestBody ModifySectionNameVO modifySectionNameVO){
         return lessonSectionService.modifySectionName(modifySectionNameVO.getSectionId(),modifySectionNameVO.getSectionName());
     }
-
+    
 }
