@@ -1,16 +1,14 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonSectionFileService;
 import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -30,14 +28,40 @@ public class LessonSectionFileController {
 
 
     /**
-     * 保存小节的视频资料
+     * 保存小节的资料
      *
      * @param saveSectionFileVO 小节id + 文件名  + 文件加密信息
      * @return 保存成功-返回该资料的Id
      */
-    @PostMapping("/save/videoFile")
-    public Result saveVideoFile(@Validated @RequestBody SaveSectionFileVO saveSectionFileVO){
+    @PostMapping("/save/file")
+    public Result saveFile(@Validated @RequestBody SaveSectionFileVO saveSectionFileVO){
         saveSectionFileVO.setUserId(UserHolderUtils.getUserId());
-        return lessonSectionFileService.saveVideoFile(saveSectionFileVO);
+        return lessonSectionFileService.saveFile(saveSectionFileVO);
+    }
+
+    /**
+     * 删除小节的视频资料
+     *
+     * @param object 资料Id
+     * @return 删除状况
+     */
+    @DeleteMapping("/del/file")
+    public Result delVideoFile(@RequestBody JSONObject object){
+        try {
+            return lessonSectionFileService.removeFile(Integer.parseUnsignedInt(object.getString("fileId")));
+        }catch (Exception e){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id校验出错");
+        }
+    }
+
+    /**
+     * 获取某小节的资料列表
+     *
+     * @param sectionId 小节id
+     * @return 返回两个列表，第一歌列表是视频，第二个列表是资料
+     */
+    @GetMapping("/get/section/list")
+    public Result getSectionList(@RequestParam("sectionId")Integer sectionId){
+        return null;
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.dao.LessonSectionMapper;
 import com.zhulang.waveedu.edu.po.LessonFile;
@@ -36,7 +37,7 @@ public class LessonSectionFileServiceImpl extends ServiceImpl<LessonSectionFileM
 
 
     @Override
-    public Result saveVideoFile(SaveSectionFileVO saveSectionFileVO) {
+    public Result saveFile(SaveSectionFileVO saveSectionFileVO) {
         // 1.判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
         Result result = lessonSectionService.isLessonTch(saveSectionFileVO.getSectionId(), saveSectionFileVO.getUserId());
         if (result != null) {
@@ -45,18 +46,20 @@ public class LessonSectionFileServiceImpl extends ServiceImpl<LessonSectionFileM
         // 2.解密文件信息
         LessonSectionFile lessonSectionFile;
         try {
-            lessonSectionFile = JSON.parseObject(CipherUtils.decrypt(saveSectionFileVO.getFileInfo()),LessonSectionFile.class);
-            if (lessonSectionFile==null){
-                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"错误的文件信息");
+            lessonSectionFile = JSON.parseObject(CipherUtils.decrypt(saveSectionFileVO.getFileInfo()), LessonSectionFile.class);
+            if (lessonSectionFile == null) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
             }
-            // 如果不是video，则上传出错
-            if (!"video".equals(lessonSectionFile.getFileFormat().split("/")[0])){
-                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"错误的文件信息");
+            // 判断类型
+            if ("video".equals(lessonSectionFile.getFileFormat().split("/")[0])) {
+                // 将类型设置为0-视频
+                lessonSectionFile.setType(0);
+            }else{
+                lessonSectionFile.setType(1);
             }
-            // 将类型设置为0-视频
-            lessonSectionFile.setType(0);
-        }catch (Exception e){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"错误的文件信息");
+
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
         }
         // 3.封装信息
         BeanUtils.copyProperties(saveSectionFileVO, lessonSectionFile);
@@ -66,5 +69,22 @@ public class LessonSectionFileServiceImpl extends ServiceImpl<LessonSectionFileM
         lessonSectionFileMapper.insert(lessonSectionFile);
         // 6.返回
         return Result.ok(lessonSectionFile.getId());
+    }
+
+    @Override
+    public Result removeFile(Integer fileId) {
+        // 1.判断文件是否存在，并获取到 sectionId
+        Integer sectionId = lessonSectionFileMapper.selectSectionIdById(fileId);
+        if (sectionId == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "找不到该文件");
+        }
+        // 2.判断是否是教师团队成员，并一带判断小节、章节、课程是否存在
+        Result result = lessonSectionService.isLessonTch(sectionId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+        // 3.删除文件
+        int recordCount = lessonSectionFileMapper.deleteById(fileId);
+        return recordCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "找不到该文件");
     }
 }

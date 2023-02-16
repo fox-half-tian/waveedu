@@ -16,10 +16,18 @@ import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
 public interface LessonSectionFileService extends IService<LessonSectionFile> {
 
     /**
-     * 保存小节的视频资料
+     * 保存小节的资料
      *
      * @param saveSectionFileVO 用户id + 小节id + 文件名  + 文件加密信息
      * @return 保存结果
      */
-    Result saveVideoFile(SaveSectionFileVO saveSectionFileVO);
+    Result saveFile(SaveSectionFileVO saveSectionFileVO);
+
+    /**
+     * 删除小节的资料
+     *
+     * @param fileId 资料Id
+     * @return 删除状况
+     */
+    Result removeFile(Integer fileId);
 }
