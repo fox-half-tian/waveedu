@@ -1,9 +1,11 @@
 package com.zhulang.waveedu.edu.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonTchService;
+import com.zhulang.waveedu.edu.vo.InviteCodeVO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,13 +27,16 @@ public class LessonTchController {
     /**
      * 通过邀请码加入教师团队
      *
-     * @param object 邀请码
+     * @param inviteCodeVO 课程id + 课程真实邀请码
      * @return 是否加入
      */
     @PostMapping("/joinTchTeam")
-    public Result joinTchTeam(@RequestBody JSONObject object) {
-        String encryptCode = object.getString("code");
-        return lessonTchService.joinTchTeam(encryptCode);
+    public Result joinTchTeam(@Validated @RequestBody InviteCodeVO inviteCodeVO) {
+        try {
+            return lessonTchService.joinTchTeam(inviteCodeVO.getId(),inviteCodeVO.getInviteCode());
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效邀请码");
+        }
     }
 
     /**

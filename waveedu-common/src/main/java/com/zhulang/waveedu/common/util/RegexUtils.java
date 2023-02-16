@@ -111,6 +111,11 @@ public class RegexUtils {
          * 课程小节名正则，1-24个字符，不允许\n
          */
         public static final String LESSON_SECTION_NAME_REGEX = "^.{1,24}$";
+        /**
+         * 邀请码正则，a-z 0-9 的六位
+         */
+        public static final String INVITE_CODE_REGEX = "^[0-9a-z]{6}$";
+
     }
 
     /**

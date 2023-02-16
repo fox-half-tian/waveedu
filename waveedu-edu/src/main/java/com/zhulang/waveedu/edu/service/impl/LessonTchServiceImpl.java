@@ -43,43 +43,23 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
     }
 
     @Override
-    public Result joinTchTeam(String encryptCode) {
-        // 1.判断邀请码是否为空
-        if (!StringUtils.hasText(encryptCode)) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
-        }
-        // 3.解密邀请码
-        String codeInfo = CipherUtils.decrypt(encryptCode);
-        String[] decrypt = WaveStrUtils.strSplitToArr(codeInfo, "-");
-        // 4.为空说明无效
-        if (decrypt == null) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
-        }
-        // 5.获取 课程id 和 教学邀请码
-        Long lessonId;
-        String tchInviteCode;
-        try {
-            lessonId = Long.parseLong(decrypt[0]);
-            tchInviteCode = decrypt[1];
-        } catch (Exception e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
-        }
-        // 6.获取课程的教学邀请码信息
+    public Result joinTchTeam(Long lessonId,String inviteCode) {
+        // 1.获取课程的教学邀请码信息
         TchInviteCodeQuery info = lessonService.getTchInviteCodeById(lessonId);
-        // 7.获取为空 或 禁用 或 邀请码不对-> 返回前端
-        if (info == null || info.getCodeIsForbidden() == 1 || !info.getTchInviteCode().equals(tchInviteCode)) {
+        // 2.获取为空 或 禁用 或 邀请码不对-> 返回前端
+        if (info == null || info.getCodeIsForbidden() == 1 || !info.getTchInviteCode().equals(inviteCode)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
         }
-        // 8.判断是否已经存在教师团队中，已在 -> 返回前端
+        // 3.判断是否已经存在教师团队中，已在 -> 返回前端
         if (isExistByLessonAndUser(lessonId, UserHolderUtils.getUserId())) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "已加入该课程教学团队，勿重复操作");
         }
-        // 9.加入团队
+        // 4.加入团队
         LessonTch lessonTch = new LessonTch();
         lessonTch.setLessonId(lessonId);
         lessonTch.setUserId(UserHolderUtils.getUserId());
         this.save(lessonTch);
-        // 10.成功返回，将课程id返回
+        // 5.成功返回，将课程id返回
         return Result.ok(lessonId);
     }
 

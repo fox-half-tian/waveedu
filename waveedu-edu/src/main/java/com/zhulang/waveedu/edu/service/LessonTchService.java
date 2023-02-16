@@ -28,10 +28,11 @@ public interface LessonTchService extends IService<LessonTch> {
     /**
      * 通过邀请码加入教师团队
      *
-     * @param code 邀请码
+     * @param lessonId 课程id
+     * @param inviteCode 邀请码
      * @return 是否加入
      */
-    Result joinTchTeam(String code);
+    Result joinTchTeam(Long lessonId,String inviteCode);
 
     /**
      * 判断是否为该课程的教师成员
