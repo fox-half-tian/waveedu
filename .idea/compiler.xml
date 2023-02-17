@@ -7,12 +7,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="xxl-job-core" />
+        <module name="waveedu-dispatch" />
+        <module name="waveedu-edu" />
+        <module name="xxl-job-executor-sample-frameless" />
         <module name="waveedu-service" />
         <module name="waveedu-basic" />
-        <module name="waveedu-dispatch" />
         <module name="waveedu-common" />
-        <module name="waveedu-edu" />
         <module name="waveedu-generator" />
+        <module name="xxl-job-executor-sample-springboot" />
+        <module name="xxl-job-admin" />
       </profile>
     </annotationProcessing>
   </component>

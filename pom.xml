@@ -20,6 +20,7 @@
         <module>waveedu-edu</module>
         <module>waveedu-generator</module>
         <module>waveedu-dispatch</module>
+        <module>waveedu-xxl-job</module>
     </modules>
 
 </project>
