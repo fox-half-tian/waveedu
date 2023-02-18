@@ -20,4 +20,9 @@
           AND is_deleted = 0
         LIMIT 1
     </select>
+    <select id="selectPhoneById" resultType="java.lang.String">
+        SELECT `phone`
+        FROM `basic_user`
+        WHERE `id` = #{id}
+    </select>
 </mapper>

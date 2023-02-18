@@ -27,4 +27,12 @@ public interface UserMapper extends BaseMapper<User> {
      * @return 用户id+password+status
      */
     UserIdAndPasswordAndStatusQuery selectIdAndPasswordAndStatusByPhone(@Param("phone") String phone);
+
+    /**
+     * 根据用户id 查询手机号
+     *
+     * @param id 用户id
+     * @return 手机号
+     */
+    String selectPhoneById(@Param("id") Long id);
 }

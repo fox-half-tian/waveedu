@@ -34,12 +34,4 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return 头像+姓名
      */
     Result getSelfSimpleInfo();
-
-/*
-    /**
-     * 通过用户名来获取id
-     * @param name
-     * @return id
-    Result getIdByName(String name);
-*/
 }

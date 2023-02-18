@@ -288,8 +288,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 拿到注销原因
         String reason = "";
         if (StringUtils.hasText(logoffVO.getReason())) {
-            // 如果是合法字符串，就去除空白符
-            reason = WaveStrUtils.removeBlank(logoffVO.getReason());
+            // 如果是合法字符串，就去除前后空白符
+            reason = logoffVO.getReason().trim();
         }
         Long userId = UserHolderUtils.getUserId();
         String lockKey = RedisConstants.LOCK_LOGOFF_USER_KEY + userId;
@@ -338,6 +338,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             Logoff logoff = new Logoff();
             // 用户id
             logoff.setUserId(userId);
+            // 手机号
+            logoff.setPhone(userMapper.selectPhoneById(userId));
             // 冻结开始的时间
             logoff.setLogoffTime(LocalDateTime.now());
             // 截止时间

@@ -73,8 +73,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Result sendUserLogoffCode() {
         Long userId = UserHolderUtils.getUserId();
 
-        // 1.数据库查询该用户的手机号
+        // 1.数据库查询该用户的手机号（验证了是否删除与状态）
         String phone = userMapper.selectPhoneById(userId);
+        if (phone==null){
+            return Result.error(HttpStatus.HTTP_LOGIN_EXPIRE.getCode(),"用户被冻结或不存在");
+        }
 
         String key = RedisConstants.LOGOFF_USER_CODE_KEY + userId;
 
@@ -96,7 +99,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCacheUtils.setCacheObject(key,code+",0",RedisConstants.LOGOFF_USER_CODE_TTL);
 
         // 6.发送短信到手机
-        // todo 测试阶段暂不发送 boolean result = smsTemplateUtils.sendLogoffCode(phone, code);
+//         todo 测试阶段暂不发送 boolean result = smsTemplateUtils.sendLogoffCode(phone, code);
         // 默认为 true
         boolean result = true;
         if(!result){
