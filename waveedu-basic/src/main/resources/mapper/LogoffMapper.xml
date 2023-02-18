@@ -5,4 +5,11 @@
 
 <mapper namespace="com.zhulang.waveedu.basic.dao.LogoffMapper">
 
+    <select id="getOneOfOverEndTime" resultType="com.zhulang.waveedu.basic.query.LogoffRecordOverEndTimeQuery">
+        SELECT `user_id`,`phone`,`logoff_time`,`end_time`,`reason`
+        FROM `basic_logoff`
+        WHERE `is_deleted` = 0
+        AND `end_time`<= NOW()
+        LIMIT 1
+    </select>
 </mapper>

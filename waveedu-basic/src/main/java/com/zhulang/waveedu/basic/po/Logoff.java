@@ -33,6 +33,10 @@ public class Logoff implements Serializable {
      * 用户id
      */
     private Long userId;
+    /**
+     * 电话
+     */
+    private String phone;
 
     /**
      * 注销原因，最多255个字符
@@ -47,6 +51,11 @@ public class Logoff implements Serializable {
      * 截止时间
      */
     private LocalDateTime endTime;
+    /**
+     * 是否已删除，1表示删除，0表示未删除
+     */
+    @TableLogic
+    private Integer isDeleted;
     /**
      * 创建时间
      */
