@@ -9,7 +9,7 @@
         SELECT `user_id`,`phone`,`logoff_time`,`end_time`,`reason`
         FROM `basic_logoff`
         WHERE `is_deleted` = 0
-        AND `end_time`<= NOW()
+        AND `end_time` &lt;= NOW()
         LIMIT 1
     </select>
 </mapper>

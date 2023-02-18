@@ -1,10 +1,7 @@
 package com.zhulang.waveedu.basic.component;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xxl.job.core.handler.annotation.XxlJob;
-import com.zhulang.waveedu.basic.po.Logoff;
 import com.zhulang.waveedu.basic.po.LogoffInfo;
 import com.zhulang.waveedu.basic.query.LogoffRecordOverEndTimeQuery;
 import com.zhulang.waveedu.basic.service.LogoffInfoService;
@@ -17,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 /**
+ * 分布式任务调度&定时任务
+ *
  * @author 狐狸半面添
  * @create 2023-02-18 22:21
  */
@@ -28,8 +27,6 @@ public class XxlJobScheduledTasks {
     private LogoffInfoService logoffInfoService;
     @Resource
     private UserService userService;
-    @Resource
-    private XxlJobScheduledTasks proxy = (XxlJobScheduledTasks)AopContext.currentProxy();
 
     /**
      * 检查注销后可恢复的截止期限
@@ -38,6 +35,7 @@ public class XxlJobScheduledTasks {
      */
     @XxlJob("demoJobHandler")
     public void logoffCheckExpire() {
+        XxlJobScheduledTasks proxy = (XxlJobScheduledTasks)AopContext.currentProxy();
         while (true) {
             // 1.每次查询一条超过了截止时间的记录
             LogoffRecordOverEndTimeQuery query = logoffService.getOneOfOverEndTime();
@@ -45,7 +43,6 @@ public class XxlJobScheduledTasks {
             if (query == null) {
                 return;
             }
-
             // 3.如果查询到了，将注销用户信息放入到 `basic_logoff_info` 中，并修改user表的记录状态（逻辑删除）
             proxy.saveLogoffInfoAndUpdateUserStatus(query);
         }

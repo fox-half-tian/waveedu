@@ -252,7 +252,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             // 校验成功则继续往后走
 
-
             // 9.判断是否在注销冻结期
             if (userQuery.getStatus() == 1) {
                 // 只能通过手机号验证码方式登录来解除注销
