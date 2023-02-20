@@ -81,7 +81,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         // 1.查询redis中是否存在课程信息
         Map<String, Object> cacheLessonMap = redisCacheUtils.getCacheMap(lessonInfoKey);
         // 2.如果不存在，就去数据库中查找
-        if (cacheLessonMap == null) {
+        if (cacheLessonMap == null || cacheLessonMap.size() == 0) {
             // 2.1 查询信息
             LessonBasicInfoQuery info = lessonMapper.selectBasicInfo(lessonId);
             // 2.2 不存在，则直接返回

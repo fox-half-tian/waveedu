@@ -38,7 +38,7 @@ public class XxlJobScheduledTasks {
      * 过期策略：忽略
      * 阻塞处理策略：丢弃后续调度
      */
-    @XxlJob("logoffCheckExpireJobHandler")
+    // todo 暂时取消定时任务 @XxlJob("logoffCheckExpireJobHandler")
     public void logoffCheckExpire() {
         XxlJobScheduledTasks proxy = (XxlJobScheduledTasks)AopContext.currentProxy();
         while (true) {
