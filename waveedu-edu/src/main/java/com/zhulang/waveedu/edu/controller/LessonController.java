@@ -90,12 +90,12 @@ public class LessonController {
     /**
      * 删除课程
      *
-     * @param object 课程id
+     * @param lessonId 课程id
      * @return 状况
      */
-    @DeleteMapping("/delLesson")
-    public Result delLesson(@RequestBody JSONObject object){
-        return lessonService.removeLesson(Long.parseLong(object.getString("lessonId")));
+    @DeleteMapping("/delLesson/{lessonId}")
+    public Result delLesson(@PathVariable("lessonId") Long lessonId){
+        return lessonService.removeLesson(lessonId);
     }
 
     /**
