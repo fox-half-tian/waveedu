@@ -93,8 +93,8 @@ public class LessonController {
      * @param lessonId 课程id
      * @return 状况
      */
-    @DeleteMapping("/delLesson/{lessonId}")
-    public Result delLesson(@PathVariable("lessonId") Long lessonId){
+    @DeleteMapping("/delLesson")
+    public Result delLesson(@RequestParam("lessonId") Long lessonId){
         return lessonService.removeLesson(lessonId);
     }
 
