@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author 狐狸半面添
  * @create 2023-02-18 22:50
  */
-@Configuration
+// @Configuration
 public class XxlJobConfig {
     private Logger logger = LoggerFactory.getLogger(XxlJobConfig.class);
 
