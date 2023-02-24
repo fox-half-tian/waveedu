@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
@@ -10,8 +11,11 @@ import com.zhulang.waveedu.edu.dao.LessonClassMapper;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonTchService;
+import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -55,5 +59,29 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         lessonClassMapper.insert(lessonClass);
         // 7.返回班级id
         return Result.ok(lessonClass.getId());
+    }
+
+    @Override
+    public Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO) {
+        Long userId = UserHolderUtils.getUserId();
+        // 1.判断是否为该班级的创建者
+        Integer exist = lessonClassMapper.isCreatorByUserIdOfId(modifyClassBasicInfoVO.getId(), userId);
+        if (exist==null){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.如果 name 存在，则去除前后空格
+        if (modifyClassBasicInfoVO.getName()!=null){
+            if (!StringUtils.hasText(modifyClassBasicInfoVO.getName())){
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级名格式错误");
+            }
+            modifyClassBasicInfoVO.setName(modifyClassBasicInfoVO.getName().trim());
+        }
+        // 3.属性转换
+        LessonClass lessonClass = BeanUtil.copyProperties(modifyClassBasicInfoVO, LessonClass.class);
+        // 4.修改信息
+        lessonClassMapper.updateById(lessonClass);
+        // 5.返回
+        return Result.ok();
+
     }
 }

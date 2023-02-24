@@ -3,14 +3,12 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassService;
+import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -37,6 +35,17 @@ public class LessonClassController {
     @PostMapping("/save")
     public Result saveClass(@Validated @RequestBody SaveClassVO saveClassVO){
         return lessonClassService.saveClass(saveClassVO);
+    }
+
+    /**
+     * 修改班级基本信息：name 和 cover
+     *
+     * @param modifyClassBasicInfoVO name + cover + id
+     * @return 修改情况
+     */
+    @PutMapping("/modify/basicInfo")
+    public Result modifyBasicInfo(@Validated @RequestBody ModifyClassBasicInfoVO modifyClassBasicInfoVO){
+        return lessonClassService.modifyBasicInfo(modifyClassBasicInfoVO);
     }
 
 }

@@ -53,12 +53,13 @@ public class LessonClass implements Serializable {
     /**
      * 是否删除，0表示否，1表示删除
      */
-    private Boolean isDeleted;
+    @TableLogic
+    private Integer isDeleted;
 
     /**
      * 是否开启结课，成绩将不再变化，0表示不开启，1表示开启
      */
-    private Boolean isEndClass;
+    private Integer isEndClass;
 
     /**
      * 所属课程id
@@ -68,7 +69,7 @@ public class LessonClass implements Serializable {
     /**
      * 是否禁止加入班级，0表示否，1表示是
      */
-    private Boolean isForbidJoin;
+    private Integer isForbidJoin;
 
     /**
      * 加入班级邀请码（随机六位）

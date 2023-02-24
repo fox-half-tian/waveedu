@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
 
 /**
@@ -22,4 +23,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 班级Id
      */
     Result saveClass(SaveClassVO saveClassVO);
+
+    /**
+     * 修改班级基本信息：name 和 cover
+     *
+     * @param modifyClassBasicInfoVO name + cover + id
+     * @return 修改情况
+     */
+    Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO);
 }
