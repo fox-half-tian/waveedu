@@ -25,10 +25,11 @@ public interface LessonClassService extends IService<LessonClass> {
     Result saveClass(SaveClassVO saveClassVO);
 
     /**
-     * 修改班级基本信息：name 和 cover
+     * 修改班级基本信息：班级名 , 封面 ，是否结课，是否禁止加入班级
      *
-     * @param modifyClassBasicInfoVO name + cover + id
+     * @param modifyClassBasicInfoVO name + cover + isEndClass +isForbidJoin + id
      * @return 修改情况
      */
     Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO);
+
 }

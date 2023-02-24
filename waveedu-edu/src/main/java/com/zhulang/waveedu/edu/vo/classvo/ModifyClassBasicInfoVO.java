@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.valid.SnowIdValidate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -30,6 +31,18 @@ public class ModifyClassBasicInfoVO {
      */
     @Pattern(regexp = RegexUtils.RegexPatterns.IMAGE_REGEX,message = "图片链接错误")
     private String cover;
+
+    /**
+     * 是否开启结课
+     */
+    @Range(min = 0,max = 1,message = "参数错误")
+    private Integer isEndClass;
+
+    /**
+     * 是否禁止加入班级
+     */
+    @Range(min = 0,max = 1,message = "参数错误")
+    private Integer isForbidJoin;
 
     /**
      * 班级id
