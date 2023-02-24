@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
@@ -33,7 +35,7 @@ public class LessonClassController {
      * @return 班级Id
      */
     @PostMapping("/save")
-    public Result saveClass(@Validated @RequestBody SaveClassVO saveClassVO){
+    public Result saveClass(@Validated @RequestBody SaveClassVO saveClassVO) {
         return lessonClassService.saveClass(saveClassVO);
     }
 
@@ -44,8 +46,23 @@ public class LessonClassController {
      * @return 修改情况
      */
     @PutMapping("/modify/basicInfo")
-    public Result modifyBasicInfo(@Validated @RequestBody ModifyClassBasicInfoVO modifyClassBasicInfoVO){
+    public Result modifyBasicInfo(@Validated @RequestBody ModifyClassBasicInfoVO modifyClassBasicInfoVO) {
         return lessonClassService.modifyBasicInfo(modifyClassBasicInfoVO);
+    }
+
+    /**
+     * 更换邀请码
+     *
+     * @param object 班级id
+     * @return 新的邀请码
+     */
+    @PutMapping("/modify/inviteCode")
+    public Result modifyInviteCode(@RequestBody JSONObject object) {
+        try {
+            return lessonClassService.modifyInviteCode(Long.parseLong(object.getString("classId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
+        }
     }
 
 }

@@ -32,4 +32,11 @@ public interface LessonClassService extends IService<LessonClass> {
      */
     Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO);
 
+    /**
+     * 更换邀请码
+     *
+     * @param classId 班级id
+     * @return 新的邀请码
+     */
+    Result modifyInviteCode(Long classId);
 }

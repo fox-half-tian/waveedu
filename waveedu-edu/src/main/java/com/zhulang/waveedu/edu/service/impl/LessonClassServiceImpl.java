@@ -3,7 +3,9 @@ package com.zhulang.waveedu.edu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.InviteCodeConstants;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
@@ -83,6 +85,29 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         lessonClassMapper.updateById(lessonClass);
         // 5.返回
         return Result.ok();
-
     }
+
+    @Override
+    public Result modifyInviteCode(Long classId) {
+        // 1.判断 classId 格式问题
+        if (RegexUtils.isSnowIdInvalid(classId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        }
+        // 2.判断是否为班级创建者
+        Integer exist = lessonClassMapper.isCreatorByUserIdOfId(classId, UserHolderUtils.getUserId());
+        if (exist==null){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.创建新的邀请码
+        String code = RandomUtil.randomString(6);
+        // 4.修改数据库信息
+        LessonClass lessonClass = new LessonClass();
+        lessonClass.setId(classId);
+        lessonClass.setInviteCode(code);
+        lessonClassMapper.updateById(lessonClass);
+        // 5.加密返回信息
+        return Result.ok(CipherUtils.encrypt(InviteCodeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + classId + "-" + code));
+    }
+
+
 }

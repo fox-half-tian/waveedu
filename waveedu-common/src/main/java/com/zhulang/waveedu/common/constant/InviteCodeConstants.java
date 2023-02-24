@@ -8,5 +8,5 @@ package com.zhulang.waveedu.common.constant;
  */
 public class InviteCodeConstants {
     public static final String LESSON_TCH_TEAM_CODE_TYPE = "0";
-    public static final String LESSON_CLASS_CODE_TYPE = "1";
+    public static final String LESSON_LESSON_CLASS_CODE_TYPE = "1";
 }
