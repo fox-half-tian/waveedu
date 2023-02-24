@@ -39,4 +39,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 新的邀请码
      */
     Result modifyInviteCode(Long classId);
+
+    /**
+     * 获取班级的详细信息，只有创建者可以获取
+     *
+     * @param classId 班级id
+     * @return 详细信息
+     */
+    Result getDetailInfo(Long classId);
 }

@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.InviteCodeConstants;
 import com.zhulang.waveedu.common.entity.Result;
@@ -109,5 +110,20 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         return Result.ok(CipherUtils.encrypt(InviteCodeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + classId + "-" + code));
     }
 
-
+    @Override
+    public Result getDetailInfo(Long classId) {
+        // 1.校验 classId
+        if (RegexUtils.isSnowIdInvalid(classId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        }
+        // 2.根据 创建者 和 classId 获取班级详细信息
+        LambdaQueryWrapper<LessonClass> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LessonClass::getId,classId)
+                .eq(LessonClass::getCreatorId,UserHolderUtils.getUserId());
+        LessonClass lessonClass = lessonClassMapper.selectOne(wrapper);
+        if (lessonClass==null){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        return Result.ok(lessonClass);
+    }
 }

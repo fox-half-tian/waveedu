@@ -65,4 +65,29 @@ public class LessonClassController {
         }
     }
 
+    /**
+     * 获取班级的详细信息，只有创建者可以获取
+     *
+     * @param classId 班级id
+     * @return 详细信息
+     */
+    @GetMapping("/get/detailInfo")
+    public Result getDetailInfo(@RequestParam("classId")Long classId){
+        return lessonClassService.getDetailInfo(classId);
+    }
+
+
+
+    /**
+     * 获取班级基本信息--》非创建者可以查看的信息
+     *
+     * @param classId 班级id
+     * @return 基本信息
+     */
+    @GetMapping("/get/basicInfo")
+    public Result getBasicInfo(@RequestParam("classId")Long classId){
+        return null;
+    }
+
+
 }
