@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
-import com.zhulang.waveedu.common.constant.InviteCodeConstants;
+import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.*;
@@ -127,7 +127,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         }
 
         // 6.对邀请码进行处理
-        String encryptCode = CipherUtils.encrypt(InviteCodeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + tchInviteCodeQuery.getTchInviteCode());
+        String encryptCode = CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + tchInviteCodeQuery.getTchInviteCode());
 
         // 6.获取邀请码，成功返回
         return Result.ok(encryptCode);
@@ -171,7 +171,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
                 .eq(Lesson::getId, lessonId);
         this.update(wrapper);
         // 9.返回给前端加密后的邀请码
-        return Result.ok(CipherUtils.encrypt(InviteCodeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + code));
+        return Result.ok(CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_TCH_TEAM_CODE_TYPE + "-" + lessonId + "-" + code));
     }
 
     @Override

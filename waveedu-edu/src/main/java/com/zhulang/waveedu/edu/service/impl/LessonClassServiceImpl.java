@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
-import com.zhulang.waveedu.common.constant.InviteCodeConstants;
+import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
@@ -114,7 +114,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         lessonClass.setInviteCode(code);
         lessonClassMapper.updateById(lessonClass);
         // 5.加密返回信息
-        return Result.ok(CipherUtils.encrypt(InviteCodeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + classId + "-" + code));
+        return Result.ok(CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + classId + "-" + code));
     }
 
     @Override

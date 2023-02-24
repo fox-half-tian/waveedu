@@ -2,10 +2,11 @@ package com.zhulang.waveedu.dispatch.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.HttpStatus;
-import com.zhulang.waveedu.common.constant.InviteCodeConstants;
+import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.dispatch.constant.InviteCodeUrlConstants;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,7 @@ import static com.zhulang.waveedu.common.constant.CommonConstants.REQUEST_HEADER
 @RestController
 @RequestMapping("/invite-code")
 public class InviteCodeController {
-    public static final String EDU_SERVICE_URL = "http://localhost:9201";
-    public static final String LESSON_TCH_INVITE_CODE_CHILD_PATH =  "/edu/lesson-tch/joinTchTeam";
+
 
 
     @Resource
@@ -50,9 +50,13 @@ public class InviteCodeController {
             String[] info = WaveStrUtils.strSplitToArr(encrypt, "-");
             switch (info[0]) {
                 // 教学邀请码，转发至教育模块
-                case InviteCodeConstants.LESSON_TCH_TEAM_CODE_TYPE:
-                    dispatchUrl = EDU_SERVICE_URL;
-                    childPath = LESSON_TCH_INVITE_CODE_CHILD_PATH;
+                case InviteCodeTypeConstants.LESSON_TCH_TEAM_CODE_TYPE:
+                    dispatchUrl = InviteCodeUrlConstants.EDU_SERVICE_URL;
+                    childPath = InviteCodeUrlConstants.LESSON_TCH_INVITE_CODE_CHILD_PATH;
+                    break;
+                case InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE:
+                    dispatchUrl = InviteCodeUrlConstants.EDU_SERVICE_URL;
+                    childPath = InviteCodeUrlConstants.LESSON_CLASS_INVITE_CODE_CHILD_PATH;
                     break;
                 default:
                     return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");

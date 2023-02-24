@@ -6,7 +6,7 @@ package com.zhulang.waveedu.common.constant;
  * @author 狐狸半面添
  * @create 2023-02-17 1:51
  */
-public class InviteCodeConstants {
+public class InviteCodeTypeConstants {
     public static final String LESSON_TCH_TEAM_CODE_TYPE = "0";
     public static final String LESSON_LESSON_CLASS_CODE_TYPE = "1";
 }
