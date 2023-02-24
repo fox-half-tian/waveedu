@@ -19,7 +19,7 @@ import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.query.LessonFileDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonFileSimpleInfoQuery;
-import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
+import com.zhulang.waveedu.edu.vo.lessonfilevo.SaveLessonFileVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

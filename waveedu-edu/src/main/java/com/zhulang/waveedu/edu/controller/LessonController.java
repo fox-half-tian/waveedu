@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.edu.service.LessonService;
-import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
-import com.zhulang.waveedu.edu.vo.SaveLessonVO;
+import com.zhulang.waveedu.edu.vo.lessonvo.ModifyLessonBasicInfoVO;
+import com.zhulang.waveedu.edu.vo.lessonvo.SaveLessonVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

@@ -6,8 +6,8 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.query.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
-import com.zhulang.waveedu.edu.vo.ModifyLessonBasicInfoVO;
-import com.zhulang.waveedu.edu.vo.SaveLessonVO;
+import com.zhulang.waveedu.edu.vo.lessonvo.ModifyLessonBasicInfoVO;
+import com.zhulang.waveedu.edu.vo.lessonvo.SaveLessonVO;
 
 /**
  * 课程表 服务类

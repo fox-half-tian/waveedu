@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonSectionFile;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
+import com.zhulang.waveedu.edu.vo.sectionvo.SaveSectionFileVO;
 
 /**
  * <p>

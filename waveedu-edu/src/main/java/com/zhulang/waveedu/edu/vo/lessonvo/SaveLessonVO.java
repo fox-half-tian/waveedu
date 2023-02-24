@@ -1,32 +1,27 @@
-package com.zhulang.waveedu.edu.vo;
+package com.zhulang.waveedu.edu.vo.lessonvo;
 
 import com.zhulang.waveedu.common.util.RegexUtils;
-import com.zhulang.waveedu.common.valid.SnowIdValidate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 用于修改基本课程信息的封装类
+ * 创建课程的VO
  *
  * @author 狐狸半面添
- * @create 2023-02-12 1:18
+ * @create 2023-02-03 16:27
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ModifyLessonBasicInfoVO {
+@AllArgsConstructor
+public class SaveLessonVO {
     /**
-     * 主键id
+     * 课程名，最多24长度，不允许为空
      */
-    @SnowIdValidate(message = "无效课程id")
-    private Long id;
-    /**
-     * 课程名，最多24长度
-     */
+    @NotBlank(message = "课程名不允许为空")
     @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_NAME_REGEX, message = "只允许非空并且24字内的课程名")
     private String name;
 

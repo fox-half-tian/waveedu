@@ -1,7 +1,6 @@
 package com.zhulang.waveedu.common.util;
 
 import cn.hutool.core.util.StrUtil;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * 校验格式工具类
@@ -115,7 +114,10 @@ public class RegexUtils {
          * 邀请码正则，a-z 0-9 的六位
          */
         public static final String INVITE_CODE_REGEX = "^[0-9a-z]{6}$";
-
+        /**
+         * 课程班级名正则，1-24个字符，不允许\n
+         */
+        public static final String LESSON_CLASS_NAME_REGEX = "^.{1,24}$";
     }
 
     /**

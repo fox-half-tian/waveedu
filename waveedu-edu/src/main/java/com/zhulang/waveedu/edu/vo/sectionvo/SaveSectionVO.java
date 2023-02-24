@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.vo;
+package com.zhulang.waveedu.edu.vo.sectionvo;
 
 import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
@@ -11,15 +11,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
- * 修改章节名的封装类
+ * 保存章节时的封装类
  *
  * @author 狐狸半面添
- * @create 2023-02-16 1:17
+ * @create 2023-02-15 23:56
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyChapterNameVO {
+public class SaveSectionVO {
     /**
      * 章节id
      */
@@ -27,9 +27,9 @@ public class ModifyChapterNameVO {
     @Min(value = 1, message = "章节id格式错误")
     private Integer chapterId;
     /**
-     * 章节name
+     * 小节名，不可超过24长度
      */
-    @NotBlank(message = "章节名不允许为空")
-    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_CHAPTER_NAME_REGEX, message = "章节名不超过24字")
-    private String chapterName;
+    @NotBlank(message = "小节名不允许为空")
+    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_CLASS_NAME_REGEX, message = "小节名不超过24字")
+    private String name;
 }

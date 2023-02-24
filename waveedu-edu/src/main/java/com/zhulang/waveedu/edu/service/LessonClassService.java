@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.edu.service;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
 
 /**
  * <p>
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface LessonClassService extends IService<LessonClass> {
 
+    /**
+     * 保存课程班级
+     *
+     * @param saveClassVO 班级名 + 班级封面 + 课程id
+     * @return 班级Id
+     */
+    Result saveClass(SaveClassVO saveClassVO);
 }

@@ -11,6 +11,12 @@ public class EduConstants {
     public final static String DEFAULT_LESSON_COVER = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/lesson-cover/waveedudefault.png";
 
     /**
+     * 默认的课程班级封面路径
+     */
+    public final static String DEFAULT_LESSON_CLASS_COVER = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/lesson-class-cover/waveedudefault.png";
+
+
+    /**
      * 默认的课程简单文件信息列表最大查询条数
      */
     public static final Integer DEFAULT_LESSON_SIMPLE_FILE_LIST_QUERY_LIMIT = 15;

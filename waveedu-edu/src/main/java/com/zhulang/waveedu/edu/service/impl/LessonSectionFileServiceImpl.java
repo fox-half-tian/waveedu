@@ -12,7 +12,7 @@ import com.zhulang.waveedu.edu.query.SectionFileInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonSectionFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonSectionService;
-import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
+import com.zhulang.waveedu.edu.vo.sectionvo.SaveSectionFileVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

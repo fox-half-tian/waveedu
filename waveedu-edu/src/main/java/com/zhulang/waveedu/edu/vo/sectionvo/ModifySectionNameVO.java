@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.vo;
+package com.zhulang.waveedu.edu.vo.sectionvo;
 
 import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
@@ -31,6 +31,6 @@ public class ModifySectionNameVO {
      * 小节name
      */
     @NotBlank(message = "小节名不允许为空")
-    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_SECTION_NAME_REGEX, message = "小节名不超过24字")
+    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_CLASS_NAME_REGEX, message = "小节名不超过24字")
     private String sectionName;
 }

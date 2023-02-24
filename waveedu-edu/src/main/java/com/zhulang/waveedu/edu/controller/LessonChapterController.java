@@ -4,9 +4,8 @@ package com.zhulang.waveedu.edu.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonChapterService;
-import com.zhulang.waveedu.edu.vo.ModifyChapterNameVO;
-import com.zhulang.waveedu.edu.vo.ModifySectionNameVO;
-import com.zhulang.waveedu.edu.vo.SaveChapterVO;
+import com.zhulang.waveedu.edu.vo.chaptervo.ModifyChapterNameVO;
+import com.zhulang.waveedu.edu.vo.chaptervo.SaveChapterVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

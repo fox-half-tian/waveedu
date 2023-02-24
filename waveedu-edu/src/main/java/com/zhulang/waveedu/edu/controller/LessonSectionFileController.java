@@ -6,7 +6,7 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonSectionFileService;
-import com.zhulang.waveedu.edu.vo.SaveSectionFileVO;
+import com.zhulang.waveedu.edu.vo.sectionvo.SaveSectionFileVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

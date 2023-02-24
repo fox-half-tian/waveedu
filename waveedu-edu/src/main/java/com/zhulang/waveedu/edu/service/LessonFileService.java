@@ -1,12 +1,9 @@
 package com.zhulang.waveedu.edu.service;
 
-import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.vo.SaveLessonFileVO;
-import org.springframework.beans.BeanUtils;
+import com.zhulang.waveedu.edu.vo.lessonfilevo.SaveLessonFileVO;
 
 /**
  * <p>

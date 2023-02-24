@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.vo;
+package com.zhulang.waveedu.edu.vo.lessonfilevo;
 
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.valid.SnowIdValidate;
