@@ -43,8 +43,8 @@ public class InviteCodeController {
      */
     @PostMapping("/identity")
     public Result identity(@RequestBody JSONObject object, HttpServletRequest request) {
-        String encrypt = CipherUtils.decrypt(object.getString("code").trim());
         try {
+            String encrypt = CipherUtils.decrypt(object.getString("code").trim());
             String dispatchUrl;
             String childPath;
             String[] info = WaveStrUtils.strSplitToArr(encrypt, "-");

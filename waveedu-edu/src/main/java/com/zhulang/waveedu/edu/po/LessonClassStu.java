@@ -1,8 +1,6 @@
 package com.zhulang.waveedu.edu.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,57 +43,12 @@ public class LessonClassStu implements Serializable {
     /**
      * 创建时间（加入时间）
      */
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Long getLessonClassId() {
-        return lessonClassId;
-    }
-
-    public void setLessonClassId(Long lessonClassId) {
-        this.lessonClassId = lessonClassId;
-    }
-    public Long getStuId() {
-        return stuId;
-    }
-
-    public void setStuId(Long stuId) {
-        this.stuId = stuId;
-    }
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "LessonClassStu{" +
-            "id=" + id +
-            ", lessonClassId=" + lessonClassId +
-            ", stuId=" + stuId +
-            ", createTime=" + createTime +
-            ", updateTime=" + updateTime +
-        "}";
-    }
 }

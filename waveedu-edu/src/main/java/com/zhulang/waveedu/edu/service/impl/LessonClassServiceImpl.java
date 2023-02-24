@@ -131,6 +131,8 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         if (lessonClass == null) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
+        // 3.加密邀请码
+        lessonClass.setInviteCode(CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + classId + "-" + lessonClass.getInviteCode()));
         return Result.ok(lessonClass);
     }
 
