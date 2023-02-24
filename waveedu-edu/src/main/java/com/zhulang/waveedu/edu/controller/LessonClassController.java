@@ -76,8 +76,6 @@ public class LessonClassController {
         return lessonClassService.getDetailInfo(classId);
     }
 
-
-
     /**
      * 获取班级基本信息--》都可以查看
      *
@@ -88,4 +86,6 @@ public class LessonClassController {
     public Result getBasicInfo(@RequestParam("classId")Long classId){
         return lessonClassService.getBasicInfo(classId);
     }
+
+
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 邀请码与是否禁用 封装类
+ * 教学邀请码与是否禁用 封装类
  *
  * @author 狐狸半面添
  * @create 2023-02-03 22:56

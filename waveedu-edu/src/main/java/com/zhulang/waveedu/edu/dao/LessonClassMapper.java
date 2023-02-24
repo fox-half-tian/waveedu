@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.dao;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -21,7 +22,7 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @param id 班级id
      * @param userId 用户id
      */
-    Integer isCreatorByUserIdOfId(@Param("id") Long id, @Param("userId") Long userId);
+    Integer existByUserIdAndClassId(@Param("id") Long id, @Param("userId") Long userId);
 
 
     /**
@@ -31,4 +32,12 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @return 班级基本信息
      */
     ClassBasicInfoQuery selectBasicInfo(Long classId);
+
+    /**
+     * 查询邀请码与是否禁止加入
+     *
+     * @param id 班级id
+     * @return 信息
+     */
+    LessonClassInviteCodeQuery getInviteCodeById(@Param("id") Long id);
 }

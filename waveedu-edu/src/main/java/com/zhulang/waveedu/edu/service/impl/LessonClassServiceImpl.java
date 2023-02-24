@@ -13,12 +13,12 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +37,12 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     @Resource
     private LessonClassMapper lessonClassMapper;
+
+    @Override
+    public LessonClassInviteCodeQuery getInviteCodeById(Long id) {
+        return lessonClassMapper.getInviteCodeById(id);
+    }
+
     @Resource
     private LessonTchService lessonTchService;
 
@@ -70,14 +76,14 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     public Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO) {
         Long userId = UserHolderUtils.getUserId();
         // 1.判断是否为该班级的创建者
-        Integer exist = lessonClassMapper.isCreatorByUserIdOfId(modifyClassBasicInfoVO.getId(), userId);
-        if (exist==null){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        Integer exist = lessonClassMapper.existByUserIdAndClassId(modifyClassBasicInfoVO.getId(), userId);
+        if (exist == null) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 2.如果 name 存在，则去除前后空格
-        if (modifyClassBasicInfoVO.getName()!=null){
-            if (!StringUtils.hasText(modifyClassBasicInfoVO.getName())){
-                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级名格式错误");
+        if (modifyClassBasicInfoVO.getName() != null) {
+            if (!StringUtils.hasText(modifyClassBasicInfoVO.getName())) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级名格式错误");
             }
             modifyClassBasicInfoVO.setName(modifyClassBasicInfoVO.getName().trim());
         }
@@ -92,13 +98,13 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     @Override
     public Result modifyInviteCode(Long classId) {
         // 1.判断 classId 格式问题
-        if (RegexUtils.isSnowIdInvalid(classId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.判断是否为班级创建者
-        Integer exist = lessonClassMapper.isCreatorByUserIdOfId(classId, UserHolderUtils.getUserId());
-        if (exist==null){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        Integer exist = lessonClassMapper.existByUserIdAndClassId(classId, UserHolderUtils.getUserId());
+        if (exist == null) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 3.创建新的邀请码
         String code = RandomUtil.randomString(6);
@@ -114,16 +120,16 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     @Override
     public Result getDetailInfo(Long classId) {
         // 1.校验 classId
-        if (RegexUtils.isSnowIdInvalid(classId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.根据 创建者 和 classId 获取班级详细信息
         LambdaQueryWrapper<LessonClass> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LessonClass::getId,classId)
-                .eq(LessonClass::getCreatorId,UserHolderUtils.getUserId());
+        wrapper.eq(LessonClass::getId, classId)
+                .eq(LessonClass::getCreatorId, UserHolderUtils.getUserId());
         LessonClass lessonClass = lessonClassMapper.selectOne(wrapper);
-        if (lessonClass==null){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        if (lessonClass == null) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         return Result.ok(lessonClass);
     }
@@ -131,14 +137,21 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     @Override
     public Result getBasicInfo(Long classId) {
         // 1.校验 classId
-        if (RegexUtils.isSnowIdInvalid(classId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.获取班级的基本信息
         ClassBasicInfoQuery query = lessonClassMapper.selectBasicInfo(classId);
-        if (query==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级信息不存在");
+        if (query == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级信息不存在");
         }
         return Result.ok(query);
     }
+
+    @Override
+    public boolean existByUserIdAndClassId(Long userId, Long classId) {
+        return lessonClassMapper.existByUserIdAndClassId(classId, userId) != null;
+    }
+
+
 }
