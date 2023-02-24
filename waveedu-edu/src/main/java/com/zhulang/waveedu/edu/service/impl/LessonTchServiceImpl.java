@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.*;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,8 +61,11 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
         lessonTch.setLessonId(lessonId);
         lessonTch.setUserId(UserHolderUtils.getUserId());
         this.save(lessonTch);
-        // 5.成功返回，将课程id返回
-        return Result.ok(lessonId);
+        // 5.成功返回，将 邀请码类型 和 课程id 返回
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("type", InviteCodeTypeConstants.LESSON_TCH_TEAM_CODE_TYPE);
+        map.put("id",lessonId);
+        return Result.ok(map);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         // 5.加入成功，将 邀请码类型 和 班级id 返回
         HashMap<String, Object> map = new HashMap<>();
         map.put("type", InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE);
-        map.put("classId",classId);
+        map.put("id",classId);
         return Result.ok(map);
     }
 }
