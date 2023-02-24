@@ -9,4 +9,9 @@
           AND `creator_id` = #{userId}
           AND `is_deleted` = 0
     </select>
+    <select id="selectBasicInfo" resultType="com.zhulang.waveedu.edu.query.ClassBasicInfoQuery">
+        SELECT `creator_id`,`name`,`cover`,`num`,`is_end_class`,`lesson_id`,`create_time`
+        FROM `edu_lesson_class`
+        WHERE `id` = #{id}
+    </select>
 </mapper>

@@ -12,6 +12,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
+import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonTchService;
@@ -125,5 +126,19 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         return Result.ok(lessonClass);
+    }
+
+    @Override
+    public Result getBasicInfo(Long classId) {
+        // 1.校验 classId
+        if (RegexUtils.isSnowIdInvalid(classId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        }
+        // 2.获取班级的基本信息
+        ClassBasicInfoQuery query = lessonClassMapper.selectBasicInfo(classId);
+        if (query==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级信息不存在");
+        }
+        return Result.ok(query);
     }
 }

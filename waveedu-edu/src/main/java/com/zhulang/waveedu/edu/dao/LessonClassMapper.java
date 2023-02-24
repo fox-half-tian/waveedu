@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -21,4 +22,13 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @param userId 用户id
      */
     Integer isCreatorByUserIdOfId(@Param("id") Long id, @Param("userId") Long userId);
+
+
+    /**
+     * 查询班级的基本信息：创建者id，班级名，封面，人数，是否结课，课程id，创建时间
+     *
+     * @param classId 课程id
+     * @return 班级基本信息
+     */
+    ClassBasicInfoQuery selectBasicInfo(Long classId);
 }

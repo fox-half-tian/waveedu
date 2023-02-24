@@ -79,15 +79,13 @@ public class LessonClassController {
 
 
     /**
-     * 获取班级基本信息--》非创建者可以查看的信息
+     * 获取班级基本信息--》都可以查看
      *
      * @param classId 班级id
      * @return 基本信息
      */
     @GetMapping("/get/basicInfo")
     public Result getBasicInfo(@RequestParam("classId")Long classId){
-        return null;
+        return lessonClassService.getBasicInfo(classId);
     }
-
-
 }

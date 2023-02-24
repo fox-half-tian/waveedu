@@ -47,4 +47,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 详细信息
      */
     Result getDetailInfo(Long classId);
+
+    /**
+     * 获取班级基本信息--》都可以查看
+     *
+     * @param classId 班级id
+     * @return 基本信息
+     */
+    Result getBasicInfo(Long classId);
 }
