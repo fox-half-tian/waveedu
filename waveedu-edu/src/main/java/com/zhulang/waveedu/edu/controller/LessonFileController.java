@@ -94,15 +94,17 @@ public class LessonFileController {
     }
 
     /**
-     * 增加一次下载次数
+     * 用于下载课程文件
+     * 获取文件路径并增加一次下载次数
+     * 只允许课程的教学团队与班级成员下载
      *
      * @param object 课程文件id
-     * @return 新的下载次数
+     * @return 新的下载次数 + 文件路径
      */
-    @PutMapping("/modify/addDownloadCount")
-    public Result addDownloadCount(@RequestBody JSONObject object){
+    @PostMapping("/download/lessonFile")
+    public Result downloadLessonFile(@RequestBody JSONObject object){
         try {
-            return lessonFileService.addDownloadCount(Long.parseLong(object.getString("lessonFileId")));
+            return lessonFileService.downloadLessonFile(Long.parseLong(object.getString("lessonFileId")));
         } catch (NumberFormatException e) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程文件id格式错误");
         }

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -149,7 +150,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
     }
 
     @Override
-    public Result addDownloadCount(Long lessonFileId) {
+    public Result downloadLessonFile(Long lessonFileId) {
         // 1.校验格式
         if (RegexUtils.isSnowIdInvalid(lessonFileId)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程文件id格式错误");
@@ -166,8 +167,10 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         }
         // 4.增加次数
         lessonFileMapper.updateDownloadCountOfInsertOne(lessonFileId);
-        // 5.获取次数
-        return Result.ok(lessonFileMapper.selectDownloadCount(lessonFileId));
+        // 5.获取文件路径与最新下载次数
+        Map<String, Object> result = lessonFileMapper.selectFilePathAndDownLoadCount(lessonFileId);
+        // 6.返回
+        return Result.ok(result);
     }
 
     /**

@@ -46,4 +46,9 @@
         FROM `edu_lesson_file`
         WHERE `id` = #{id}
     </select>
+    <select id="selectFilePathAndDownLoadCount" resultType="java.util.Map">
+        SELECT `file_path`, `download_count`
+        FROM `edu_lesson_file`
+        WHERE `id` = #{id}
+    </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.zhulang.waveedu.edu.query.LessonFileSimpleInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -65,4 +66,12 @@ public interface LessonFileMapper extends BaseMapper<LessonFile> {
      * @return 下载次数
      */
     Integer selectDownloadCount(@Param("id") Long id);
+
+    /**
+     * 根据 文件id 查询 文件路径 和 下载次数
+     *
+     * @param id 文件id
+     * @return 文件路径和下载次数
+     */
+    Map<String,Object> selectFilePathAndDownLoadCount(@Param("id") Long id);
 }

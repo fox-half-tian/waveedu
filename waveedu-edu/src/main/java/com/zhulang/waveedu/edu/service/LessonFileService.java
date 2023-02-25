@@ -53,15 +53,16 @@ public interface LessonFileService extends IService<LessonFile> {
      *
      * @param lessonId 课程id
      * @param fileId   文件id
-     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 文件路径 + 下载次数，按照时间由近到远排序
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
     Result getDetailInfoList(Long lessonId, Long fileId);
 
     /**
-     * 增加下载次数
+     * 用于下载课程文件
+     * 获取文件路径并增加一次下载次数
      *
      * @param lessonFileId 课程文件id
-     * @return 新的下载次数
+     * @return 新的下载次数 + 文件路径
      */
-    Result addDownloadCount(Long lessonFileId);
+    Result downloadLessonFile(Long lessonFileId);
 }
