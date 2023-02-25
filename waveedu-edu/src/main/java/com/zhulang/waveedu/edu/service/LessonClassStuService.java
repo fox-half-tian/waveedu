@@ -40,4 +40,14 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return true-说明是
      */
     boolean existsByLessonIdAndUserId(Long lessonId, Long userId);
+
+
+    /**
+     * 删除学生
+     *
+     * @param classId 班级Id
+     * @param stuId 学生id
+     * @return 删除状况
+     */
+    Result delStu(Long classId,Long stuId);
 }

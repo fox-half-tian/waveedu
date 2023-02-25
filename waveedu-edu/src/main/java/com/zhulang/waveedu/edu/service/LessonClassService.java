@@ -1,7 +1,6 @@
 package com.zhulang.waveedu.edu.service;
 
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
@@ -74,7 +73,7 @@ public interface LessonClassService extends IService<LessonClass> {
      * @param classId 班级id
      * @return true-该用户是创建者
      */
-    boolean existByUserIdAndClassId(Long userId,Long classId);
+    boolean existsByUserIdAndClassId(Long userId, Long classId);
 
 
 }

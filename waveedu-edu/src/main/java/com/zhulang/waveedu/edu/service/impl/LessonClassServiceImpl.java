@@ -151,7 +151,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     }
 
     @Override
-    public boolean existByUserIdAndClassId(Long userId, Long classId) {
+    public boolean existsByUserIdAndClassId(Long userId, Long classId) {
         return lessonClassMapper.existByUserIdAndClassId(classId, userId) != null;
     }
 

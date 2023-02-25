@@ -32,11 +32,11 @@ public class LessonClassStuController {
      * @return 加入成功，返回班级Id
      */
     @PostMapping("/joinLessonClass")
-    public Result  joinLessonClass(@Validated @RequestBody InviteCodeVO inviteCodeVO){
+    public Result joinLessonClass(@Validated @RequestBody InviteCodeVO inviteCodeVO) {
         try {
-            return lessonClassStuService.joinLessonClass(inviteCodeVO.getId(),inviteCodeVO.getInviteCode());
+            return lessonClassStuService.joinLessonClass(inviteCodeVO.getId(), inviteCodeVO.getInviteCode());
         } catch (NumberFormatException e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效邀请码");
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效邀请码");
         }
     }
 
@@ -47,7 +47,20 @@ public class LessonClassStuController {
      * @return 班级id + 班级名 + 是否结课 + 课程id + 课程名 + 课程封面
      */
     @GetMapping("/get/self/joinClassInfoList")
-    public Result getSelfJoinClassInfoList(){
+    public Result getSelfJoinClassInfoList() {
         return lessonClassStuService.getJoinClassInfoList(UserHolderUtils.getUserId());
     }
+
+    /**
+     * 移除学生，只有创建者可以操作
+     *
+     * @param classId 班级id
+     * @param stuId 学生id
+     * @return 删除状况
+     */
+    @DeleteMapping("/del/stu")
+    public Result delStu(@RequestParam("classId") Long classId, @RequestParam("stuId") Long stuId) {
+        return lessonClassStuService.delStu(classId, stuId);
+    }
+
 }

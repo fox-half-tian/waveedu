@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassStu;
 import com.zhulang.waveedu.edu.dao.LessonClassStuMapper;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
@@ -41,7 +42,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         }
         // 3.判断是否为创建者
         Long userId = UserHolderUtils.getUserId();
-        if (lessonClassService.existByUserIdAndClassId(userId, classId)) {
+        if (lessonClassService.existsByUserIdAndClassId(userId, classId)) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "已是该班级负责人，邀请码无效");
         }
         // 4.判断是否已经加入了班级
@@ -71,5 +72,24 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     @Override
     public boolean existsByLessonIdAndUserId(Long lessonId, Long userId) {
         return lessonClassStuMapper.existsByLessonIdAndUserId(lessonId, userId) != null;
+    }
+
+    @Override
+    public Result delStu(Long classId, Long stuId) {
+        Long userId = UserHolderUtils.getUserId();
+        // 1.判断是否为该班级的创建者
+        if (!lessonClassService.existsByUserIdAndClassId(userId, classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.删除学生
+        LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LessonClassStu::getLessonClassId, classId)
+                .eq(LessonClassStu::getStuId, stuId);
+        int result = lessonClassStuMapper.delete(wrapper);
+        if (result == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级中已找不到该学生信息");
+        }
+        // 3.todo 通知
+        return Result.ok();
     }
 }
