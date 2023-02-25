@@ -2,4 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassStuMapper">
 
+    <select id="selectJoinClassInfoList" resultType="com.zhulang.waveedu.edu.query.JoinClassInfoQuery">
+        SELECT c.`id`    AS     `classId`,
+               c.`name`  AS     `className`,
+               c.`is_end_class` `isEndClass`,
+               l.`cover` AS     `lessonCover`,
+               l.`id`    AS     `lessonId`,
+               l.`name`  AS     `lessonName`
+        FROM `edu_lesson_class_stu` s,
+             `edu_lesson_class` c,
+             `edu_lesson` l
+        WHERE s.`stu_id` = #{userId}
+          AND s.`lesson_class_id` = c.`id`
+          AND c.`is_deleted` = 0
+          AND c.`lesson_id` = l.id
+          AND l.`is_deleted` = 0
+        ORDER BY s.`create_time` DESC
+    </select>
 </mapper>

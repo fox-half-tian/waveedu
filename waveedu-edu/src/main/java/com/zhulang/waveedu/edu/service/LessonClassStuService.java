@@ -22,4 +22,13 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return 加入成功，返回班级Id
      */
     Result joinLessonClass(Long classId, String inviteCode);
+
+    /**
+     * 获取所有加入的课程班级的信息
+     * 按照加入时间由近及远排序
+     *
+     * @param userId 用户id
+     * @return 班级id + 班级名 + 是否结课 + 课程id + 课程名 + 课程封面
+     */
+    Result getJoinClassInfoList(Long userId);
 }

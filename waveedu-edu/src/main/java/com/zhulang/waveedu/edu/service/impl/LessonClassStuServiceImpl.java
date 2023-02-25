@@ -61,4 +61,9 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         map.put("id",classId);
         return Result.ok(map);
     }
+
+    @Override
+    public Result getJoinClassInfoList(Long userId) {
+        return Result.ok(lessonClassStuMapper.selectJoinClassInfoList(userId));
+    }
 }

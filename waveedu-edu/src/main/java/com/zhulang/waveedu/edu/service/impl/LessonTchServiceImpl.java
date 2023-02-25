@@ -118,8 +118,6 @@ public class LessonTchServiceImpl extends ServiceImpl<LessonTchMapper, LessonTch
         }
         // 5.返回
         return Result.ok(infoList);
-
-
     }
 
 }

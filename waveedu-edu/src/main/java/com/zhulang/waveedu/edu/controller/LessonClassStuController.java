@@ -3,16 +3,11 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.edu.service.LessonClassService;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.zhulang.waveedu.edu.vo.InviteCodeVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -43,5 +38,16 @@ public class LessonClassStuController {
         } catch (NumberFormatException e) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效邀请码");
         }
+    }
+
+    /**
+     * 获取所有加入的课程班级的信息
+     * 按照加入时间由近及远排序
+     *
+     * @return 班级id + 班级名 + 是否结课 + 课程id + 课程名 + 课程封面
+     */
+    @GetMapping("/get/self/joinClassInfoList")
+    public Result getSelfJoinClassInfoList(){
+        return lessonClassStuService.getJoinClassInfoList(UserHolderUtils.getUserId());
     }
 }
