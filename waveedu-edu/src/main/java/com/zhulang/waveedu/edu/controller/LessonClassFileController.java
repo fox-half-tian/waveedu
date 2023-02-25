@@ -1,12 +1,11 @@
 package com.zhulang.waveedu.edu.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonClassFileService;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassFileVO;
+import com.zhulang.waveedu.edu.vo.ModifyFileNameVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +46,16 @@ public class LessonClassFileController {
     @DeleteMapping("/delFile")
     public Result delFile(@RequestParam("lessonClassFileId") Long  lessonClassFileId) {
             return lessonClassFileService.removeFile(lessonClassFileId);
+    }
+
+    /**
+     * 修改资料的文件名
+     *
+     * @param modifyFileNameVO 文件Id + 文件名
+     * @return 修改状况
+     */
+    @PutMapping("/modify/fileName")
+    public Result modifyFileName(@Validated @RequestBody ModifyFileNameVO modifyFileNameVO) {
+        return lessonClassFileService.modifyFileName(modifyFileNameVO.getFileId(), modifyFileNameVO.getFileName());
     }
 }

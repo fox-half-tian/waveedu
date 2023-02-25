@@ -30,4 +30,13 @@ public interface LessonClassFileService extends IService<LessonClassFile> {
      * @return 删除状况
      */
     Result removeFile(Long lessonClassFileId);
+
+    /**
+     * 修改班级文件的文件名
+     *
+     * @param fileId   课程文件id
+     * @param fileName 新的班级文件名
+     * @return 修改状况
+     */
+    Result modifyFileName(Long fileId, String fileName);
 }
