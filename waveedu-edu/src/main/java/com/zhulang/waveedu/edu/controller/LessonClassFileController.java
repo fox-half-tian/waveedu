@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonClassFileService;
@@ -72,5 +74,22 @@ public class LessonClassFileController {
             @RequestParam(value = "fileId", required = false) Long fileId
     ) {
         return lessonClassFileService.getInfoList(lessonClassId, fileId);
+    }
+
+    /**
+     * 用于下载班级文件
+     * 获取文件路径并增加一次下载次数
+     * 只允许班级创建者与班级成员下载
+     *
+     * @param object 班级文件id
+     * @return 新的下载次数 + 文件路径
+     */
+    @PostMapping("/download/lessonClassFile")
+    public Result downloadLessonFile(@RequestBody JSONObject object){
+        try {
+            return lessonClassFileService.downloadLessonFile(Long.parseLong(object.getString("lessonClassFileId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级文件id格式错误");
+        }
     }
 }

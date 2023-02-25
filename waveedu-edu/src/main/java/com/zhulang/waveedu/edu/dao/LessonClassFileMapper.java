@@ -6,6 +6,7 @@ import com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,7 +24,7 @@ public interface LessonClassFileMapper extends BaseMapper<LessonClassFile> {
      * @param id 文件id
      * @return 班级Id
      */
-    Long selectLessonClassId(@Param("id") Long id);
+    Long selectLessonClassIdById(@Param("id") Long id);
 
     /**
      * 获取班级文件信息
@@ -37,4 +38,19 @@ public interface LessonClassFileMapper extends BaseMapper<LessonClassFile> {
                                                   @Param("fileId") Long fileId,
                                                   @Param("queryLimit") Integer queryLimit);
 
+    /**
+     * 增加一次下载次数
+     *
+     * @param id 班级文件id
+     */
+    void updateDownloadCountOfInsertOne(Long id);
+
+    /**
+     * 根据 文件id 查询 文件路径 和 下载次数
+     *
+     * @param id 文件id
+     * @return 文件路径和下载次数
+     */
+    @SuppressWarnings("MybatisXMapperMethodInspection")
+    Map<String,Object> selectFilePathAndDownLoadCount(@Param("id") Long id);
 }

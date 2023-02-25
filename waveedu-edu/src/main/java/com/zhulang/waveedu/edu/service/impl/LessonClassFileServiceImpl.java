@@ -8,23 +8,22 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dto.LessonClassFileDTO;
-import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.zhulang.waveedu.edu.dao.LessonClassFileMapper;
-import com.zhulang.waveedu.edu.po.LessonFile;
 import com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassService;
+import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassFileVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -41,6 +40,8 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
 
     @Resource
     private LessonClassService lessonClassService;
+    @Resource
+    private LessonClassStuService lessonClassStuService;
 
     @Override
     public Result saveFile(SaveClassFileVO saveClassFileVO) {
@@ -121,6 +122,30 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
         return Result.ok(infoList);
     }
 
+    @Override
+    public Result downloadLessonFile(Long lessonClassFileId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(lessonClassFileId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级文件id格式错误");
+        }
+        // 2.查询对应的班级
+        Long lessonClassId = lessonClassFileMapper.selectLessonClassIdById(lessonClassFileId);
+        if (lessonClassId == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "文件不存在");
+        }
+        // 3.校验是否为班级创建者或班级成员
+        Long userId = UserHolderUtils.getUserId();
+        if (!lessonClassService.existsByUserIdAndClassId(userId, lessonClassId) && !lessonClassStuService.existsByClassIdAndUserId(lessonClassId, userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.增加次数
+        lessonClassFileMapper.updateDownloadCountOfInsertOne(lessonClassFileId);
+        // 5.获取文件路径与最新下载次数
+        Map<String, Object> result = lessonClassFileMapper.selectFilePathAndDownLoadCount(lessonClassFileId);
+        // 6.返回
+        return Result.ok(result);
+    }
+
     /**
      * 判断是否为班级创建者，一并判断文件是否存在
      *
@@ -129,7 +154,7 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
      */
     public Result isClassCreator(Long lessonClassFileId) {
         // 1.获取班级id
-        Long lessonClassId = lessonClassFileMapper.selectLessonClassId(lessonClassFileId);
+        Long lessonClassId = lessonClassFileMapper.selectLessonClassIdById(lessonClassFileId);
         // 2.判断是否存在 --> 不存在说明班级不存在
         if (lessonClassId == null) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "文件不存在");

@@ -73,5 +73,6 @@ public interface LessonFileMapper extends BaseMapper<LessonFile> {
      * @param id 文件id
      * @return 文件路径和下载次数
      */
+    @SuppressWarnings("MybatisXMapperMethodInspection")
     Map<String,Object> selectFilePathAndDownLoadCount(@Param("id") Long id);
 }

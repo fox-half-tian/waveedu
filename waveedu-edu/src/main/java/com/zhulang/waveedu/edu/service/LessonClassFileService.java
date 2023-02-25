@@ -48,4 +48,15 @@ public interface LessonClassFileService extends IService<LessonClassFile> {
      * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
     Result getInfoList(Long lessonClassId, Long fileId);
+
+    /**
+     * 用于下载班级文件
+     * 获取文件路径并增加一次下载次数
+     * 只允许班级创建者与班级成员下载
+     *
+     * @param lessonClassFileId 班级文件id
+     * @return 新的下载次数 + 文件路径
+     */
+    Result downloadLessonFile(Long lessonClassFileId);
+
 }

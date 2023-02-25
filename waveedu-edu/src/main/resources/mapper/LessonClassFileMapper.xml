@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassFileMapper">
+    <update id="updateDownloadCountOfInsertOne">
+        UPDATE `edu_lesson_class_file`
+        SET `download_count` = `download_count` + 1
+        WHERE `id` = #{id}
+    </update>
 
-    <select id="selectLessonClassId" resultType="java.lang.Long">
+    <select id="selectLessonClassIdById" resultType="java.lang.Long">
         SELECT `lesson_class_id`
         FROM `edu_lesson_class_file`
         WHERE `id` = #{id}
@@ -25,5 +30,10 @@
         AND b.`id` = e.`user_id`
         ORDER BY e.`create_time` DESC
         LIMIT #{queryLimit}
+    </select>
+    <select id="selectFilePathAndDownLoadCount" resultType="java.util.Map">
+        SELECT `file_path`, `download_count`
+        FROM `edu_lesson_class_file`
+        WHERE `id` = #{id}
     </select>
 </mapper>
