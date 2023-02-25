@@ -91,4 +91,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 删除状况
      */
     Result delClass(Long classId);
+
+    /**
+     * 动态修改人数
+     *
+     * @param classId 班级id
+     * @param change 动态增减
+     */
+    void modifyNumOfDynamic(Long classId, String change);
 }

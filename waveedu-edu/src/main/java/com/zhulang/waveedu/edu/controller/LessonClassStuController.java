@@ -74,4 +74,16 @@ public class LessonClassStuController {
         return lessonClassStuService.delSelfExit(classId);
     }
 
+    /**
+     * 获取班级的学生信息列表，只有创建者与班级成员可获取
+     * 返回：用户id，用户名，用户头像，学号，身份类型，院校名
+     *
+     * @param classId 班级id
+     * @return 信息列表
+     */
+    @GetMapping("/get/stuInfoList")
+    public Result getStuInfoList(@RequestParam("classId")Long classId){
+        return lessonClassStuService.getStuInfoList(classId);
+    }
+
 }

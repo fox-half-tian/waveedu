@@ -48,5 +48,11 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      */
     LessonClassInviteCodeQuery selectInviteCodeById(@Param("id") Long id);
 
-
+    /**
+     * 动态修改人数
+     *
+     * @param classId 班级id
+     * @param change 动态增减
+     */
+    void updateNumOfDynamic(@Param("classId") Long classId,@Param("change") String change);
 }

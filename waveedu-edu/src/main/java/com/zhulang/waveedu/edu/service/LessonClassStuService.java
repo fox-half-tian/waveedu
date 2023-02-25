@@ -41,6 +41,15 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      */
     boolean existsByLessonIdAndUserId(Long lessonId, Long userId);
 
+    /**
+     * 查询该用户是否为该班级的普通成员
+     *
+     * @param classId 班级Id
+     * @param userId 用户id
+     * @return null-说明不是
+     */
+    boolean existsByClassIdAndUserId(Long classId,Long userId);
+
 
     /**
      * 删除学生
@@ -58,4 +67,12 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return 退出情况
      */
     Result delSelfExit(Long classId);
+
+    /**
+     * 获取班级的学生信息列表，只有创建者与班级成员可获取
+     *
+     * @param classId 班级id
+     * @return 信息列表
+     */
+    Result getStuInfoList(Long classId);
 }

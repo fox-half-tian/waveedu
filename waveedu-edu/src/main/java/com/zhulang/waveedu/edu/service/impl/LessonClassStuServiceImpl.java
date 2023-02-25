@@ -6,7 +6,6 @@ import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassStu;
 import com.zhulang.waveedu.edu.dao.LessonClassStuMapper;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
@@ -14,6 +13,7 @@ import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -57,12 +57,20 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         lessonClassStu.setLessonClassId(classId);
         lessonClassStu.setStuId(userId);
         lessonClassStu.setLessonId(info.getLessonId());
-        lessonClassStuMapper.insert(lessonClassStu);
+        joinClass(lessonClassStu);
         // 5.加入成功，将 邀请码类型 和 班级id 返回
         HashMap<String, Object> map = new HashMap<>(2);
         map.put("type", InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE);
         map.put("id", classId);
         return Result.ok(map);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void joinClass(LessonClassStu lessonClassStu){
+        // 班级与学生对应表插入记录
+        lessonClassStuMapper.insert(lessonClassStu);
+        // 人数加1
+        lessonClassService.modifyNumOfDynamic(lessonClassStu.getLessonClassId(),"+ 1");
     }
 
     @Override
@@ -76,10 +84,15 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     }
 
     @Override
+    public boolean existsByClassIdAndUserId(Long classId, Long userId) {
+        return lessonClassStuMapper.existsByClassIdAndUserId(classId, userId) != null;
+    }
+
+    @Override
     public Result delStu(Long classId, Long stuId) {
         // 0.校验
-        if (RegexUtils.isSnowIdInvalid(classId)||RegexUtils.isSnowIdInvalid(stuId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id或用户id格式错误");
+        if (RegexUtils.isSnowIdInvalid(classId) || RegexUtils.isSnowIdInvalid(stuId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id或用户id格式错误");
         }
         Long userId = UserHolderUtils.getUserId();
         // 1.判断是否为该班级的创建者
@@ -92,7 +105,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
                 .eq(LessonClassStu::getStuId, stuId);
         int result = lessonClassStuMapper.delete(wrapper);
         if (result == 0) {
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级中已找不到该学生信息");
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到该学生信息");
         }
         // 3.todo 通知
         return Result.ok();
@@ -101,17 +114,33 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     @Override
     public Result delSelfExit(Long classId) {
         // 1.校验格式
-        if (RegexUtils.isSnowIdInvalid(classId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.退出班级
         LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(LessonClassStu::getLessonClassId, classId)
                 .eq(LessonClassStu::getStuId, UserHolderUtils.getUserId());
         int result = lessonClassStuMapper.delete(wrapper);
-        if (result==0){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级中已找不到您的信息");
+        if (result == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到您的信息");
         }
         return Result.ok();
+    }
+
+    @Override
+    public Result getStuInfoList(Long classId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
+        }
+        // 2.校验身份 --> 只有创建者与班级成员可获取
+        Long userId = UserHolderUtils.getUserId();
+        if (!lessonClassService.existsByUserIdAndClassId(userId, classId) && !this.existsByClassIdAndUserId(classId,userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+
+        // 3.获取学生信息：用户id，用户名，用户头像，学号，身份类型，院校名
+        return Result.ok(lessonClassStuMapper.selectStuInfoList(classId));
     }
 }

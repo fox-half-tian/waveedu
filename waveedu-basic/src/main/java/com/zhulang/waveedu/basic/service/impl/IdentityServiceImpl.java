@@ -53,7 +53,11 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         identity.setUserId(identityVO.getUserId());
         identity.setCollegeName(college.getName());
         // 4.添加用户的身份信息
-        identityMapper.insert(identity);
+        try {
+            identityMapper.insert(identity);
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(),"该身份已被其他用户注册");
+        }
         // 5.查询出刚刚添加的身份信息
         Identity result = identityMapper.selectOne(identityWrapper);
         // 6.返回刚刚添加的身份信息

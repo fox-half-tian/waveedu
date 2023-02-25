@@ -24,5 +24,25 @@
         FROM `edu_lesson_class_stu`
         WHERE `lesson_id` = #{lessonId}
           AND `stu_id` = #{userId}
+        LIMIT 1
+    </select>
+    <select id="existsByClassIdAndUserId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_stu`
+        WHERE `lesson_class_id` = #{classId}
+          AND `stu_id` = #{userId}
+    </select>
+    <select id="selectStuInfoList" resultType="com.zhulang.waveedu.edu.query.ClassStuInfoQuery">
+        SELECT s.`stu_id`       AS `stuId`,
+               u.`icon`         AS `stuIcon`,
+               u.`name`         AS `stuName`,
+               i.`college_name` AS `collegeName`,
+               i.`number`       AS `number`,
+               i.`type`         AS `type`
+        FROM (`edu_lesson_class_stu` s,`basic_user_info` u)
+                 LEFT JOIN `basic_identity` i
+                           ON s.`stu_id` = i.`user_id`
+        WHERE s.`lesson_class_id` = #{classId}
+          AND s.`stu_id` = u.`id`
     </select>
 </mapper>

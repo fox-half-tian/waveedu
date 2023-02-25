@@ -178,5 +178,10 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         return Result.ok();
     }
 
+    @Override
+    public void modifyNumOfDynamic(Long classId, String change) {
+        lessonClassMapper.updateNumOfDynamic(classId,change);
+    }
+
 
 }
