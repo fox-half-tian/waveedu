@@ -63,4 +63,15 @@ public class LessonClassStuController {
         return lessonClassStuService.delStu(classId, stuId);
     }
 
+    /**
+     * 退出班级
+     *
+     * @param classId 班级Id
+     * @return 退出情况
+     */
+    @DeleteMapping("/del/selfExit")
+    public Result delSelfExit(@RequestParam("classId") Long classId){
+        return lessonClassStuService.delSelfExit(classId);
+    }
+
 }

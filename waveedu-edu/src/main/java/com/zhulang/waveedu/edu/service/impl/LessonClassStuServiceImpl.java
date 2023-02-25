@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.InviteCodeTypeConstants;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassStu;
@@ -76,6 +77,10 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
 
     @Override
     public Result delStu(Long classId, Long stuId) {
+        // 0.校验
+        if (RegexUtils.isSnowIdInvalid(classId)||RegexUtils.isSnowIdInvalid(stuId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id或用户id格式错误");
+        }
         Long userId = UserHolderUtils.getUserId();
         // 1.判断是否为该班级的创建者
         if (!lessonClassService.existsByUserIdAndClassId(userId, classId)) {
@@ -90,6 +95,23 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级中已找不到该学生信息");
         }
         // 3.todo 通知
+        return Result.ok();
+    }
+
+    @Override
+    public Result delSelfExit(Long classId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(classId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级id格式错误");
+        }
+        // 2.退出班级
+        LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LessonClassStu::getLessonClassId, classId)
+                .eq(LessonClassStu::getStuId, UserHolderUtils.getUserId());
+        int result = lessonClassStuMapper.delete(wrapper);
+        if (result==0){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"班级中已找不到您的信息");
+        }
         return Result.ok();
     }
 }

@@ -50,4 +50,12 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return 删除状况
      */
     Result delStu(Long classId,Long stuId);
+
+    /**
+     * 退出班级
+     *
+     * @param classId 班级id
+     * @return 退出情况
+     */
+    Result delSelfExit(Long classId);
 }
