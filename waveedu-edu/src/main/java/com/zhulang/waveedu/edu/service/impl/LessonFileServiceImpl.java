@@ -72,7 +72,7 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         // 2.封装信息
         BeanUtils.copyProperties(saveLessonFileVO, lessonFile);
         // 3.简单处理，前后无空格
-        lessonFile.setFileName(WaveStrUtils.removeBlank(lessonFile.getFileName()));
+        lessonFile.setFileName(lessonFile.getFileName().trim());
         lessonFile.setDownloadCount(0);
         // 4.保存到数据库
         lessonFileMapper.insert(lessonFile);
