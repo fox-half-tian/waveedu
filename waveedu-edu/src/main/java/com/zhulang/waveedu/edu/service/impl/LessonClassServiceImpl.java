@@ -76,7 +76,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     public Result modifyBasicInfo(ModifyClassBasicInfoVO modifyClassBasicInfoVO) {
         Long userId = UserHolderUtils.getUserId();
         // 1.判断是否为该班级的创建者
-        Integer exist = lessonClassMapper.existByUserIdAndClassId(modifyClassBasicInfoVO.getId(), userId);
+        Integer exist = lessonClassMapper.existsByClassIdAndUserId(modifyClassBasicInfoVO.getId(), userId);
         if (exist == null) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
@@ -102,7 +102,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.判断是否为班级创建者
-        Integer exist = lessonClassMapper.existByUserIdAndClassId(classId, UserHolderUtils.getUserId());
+        Integer exist = lessonClassMapper.existsByClassIdAndUserId(classId, UserHolderUtils.getUserId());
         if (exist == null) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
@@ -152,7 +152,30 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     @Override
     public boolean existsByUserIdAndClassId(Long userId, Long classId) {
-        return lessonClassMapper.existByUserIdAndClassId(classId, userId) != null;
+        return lessonClassMapper.existsByClassIdAndUserId(classId, userId) != null;
+    }
+
+    @Override
+    public boolean isCreatorByUserIdOfClassId(Long userId, Long classId) {
+        return lessonClassMapper.isCreatorByUserIdOfClassId(classId, userId) != null;
+    }
+
+    @Override
+    public Result delClass(Long classId) {
+        // 1.校验
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
+        }
+        // 2.判断是否为创建者
+        if (!this.isCreatorByUserIdOfClassId(UserHolderUtils.getUserId(), classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.删除班级
+        int result = lessonClassMapper.deleteById(classId);
+        if (result == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级已不存在");
+        }
+        return Result.ok();
     }
 
 

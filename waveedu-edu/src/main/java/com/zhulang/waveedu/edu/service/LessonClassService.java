@@ -67,7 +67,7 @@ public interface LessonClassService extends IService<LessonClass> {
     LessonClassInviteCodeQuery getInviteCodeById(Long id);
 
     /**
-     * 通过 用户id 和 班级id 判断是否存在该信息 --> 是否为创始人
+     * 通过 用户id 和 班级id 判断是否存在该信息且未被删除 --> 是否为创始人
      *
      * @param userId 用户id
      * @param classId 班级id
@@ -75,5 +75,20 @@ public interface LessonClassService extends IService<LessonClass> {
      */
     boolean existsByUserIdAndClassId(Long userId, Long classId);
 
+    /**
+     * 通过 用户id 和 班级id 判断是否存在该信息不管是否被删除 --> 是否为创始人
+     *
+     * @param userId 用户id
+     * @param classId 班级id
+     * @return true-该用户是创建者
+     */
+    boolean isCreatorByUserIdOfClassId(Long userId, Long classId);
 
+    /**
+     * 删除自己创建的班级
+     *
+     * @param classId 班级Id
+     * @return 删除状况
+     */
+    Result delClass(Long classId);
 }

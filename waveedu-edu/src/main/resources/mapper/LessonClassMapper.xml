@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassMapper">
 
-    <select id="existByUserIdAndClassId" resultType="java.lang.Integer">
+    <select id="existsByClassIdAndUserId" resultType="java.lang.Integer">
         SELECT 1
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
@@ -20,5 +20,11 @@
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
           AND `is_deleted` = 0
+    </select>
+    <select id="isCreatorByUserIdOfClassId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class`
+        WHERE `id` = #{id}
+          AND `creator_id` = #{userId}
     </select>
 </mapper>

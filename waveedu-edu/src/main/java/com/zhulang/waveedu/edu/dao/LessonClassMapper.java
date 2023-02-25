@@ -17,13 +17,20 @@ import org.apache.ibatis.annotations.Param;
 public interface LessonClassMapper extends BaseMapper<LessonClass> {
 
     /**
-     * 判断是否为该班级的创建者
+     * 判断该班级的创建者并且班级未被删除
      *
      * @param id 班级id
      * @param userId 用户id
      */
-    Integer existByUserIdAndClassId(@Param("id") Long id, @Param("userId") Long userId);
+    Integer existsByClassIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
+    /**
+     * 判断该班级的创建者，不管班级是否已被删除
+     *
+     * @param id 班级id
+     * @param userId 用户id
+     */
+    Integer isCreatorByUserIdOfClassId(@Param("id") Long id, @Param("userId") Long userId);
 
     /**
      * 查询班级的基本信息：创建者id，班级名，封面，人数，是否结课，课程id，创建时间
@@ -40,4 +47,6 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @return 信息
      */
     LessonClassInviteCodeQuery selectInviteCodeById(@Param("id") Long id);
+
+
 }

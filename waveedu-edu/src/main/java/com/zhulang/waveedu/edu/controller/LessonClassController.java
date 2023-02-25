@@ -87,5 +87,16 @@ public class LessonClassController {
         return lessonClassService.getBasicInfo(classId);
     }
 
+    /**
+     * 删除自己创建的班级
+     *
+     * @param classId 班级Id
+     * @return 删除状况
+     */
+    @DeleteMapping("/del/class")
+    public Result delClass(@RequestParam("classId")Long classId){
+        return lessonClassService.delClass(classId);
+    }
+
 
 }
