@@ -46,7 +46,7 @@ public interface LessonFileMapper extends BaseMapper<LessonFile> {
      * @param lessonId   课程id
      * @param fileId     文件id
      * @param queryLimit 查询最大条数
-     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 文件路径 + 下载次数，按照时间由近到远排序
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
     List<LessonFileDetailInfoQuery> selectDetailInfoList(@Param("lessonId") Long lessonId,
                                                          @Param("fileId") Long fileId,

@@ -17,7 +17,7 @@
         FROM `edu_lesson_file`
         WHERE `lesson_id` = #{lessonId}
         <if test="fileId != null">
-            AND `id` > #{fileId}
+            AND `id` &lt; #{fileId}
         </if>
         ORDER BY `create_time` DESC
         LIMIT #{queryLimit}
@@ -35,7 +35,7 @@
         FROM `edu_lesson_file` e,`basic_user_info` b
         WHERE e.`lesson_id` = #{lessonId}
         <if test="fileId != null">
-            AND e.`id` > #{fileId}
+            AND e.`id` &lt; #{fileId}
         </if>
         AND b.`id` = e.`user_id`
         ORDER BY e.`create_time` DESC

@@ -44,8 +44,8 @@ public class LessonClassFileController {
      * @return 删除状况
      */
     @DeleteMapping("/delFile")
-    public Result delFile(@RequestParam("lessonClassFileId") Long  lessonClassFileId) {
-            return lessonClassFileService.removeFile(lessonClassFileId);
+    public Result delFile(@RequestParam("lessonClassFileId") Long lessonClassFileId) {
+        return lessonClassFileService.removeFile(lessonClassFileId);
     }
 
     /**
@@ -57,5 +57,20 @@ public class LessonClassFileController {
     @PutMapping("/modify/fileName")
     public Result modifyFileName(@Validated @RequestBody ModifyFileNameVO modifyFileNameVO) {
         return lessonClassFileService.modifyFileName(modifyFileNameVO.getFileId(), modifyFileNameVO.getFileName());
+    }
+
+    /**
+     * 获取班级文件信息
+     *
+     * @param lessonClassId 班级id
+     * @param fileId        文件id
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
+     */
+    @GetMapping("/get/infoList")
+    public Result getInfoList(
+            @RequestParam(value = "lessonClassId") Long lessonClassId,
+            @RequestParam(value = "fileId", required = false) Long fileId
+    ) {
+        return lessonClassFileService.getInfoList(lessonClassId, fileId);
     }
 }

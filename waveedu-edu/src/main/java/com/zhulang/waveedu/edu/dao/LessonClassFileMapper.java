@@ -2,7 +2,10 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,17 @@ public interface LessonClassFileMapper extends BaseMapper<LessonClassFile> {
      * @return 班级Id
      */
     Long selectLessonClassId(@Param("id") Long id);
+
+    /**
+     * 获取班级文件信息
+     *
+     * @param lessonClassId   课程班级id
+     * @param fileId     文件id
+     * @param queryLimit 查询最大条数
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
+     */
+    List<LessonClassFileInfoQuery> selectInfoList(@Param("lessonClassId") Long lessonClassId,
+                                                  @Param("fileId") Long fileId,
+                                                  @Param("queryLimit") Integer queryLimit);
+
 }

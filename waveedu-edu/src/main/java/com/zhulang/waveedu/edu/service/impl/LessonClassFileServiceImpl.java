@@ -9,11 +9,13 @@ import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dto.LessonClassFileDTO;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.zhulang.waveedu.edu.dao.LessonClassFileMapper;
 import com.zhulang.waveedu.edu.po.LessonFile;
+import com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassService;
@@ -22,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -99,6 +102,23 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
         wrapper.eq(LessonClassFile::getId, lessonClassFileId)
                 .set(LessonClassFile::getFileName, fileName.trim());
         return this.update(wrapper) ? Result.ok() : Result.error();
+    }
+
+    @Override
+    public Result getInfoList(Long lessonClassId, Long fileId) {
+        // 1.校验班级id格式
+        if (RegexUtils.isSnowIdInvalid(lessonClassId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级Id格式错误");
+        }
+        // 2.判断非空的fileId格式是否正确
+        if (fileId != null && RegexUtils.isSnowIdInvalid(fileId)) {
+            fileId = null;
+        }
+        // 3.查询信息，按照时间由近及远排序
+        List<LessonClassFileInfoQuery> infoList = lessonClassFileMapper.selectInfoList(lessonClassId, fileId, EduConstants.DEFAULT_LESSON_CLASS_FILE_LIST_QUERY_LIMIT);
+
+        // 4.返回
+        return Result.ok(infoList);
     }
 
     /**
