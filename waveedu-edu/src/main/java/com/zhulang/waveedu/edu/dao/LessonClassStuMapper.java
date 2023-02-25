@@ -26,4 +26,13 @@ public interface LessonClassStuMapper extends BaseMapper<LessonClassStu> {
      * @return 班级id + 班级名 + 是否结课 + 课程id + 课程名 + 课程封面
      */
     List<JoinClassInfoQuery> selectJoinClassInfoList(@Param("userId") Long userId);
+
+    /**
+     * 查询该用户是否为课程班级的普通成员
+     *
+     * @param lessonId 课程id
+     * @param userId   用户id
+     * @return null-说明不是
+     */
+    Integer existsByLessonIdAndUserId(@Param("lessonId") Long lessonId, @Param("userId") Long userId);
 }

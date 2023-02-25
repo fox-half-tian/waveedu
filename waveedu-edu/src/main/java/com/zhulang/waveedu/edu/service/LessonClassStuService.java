@@ -31,4 +31,13 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return 班级id + 班级名 + 是否结课 + 课程id + 课程名 + 课程封面
      */
     Result getJoinClassInfoList(Long userId);
+
+    /**
+     * 判断是否为该课程的班级普通成员
+     *
+     * @param lessonId 课程id
+     * @param userId 用户id
+     * @return true-说明是
+     */
+    boolean existsByLessonIdAndUserId(Long lessonId, Long userId);
 }

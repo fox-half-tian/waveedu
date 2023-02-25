@@ -31,6 +31,11 @@ public class LessonClassStu implements Serializable {
     private Long id;
 
     /**
+     * 课程id
+     */
+    private Long lessonId;
+
+    /**
      * 课程班级的id
      */
     private Long lessonClassId;

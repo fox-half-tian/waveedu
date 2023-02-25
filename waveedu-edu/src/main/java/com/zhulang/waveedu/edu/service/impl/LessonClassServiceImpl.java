@@ -40,7 +40,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     @Override
     public LessonClassInviteCodeQuery getInviteCodeById(Long id) {
-        return lessonClassMapper.getInviteCodeById(id);
+        return lessonClassMapper.selectInviteCodeById(id);
     }
 
     @Resource

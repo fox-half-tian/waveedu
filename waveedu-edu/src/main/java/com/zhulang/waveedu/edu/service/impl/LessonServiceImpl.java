@@ -16,6 +16,7 @@ import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.query.*;
+import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.service.UserInfoService;
@@ -46,6 +47,8 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
     private RedisCacheUtils redisCacheUtils;
     @Resource
     private UserInfoService userInfoService;
+    @Resource
+    private LessonClassStuService lessonClassStuService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -330,7 +333,10 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
             return Result.ok(EduConstants.LESSON_IDENTITY_TCH);
         }
 
-        // todo  4.查询是否为班级普通成员
+        // 4.查询是否为班级普通成员
+        if (lessonClassStuService.existsByLessonIdAndUserId(lessonId, userId)) {
+            return Result.ok(EduConstants.LESSON_IDENTITY_COMMON);
+        }
 
         // 5.如果都不是则说明对该课程而言是游客
         return Result.ok(EduConstants.LESSON_IDENTITY_VISITOR);

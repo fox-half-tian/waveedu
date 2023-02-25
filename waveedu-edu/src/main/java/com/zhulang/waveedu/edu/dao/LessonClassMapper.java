@@ -39,5 +39,5 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @param id 班级id
      * @return 信息
      */
-    LessonClassInviteCodeQuery getInviteCodeById(@Param("id") Long id);
+    LessonClassInviteCodeQuery selectInviteCodeById(@Param("id") Long id);
 }

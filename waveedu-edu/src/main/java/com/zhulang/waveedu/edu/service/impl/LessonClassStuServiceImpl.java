@@ -46,24 +46,30 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         }
         // 4.判断是否已经加入了班级
         if (lessonClassStuMapper.exists(new LambdaQueryWrapper<LessonClassStu>()
-                .eq(LessonClassStu::getLessonClassId,classId)
-                .eq(LessonClassStu::getStuId,userId))){
+                .eq(LessonClassStu::getLessonClassId, classId)
+                .eq(LessonClassStu::getStuId, userId))) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "已加入班级，请勿重复操作");
         }
         // 4.加入班级
         LessonClassStu lessonClassStu = new LessonClassStu();
         lessonClassStu.setLessonClassId(classId);
         lessonClassStu.setStuId(userId);
+        lessonClassStu.setLessonId(info.getLessonId());
         lessonClassStuMapper.insert(lessonClassStu);
         // 5.加入成功，将 邀请码类型 和 班级id 返回
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(2);
         map.put("type", InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE);
-        map.put("id",classId);
+        map.put("id", classId);
         return Result.ok(map);
     }
 
     @Override
     public Result getJoinClassInfoList(Long userId) {
         return Result.ok(lessonClassStuMapper.selectJoinClassInfoList(userId));
+    }
+
+    @Override
+    public boolean existsByLessonIdAndUserId(Long lessonId, Long userId) {
+        return lessonClassStuMapper.existsByLessonIdAndUserId(lessonId, userId) != null;
     }
 }

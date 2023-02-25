@@ -23,4 +23,9 @@ public class LessonClassInviteCodeQuery {
      * 是否禁用加入班级，0表示依旧生效，1表示禁用
      */
     private Integer isForbidJoin;
+
+    /**
+     * 课程id
+     */
+    private Long lessonId;
 }

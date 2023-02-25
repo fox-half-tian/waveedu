@@ -19,4 +19,10 @@
           AND l.`is_deleted` = 0
         ORDER BY s.`create_time` DESC
     </select>
+    <select id="existsByLessonIdAndUserId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_stu`
+        WHERE `lesson_id` = #{lessonId}
+          AND `stu_id` = #{userId}
+    </select>
 </mapper>
