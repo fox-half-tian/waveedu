@@ -7,10 +7,9 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 
@@ -72,7 +71,7 @@ public class LessonClassController {
      * @return 详细信息
      */
     @GetMapping("/get/detailInfo")
-    public Result getDetailInfo(@RequestParam("classId")Long classId){
+    public Result getDetailInfo(@RequestParam("classId") Long classId) {
         return lessonClassService.getDetailInfo(classId);
     }
 
@@ -83,7 +82,7 @@ public class LessonClassController {
      * @return 基本信息
      */
     @GetMapping("/get/basicInfo")
-    public Result getBasicInfo(@RequestParam("classId")Long classId){
+    public Result getBasicInfo(@RequestParam("classId") Long classId) {
         return lessonClassService.getBasicInfo(classId);
     }
 
@@ -94,9 +93,23 @@ public class LessonClassController {
      * @return 删除状况
      */
     @DeleteMapping("/del/class")
-    public Result delClass(@RequestParam("classId")Long classId){
+    public Result delClass(@RequestParam("classId") Long classId) {
         return lessonClassService.delClass(classId);
     }
 
+    /**
+     * 获取创建的班级信息列表
+     * 按照时间由近及远排序
+     *
+     * @param isEndClass 是否结课
+     * @param classId    班级id，返回列表信息均小于该id
+     * @return 信息列表：班级id,班级名，班级人数,课程封面，课程名，课程id
+     */
+    @GetMapping("/get/createClassInfoList")
+    public Result getCreateClassInfoList(
+            @RequestParam(value = "isEndClass") Integer isEndClass,
+            @RequestParam(value = "classId", required = false) Long classId) {
+        return lessonClassService.getCreateClassInfoList(isEndClass, classId);
+    }
 
 }

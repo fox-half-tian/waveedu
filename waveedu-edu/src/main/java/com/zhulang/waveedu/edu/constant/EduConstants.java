@@ -27,9 +27,14 @@ public class EduConstants {
     public static final Integer DEFAULT_LESSON_DETAIL_FILE_LIST_QUERY_LIMIT = 25;
 
     /**
-     * 默认的班级信息列表最大查询条数
+     * 默认的课程班级文件列表最大查询条数
      */
     public static final Integer DEFAULT_LESSON_CLASS_FILE_LIST_QUERY_LIMIT = 25;
+
+    /**
+     * 默认的创建的课程班级信息列表最大查询条数
+     */
+    public static final Integer DEFAULT_CREATE_LESSON_CLASS_LIST_QUERY_LIMIT = 12;
 
     /**
      * 课程中用户的身份表示

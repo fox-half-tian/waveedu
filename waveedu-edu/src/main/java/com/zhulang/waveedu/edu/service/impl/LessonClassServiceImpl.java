@@ -13,6 +13,7 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -180,7 +182,23 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     @Override
     public void modifyNumOfDynamic(Long classId, String change) {
-        lessonClassMapper.updateNumOfDynamic(classId,change);
+        lessonClassMapper.updateNumOfDynamic(classId, change);
+    }
+
+    @Override
+    public Result getCreateClassInfoList(Integer isEndClass, Long classId) {
+        // 1.校验
+        if (isEndClass!=0&&isEndClass!=1){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "参数校验失败");
+        }
+        if (classId != null && RegexUtils.isSnowIdInvalid(classId)) {
+            classId = null;
+        }
+        // 2.查询信息列表
+        List<CreateLessonClassInfoQuery> infoList = lessonClassMapper.selectCreateClassInfoList(UserHolderUtils.getUserId(), isEndClass, classId, EduConstants.DEFAULT_CREATE_LESSON_CLASS_LIST_QUERY_LIMIT);
+
+        // 3.返回
+        return Result.ok(infoList);
     }
 
 

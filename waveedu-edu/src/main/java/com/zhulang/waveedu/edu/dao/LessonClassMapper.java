@@ -3,8 +3,11 @@ package com.zhulang.waveedu.edu.dao;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -55,4 +58,18 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @param change 动态增减
      */
     void updateNumOfDynamic(@Param("classId") Long classId,@Param("change") String change);
+
+    /**
+     * 获取创建的班级信息列表,按照时间由近到远排序
+     *
+     * @param creatorId 创建者id
+     * @param isEndClass 是否结课
+     * @param classId 班级id
+     * @param limitQuery 最大查询数量
+     * @return 信息列表：班级id,班级名，班级人数,课程封面，课程名，课程id
+     */
+    List<CreateLessonClassInfoQuery> selectCreateClassInfoList(@Param("creatorId") Long creatorId,
+                                                               @Param("isEndClass") Integer isEndClass,
+                                                               @Param("classId") Long classId,
+                                                               @Param("limitQuery") Integer limitQuery);
 }

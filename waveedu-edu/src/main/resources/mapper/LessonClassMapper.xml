@@ -15,13 +15,13 @@
           AND `is_deleted` = 0
     </select>
     <select id="selectBasicInfo" resultType="com.zhulang.waveedu.edu.query.ClassBasicInfoQuery">
-        SELECT `creator_id`,`name`,`cover`,`num`,`is_end_class`,`lesson_id`,`create_time`
+        SELECT `creator_id`, `name`, `cover`, `num`, `is_end_class`, `lesson_id`, `create_time`
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
           AND `is_deleted` = 0
     </select>
     <select id="selectInviteCodeById" resultType="com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery">
-        SELECT `invite_code`,`is_forbid_join`,`lesson_id`
+        SELECT `invite_code`, `is_forbid_join`, `lesson_id`
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
           AND `is_deleted` = 0
@@ -31,5 +31,25 @@
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
           AND `creator_id` = #{userId}
+    </select>
+    <select id="selectCreateClassInfoList"
+            resultType="com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery">
+        SELECT c.`id` AS `classId`,
+        c.`name` AS `className`,
+        c.`num` AS `classNum`,
+        l.`cover` AS `lessonCover`,
+        l.`name` AS `lessonName`,
+        l.`id` AS `lessonId`
+        FROM `edu_lesson_class` c,`edu_lesson` l
+        WHERE c.`creator_id` = #{creatorId}
+        AND c.`is_end_class` = #{isEndClass}
+        AND c.`lesson_id` = l.`id`
+        <if test="classId != null">
+            AND c.`id` &lt; #{classId}
+        </if>
+        AND c.`is_deleted` = 0
+        AND l.`is_deleted` = 0
+        ORDER BY c.`create_time` DESC
+        LIMIT #{limitQuery}
     </select>
 </mapper>

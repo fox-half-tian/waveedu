@@ -85,11 +85,11 @@ public class LessonClassFileController {
      * @return 新的下载次数 + 文件路径
      */
     @PostMapping("/download/lessonClassFile")
-    public Result downloadLessonFile(@RequestBody JSONObject object){
+    public Result downloadLessonFile(@RequestBody JSONObject object) {
         try {
             return lessonClassFileService.downloadLessonFile(Long.parseLong(object.getString("lessonClassFileId")));
         } catch (NumberFormatException e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"班级文件id格式错误");
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级文件id格式错误");
         }
     }
 }

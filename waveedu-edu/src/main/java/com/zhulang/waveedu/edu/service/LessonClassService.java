@@ -99,4 +99,14 @@ public interface LessonClassService extends IService<LessonClass> {
      * @param change 动态增减
      */
     void modifyNumOfDynamic(Long classId, String change);
+
+    /**
+     * 获取创建的班级信息列表
+     * 按照时间由近及远排序
+     *
+     * @param isEndClass 是否结课
+     * @param classId 班级id,返回列表信息均小于该id
+     * @return 信息列表：班级id,班级名，班级人数,课程封面，课程名，课程id
+     */
+    Result getCreateClassInfoList(Integer isEndClass,Long classId);
 }
