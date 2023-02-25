@@ -66,11 +66,11 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void joinClass(LessonClassStu lessonClassStu){
+    public void joinClass(LessonClassStu lessonClassStu) {
         // 班级与学生对应表插入记录
         lessonClassStuMapper.insert(lessonClassStu);
         // 人数加1
-        lessonClassService.modifyNumOfDynamic(lessonClassStu.getLessonClassId(),"+ 1");
+        lessonClassService.modifyNumOfDynamic(lessonClassStu.getLessonClassId(), "+ 1");
     }
 
     @Override
@@ -100,14 +100,13 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 2.删除学生
-        LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LessonClassStu::getLessonClassId, classId)
-                .eq(LessonClassStu::getStuId, stuId);
-        int result = lessonClassStuMapper.delete(wrapper);
-        if (result == 0) {
+        try {
+            this.exitClass(classId, stuId);
+        } catch (Exception e) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到该学生信息");
         }
         // 3.todo 通知
+
         return Result.ok();
     }
 
@@ -118,14 +117,27 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
         // 2.退出班级
+        try {
+            this.exitClass(classId, UserHolderUtils.getUserId());
+            return Result.ok();
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到您的信息");
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void exitClass(Long classId, Long userId) {
+        // 1.从班级与学生对应关系表移除信息
         LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(LessonClassStu::getLessonClassId, classId)
                 .eq(LessonClassStu::getStuId, UserHolderUtils.getUserId());
         int result = lessonClassStuMapper.delete(wrapper);
         if (result == 0) {
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到您的信息");
+            throw new RuntimeException();
         }
-        return Result.ok();
+
+        // 2.人数减少
+        lessonClassService.modifyNumOfDynamic(classId, "- 1");
     }
 
     @Override
@@ -136,7 +148,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         }
         // 2.校验身份 --> 只有创建者与班级成员可获取
         Long userId = UserHolderUtils.getUserId();
-        if (!lessonClassService.existsByUserIdAndClassId(userId, classId) && !this.existsByClassIdAndUserId(classId,userId)) {
+        if (!lessonClassService.existsByUserIdAndClassId(userId, classId) && !this.existsByClassIdAndUserId(classId, userId)) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
 
