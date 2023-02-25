@@ -50,4 +50,19 @@ public interface LessonFileMapper extends BaseMapper<LessonFile> {
     List<LessonFileDetailInfoQuery> selectDetailInfoList(@Param("lessonId") Long lessonId,
                                                          @Param("fileId") Long fileId,
                                                          @Param("queryLimit") Integer queryLimit);
+
+    /**
+     * 增加一次下载次数
+     *
+     * @param id 课程文件id
+     */
+    void updateDownloadCountOfInsertOne(@Param("id") Long id);
+
+    /**
+     * 查询该文件的下载次数
+     *
+     * @param id 课程文件id
+     * @return 下载次数
+     */
+    Integer selectDownloadCount(@Param("id") Long id);
 }

@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonFileService;
@@ -82,7 +83,7 @@ public class LessonFileController {
      *
      * @param lessonId 课程id
      * @param fileId   文件id
-     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 文件路径 + 下载次数，按照时间由近到远排序
+     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
     @GetMapping("/get/detailInfoList")
     public Result getDetailInfoList(
@@ -90,5 +91,20 @@ public class LessonFileController {
             @RequestParam(value = "fileId", required = false) Long fileId
     ) {
         return lessonFileService.getDetailInfoList(lessonId, fileId);
+    }
+
+    /**
+     * 增加一次下载次数
+     *
+     * @param object 课程文件id
+     * @return 新的下载次数
+     */
+    @PutMapping("/modify/addDownloadCount")
+    public Result addDownloadCount(@RequestBody JSONObject object){
+        try {
+            return lessonFileService.addDownloadCount(Long.parseLong(object.getString("lessonFileId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"课程文件id格式错误");
+        }
     }
 }

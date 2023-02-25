@@ -13,6 +13,7 @@ import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.zhulang.waveedu.edu.dao.LessonFileMapper;
+import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.zhulang.waveedu.edu.service.LessonFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonService;
@@ -45,6 +46,9 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
 
     @Resource
     private LessonService lessonService;
+
+    @Resource
+    private LessonClassStuService lessonClassStuService;
 
     @Override
     public Result saveFile(SaveLessonFileVO saveLessonFileVO) {
@@ -142,6 +146,28 @@ public class LessonFileServiceImpl extends ServiceImpl<LessonFileMapper, LessonF
         List<LessonFileDetailInfoQuery> detailInfoList = lessonFileMapper.selectDetailInfoList(lessonId, fileId, EduConstants.DEFAULT_LESSON_DETAIL_FILE_LIST_QUERY_LIMIT);
         // 3.返回
         return Result.ok(detailInfoList);
+    }
+
+    @Override
+    public Result addDownloadCount(Long lessonFileId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(lessonFileId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程文件id格式错误");
+        }
+        // 2.查询对应的课程
+        Long lessonId = lessonFileMapper.selectLessonIdById(lessonFileId);
+        if (lessonId==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "文件不存在");
+        }
+        // 3.校验是否为教师团队成员或班级成员
+        Long userId = UserHolderUtils.getUserId();
+        if (!lessonTchService.isExistByLessonAndUser(lessonId, userId) && !lessonClassStuService.existsByLessonIdAndUserId(lessonId, userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.增加次数
+        lessonFileMapper.updateDownloadCountOfInsertOne(lessonFileId);
+        // 5.获取次数
+        return Result.ok(lessonFileMapper.selectDownloadCount(lessonFileId));
     }
 
     /**
