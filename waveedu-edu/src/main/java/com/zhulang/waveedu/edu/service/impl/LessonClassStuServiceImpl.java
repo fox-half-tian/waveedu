@@ -12,6 +12,7 @@ import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,8 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         lessonClassStu.setLessonClassId(classId);
         lessonClassStu.setStuId(userId);
         lessonClassStu.setLessonId(info.getLessonId());
-        joinClass(lessonClassStu);
+        LessonClassStuService proxy = (LessonClassStuService) AopContext.currentProxy();
+        proxy.joinClass(lessonClassStu);
         // 5.加入成功，将 邀请码类型 和 班级id 返回
         HashMap<String, Object> map = new HashMap<>(2);
         map.put("type", InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE);
@@ -66,6 +68,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public void joinClass(LessonClassStu lessonClassStu) {
         // 班级与学生对应表插入记录
         lessonClassStuMapper.insert(lessonClassStu);
@@ -101,7 +104,8 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
         }
         // 2.删除学生
         try {
-            this.exitClass(classId, stuId);
+            LessonClassStuService proxy = (LessonClassStuService) AopContext.currentProxy();
+            proxy.exitClass(classId, stuId);
         } catch (Exception e) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级中已找不到该学生信息");
         }
@@ -126,11 +130,12 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public void exitClass(Long classId, Long userId) {
         // 1.从班级与学生对应关系表移除信息
         LambdaQueryWrapper<LessonClassStu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(LessonClassStu::getLessonClassId, classId)
-                .eq(LessonClassStu::getStuId, UserHolderUtils.getUserId());
+                .eq(LessonClassStu::getStuId, userId);
         int result = lessonClassStuMapper.delete(wrapper);
         if (result == 0) {
             throw new RuntimeException();

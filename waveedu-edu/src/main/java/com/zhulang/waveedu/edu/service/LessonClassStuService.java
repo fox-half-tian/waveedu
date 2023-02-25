@@ -75,4 +75,23 @@ public interface LessonClassStuService extends IService<LessonClassStu> {
      * @return 信息列表
      */
     Result getStuInfoList(Long classId);
+
+    /**
+     * 用户退出班级：
+     * 1.删除对应表记录信息
+     * 2.班级表的人数-1
+     *
+     * @param classId 班级id
+     * @param userId 用户id
+     */
+    void exitClass(Long classId, Long userId) ;
+
+    /**
+     * 用户加入班级：
+     * 1.对应表添加记录
+     * 2.班级表的人数+1
+     *
+     * @param lessonClassStu 课程id + 班级id + 用户id
+     */
+    void joinClass(LessonClassStu lessonClassStu);
 }
