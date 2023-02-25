@@ -22,4 +22,12 @@ public interface LessonClassFileService extends IService<LessonClassFile> {
      * @return 资料信息
      */
     Result saveFile(SaveClassFileVO saveClassFileVO);
+
+    /**
+     * 删除班级的资料
+     *
+     * @param lessonClassFileId 班级资料id
+     * @return 删除状况
+     */
+    Result removeFile(Long lessonClassFileId);
 }

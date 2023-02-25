@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dto.LessonClassFileDTO;
 import com.zhulang.waveedu.edu.dto.LessonFileDTO;
@@ -63,5 +64,27 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
         lessonClassFileDTO.setUserName(UserHolderUtils.getUserName());
         // 6.返回信息
         return Result.ok(lessonClassFileDTO);
+    }
+
+    @Override
+    public Result removeFile(Long lessonClassFileId) {
+        // 1.校验lessonFileId 是否合理
+        if (RegexUtils.isSnowIdInvalid(lessonClassFileId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级资料id格式错误");
+        }
+        // 2.根据文件id获取班级的id
+        Long lessonClassId = lessonClassFileMapper.selectLessonClassId(lessonClassFileId);
+        if (lessonClassId==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"文件不存在");
+        }
+        // 3.校验只有老师才能操作
+        if(!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), lessonClassId)){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.删除资料
+        lessonClassFileMapper.deleteById(lessonClassFileId);
+
+        // 4.返回成功
+        return Result.ok();
     }
 }

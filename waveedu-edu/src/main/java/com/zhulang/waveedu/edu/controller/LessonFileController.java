@@ -42,12 +42,12 @@ public class LessonFileController {
     /**
      * 删除课程的资料
      *
-     * @param object 课程资料id
+     * @param lessonFileId 课程资料id
      * @return 删除状况
      */
     @DeleteMapping("/delFile")
-    public Result delFile(@RequestBody JSONObject object) {
-        return lessonFileService.removeFile(Long.parseLong(object.getString("lessonFileId")));
+    public Result delFile(@RequestParam("lessonFileId") Long  lessonFileId) {
+        return lessonFileService.removeFile(lessonFileId);
     }
 
     /**

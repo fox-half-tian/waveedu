@@ -1,16 +1,14 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.service.LessonClassFileService;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassFileVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -38,5 +36,16 @@ public class LessonClassFileController {
     public Result saveFile(@Validated @RequestBody SaveClassFileVO saveClassFileVO) {
         saveClassFileVO.setUserId(UserHolderUtils.getUserId());
         return lessonClassFileService.saveFile(saveClassFileVO);
+    }
+
+    /**
+     * 删除班级的资料
+     *
+     * @param lessonClassFileId 班级资料id
+     * @return 删除状况
+     */
+    @DeleteMapping("/delFile")
+    public Result delFile(@RequestParam("lessonClassFileId") Long  lessonClassFileId) {
+            return lessonClassFileService.removeFile(lessonClassFileId);
     }
 }
