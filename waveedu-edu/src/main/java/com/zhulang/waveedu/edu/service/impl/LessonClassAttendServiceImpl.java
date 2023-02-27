@@ -92,4 +92,9 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
         // 4.上课时间安排获取
         return Result.ok(lessonClassAttendMapper.selectClassPlan(classId));
     }
+
+    @Override
+    public Result getSelfTchPlan() {
+        return null;
+    }
 }

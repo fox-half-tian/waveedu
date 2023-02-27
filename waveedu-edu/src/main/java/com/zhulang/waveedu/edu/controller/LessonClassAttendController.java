@@ -59,4 +59,14 @@ public class LessonClassAttendController {
         return lessonClassAttendService.getClassPlan(classId);
     }
 
+    /**
+     * 获取自己的教学安排
+     *
+     * @return 个人安排
+     */
+    @GetMapping("/get/selfTchPlan")
+    public Result getSelfTchPlan(){
+        return lessonClassAttendService.getSelfTchPlan();
+    }
+
 }

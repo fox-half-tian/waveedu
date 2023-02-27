@@ -40,17 +40,12 @@ public class LessonSectionController {
     /**
      * 删除小节
      *
-     * @param object 小节id
+     * @param sectionId 小节id
      * @return 删除状况
      */
     @DeleteMapping("/del/section")
-    public Result delSection(@RequestBody JSONObject object){
-        try {
-            Integer sectionId = Integer.valueOf(object.getString("sectionId"));
+    public Result delSection(@RequestParam("sectionId") Integer sectionId){
             return lessonSectionService.removeSection(sectionId);
-        }catch (Exception e){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"小节id格式错误");
-        }
     }
 
     /**

@@ -38,4 +38,11 @@ public interface LessonClassAttendService extends IService<LessonClassAttend> {
      * @return 上课时间安排
      */
     Result getClassPlan(Long classId);
+
+    /**
+     * 获取自己的教学安排
+     *
+     * @return 个人安排
+     */
+    Result getSelfTchPlan();
 }

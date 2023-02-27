@@ -40,16 +40,12 @@ public class LessonChapterController {
      * 删除章节
      * 规则；必须先删除章节下的所有小节才能删除该章节
      *
-     * @param object 章节id
+     * @param chapterId 章节id
      * @return 删除结果
      */
     @DeleteMapping("/del/chapter")
-    public Result delChapter(@RequestBody JSONObject object){
-        try {
-            return lessonChapterService.removeChapter(Integer.parseInt(object.getString("chapterId")));
-        }catch (Exception e){
-            return Result.error();
-        }
+    public Result delChapter(@RequestParam("chapterId") Integer chapterId){
+            return lessonChapterService.removeChapter(chapterId);
     }
 
     /**
