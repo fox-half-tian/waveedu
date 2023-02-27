@@ -1,6 +1,10 @@
 package com.zhulang.waveedu.edu.po;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,6 +17,9 @@ import java.time.LocalDateTime;
  * @since 2023-02-27
  */
 @TableName("edu_lesson_class_attend")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LessonClassAttend implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,6 +27,7 @@ public class LessonClassAttend implements Serializable {
     /**
      * 主键id（雪花算法）
      */
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -45,73 +53,12 @@ public class LessonClassAttend implements Serializable {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Long getLessonClassId() {
-        return lessonClassId;
-    }
-
-    public void setLessonClassId(Long lessonClassId) {
-        this.lessonClassId = lessonClassId;
-    }
-    public Integer getWeek() {
-        return week;
-    }
-
-    public void setWeek(Integer week) {
-        this.week = week;
-    }
-    public Integer getTime() {
-        return time;
-    }
-
-    public void setTime(Integer time) {
-        this.time = time;
-    }
-    public String getLessonName() {
-        return lessonName;
-    }
-
-    public void setLessonName(String lessonName) {
-        this.lessonName = lessonName;
-    }
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "LessonClassAttend{" +
-            "id=" + id +
-            ", lessonClassId=" + lessonClassId +
-            ", week=" + week +
-            ", time=" + time +
-            ", lessonName=" + lessonName +
-            ", createTime=" + createTime +
-            ", updateTime=" + updateTime +
-        "}";
-    }
 }
