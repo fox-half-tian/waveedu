@@ -4,6 +4,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonClassInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -72,4 +73,13 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
                                                                @Param("isEndClass") Integer isEndClass,
                                                                @Param("classId") Long classId,
                                                                @Param("limitQuery") Integer limitQuery);
+
+    /**
+     * 查询课程的所有班级
+     *
+     * @param lessonId 课程id
+     * @return 班级信息：班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，创建者姓名，邀请码
+     */
+    List<LessonClassInfoQuery> selectLessonAllClassInfoList(@Param("lessonId") Long lessonId);
+
 }

@@ -7,7 +7,6 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,6 +109,19 @@ public class LessonClassController {
             @RequestParam(value = "isEndClass") Integer isEndClass,
             @RequestParam(value = "classId", required = false) Long classId) {
         return lessonClassService.getCreateClassInfoList(isEndClass, classId);
+    }
+
+    /**
+     * 获取该课程的所有班级
+     * 教学团队成员可以操作
+     * 已按照时间由近到远排序
+     *
+     * @param lessonId 课程id
+     * @return 班级信息:班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，创建者姓名，邀请码
+     */
+    @GetMapping("/get/lessonAllClassInfoList")
+    public Result getLessonClassList(@RequestParam("lessonId")Long lessonId){
+        return lessonClassService.getLessonAllClassInfoList(lessonId);
     }
 
 }

@@ -109,4 +109,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 信息列表：班级id,班级名，班级人数,课程封面，课程名，课程id
      */
     Result getCreateClassInfoList(Integer isEndClass,Long classId);
+
+    /**
+     * 获取该课程的所有班级
+     *
+     * @param lessonId 课程id
+     * @return 班级信息
+     */
+    Result getLessonAllClassInfoList(Long lessonId);
 }

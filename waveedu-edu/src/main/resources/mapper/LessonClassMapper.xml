@@ -52,4 +52,19 @@
         ORDER BY c.`create_time` DESC
         LIMIT #{limitQuery}
     </select>
+    <select id="selectLessonAllClassInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassInfoQuery">
+        SELECT c.`id`,
+               c.`name`,
+               c.`num`,
+               c.`is_end_class`,
+               c.`is_forbid_join`,
+               c.`create_time`,
+               c.`invite_code`,
+               i.`name` AS `creatorName`
+        FROM `edu_lesson_class` c,
+             `basic_user_info` i
+        WHERE c.`lesson_id` = #{lessonId}
+          AND c.`creator_id` = i.`id`
+        ORDER BY c.`create_time` DESC
+    </select>
 </mapper>

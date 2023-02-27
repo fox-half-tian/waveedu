@@ -14,6 +14,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
 import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery;
+import com.zhulang.waveedu.edu.query.LessonClassInfoQuery;
 import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -188,7 +189,7 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
     @Override
     public Result getCreateClassInfoList(Integer isEndClass, Long classId) {
         // 1.校验
-        if (isEndClass!=0&&isEndClass!=1){
+        if (isEndClass != 0 && isEndClass != 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "参数校验失败");
         }
         if (classId != null && RegexUtils.isSnowIdInvalid(classId)) {
@@ -198,6 +199,27 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         List<CreateLessonClassInfoQuery> infoList = lessonClassMapper.selectCreateClassInfoList(UserHolderUtils.getUserId(), isEndClass, classId, EduConstants.DEFAULT_CREATE_LESSON_CLASS_LIST_QUERY_LIMIT);
 
         // 3.返回
+        return Result.ok(infoList);
+    }
+
+    @Override
+    public Result getLessonAllClassInfoList(Long lessonId) {
+        // 1.数据格式校验
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
+        }
+        // 2.身份校验
+        Result result = lessonTchService.isLessonTch(lessonId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+        // 3.获取所有班级的信息
+        List<LessonClassInfoQuery> infoList = lessonClassMapper.selectLessonAllClassInfoList(lessonId);
+        // 4.加密邀请码
+        for (LessonClassInfoQuery info : infoList) {
+            info.setInviteCode(CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + info.getId() + "-" + info.getInviteCode()));
+        }
+        // 5.返回信息
         return Result.ok(infoList);
     }
 
