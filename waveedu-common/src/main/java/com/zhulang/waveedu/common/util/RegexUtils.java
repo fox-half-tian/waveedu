@@ -122,6 +122,14 @@ public class RegexUtils {
          * 作业标题正则，1-64个字符，不允许\n
          */
         public static final String LESSON_CLASS_HOMEWORK_TITLE_REGEX = "^.{1,64}$";
+        /**
+         * 作业问题描述正则，1-1000个字符，不允许\n
+         */
+        public static final String LESSON_CLASS_HOMEWORK_QUESTION_DESC_REGEX = "^.{1,1000}$";
+        /**
+         * 作业答案&参考答案正则，1-1000个字符，不允许\n
+         */
+        public static final String LESSON_CLASS_HOMEWORK_ANSWER_REGEX = "^.{1,1000}$";
     }
 
     /**

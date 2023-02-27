@@ -36,7 +36,7 @@ public class CommonHomeworkQuestion implements Serializable {
     private Integer commonHomeworkId;
 
     /**
-     * 题目类型：0-单选,1-多选,2-填空，3-判断
+     * 题目类型：0-单选,1-多选,2-填空，3-判断,4-探究
      */
     private Integer type;
 
@@ -49,6 +49,11 @@ public class CommonHomeworkQuestion implements Serializable {
      * 答案
      */
     private String answer;
+
+    /**
+     * 解析
+     */
+    private String analysis;
 
     /**
      * 分值
