@@ -118,6 +118,10 @@ public class RegexUtils {
          * 课程班级名正则，1-24个字符，不允许\n
          */
         public static final String LESSON_CLASS_NAME_REGEX = "^.{1,24}$";
+        /**
+         * 作业标题正则，1-64个字符，不允许\n
+         */
+        public static final String LESSON_CLASS_HOMEWORK_TITLE_REGEX = "^.{1,64}$";
     }
 
     /**
