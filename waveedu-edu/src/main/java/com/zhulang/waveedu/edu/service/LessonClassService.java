@@ -135,4 +135,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return true-说明结课
      */
     boolean isEndClassById(Long classId);
+
+    /**
+     * 删除班级以及班级信息
+     *
+     * @param classId 班级Id
+     * @return 删除状况
+     */
+    Result delClassInfo(Long classId);
 }

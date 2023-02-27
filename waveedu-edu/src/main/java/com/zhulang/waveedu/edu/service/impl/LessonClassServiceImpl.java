@@ -12,13 +12,17 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
+import com.zhulang.waveedu.edu.po.LessonClassAttend;
+import com.zhulang.waveedu.edu.po.LessonClassFile;
+import com.zhulang.waveedu.edu.po.LessonClassStu;
 import com.zhulang.waveedu.edu.query.*;
-import com.zhulang.waveedu.edu.service.LessonClassService;
+import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -37,14 +41,21 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     @Resource
     private LessonClassMapper lessonClassMapper;
+    @Resource
+    private LessonTchService lessonTchService;
+    @Resource
+    private LessonClassFileService lessonClassFileService;
+    @Resource
+    private LessonClassAttendService lessonClassAttendService;
+    @Resource
+    private LessonClassStuService lessonClassStuService;
 
     @Override
     public LessonClassInviteCodeQuery getInviteCodeById(Long id) {
         return lessonClassMapper.selectInviteCodeById(id);
     }
 
-    @Resource
-    private LessonTchService lessonTchService;
+
 
     @Override
     public Result saveClass(SaveClassVO saveClassVO) {
@@ -170,11 +181,25 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         if (!this.isCreatorByUserIdOfClassId(UserHolderUtils.getUserId(), classId)) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 3.删除班级
+        // 3.删除班级以及班级信息
+        return ((LessonClassService) AopContext.currentProxy()).delClassInfo(classId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result delClassInfo(Long classId){
+        // 1.删除班级
         int result = lessonClassMapper.deleteById(classId);
         if (result == 0) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级已不存在");
         }
+        // 2.删除班级的文件信息
+        lessonClassFileService.remove(new LambdaQueryWrapper<LessonClassFile>().eq(LessonClassFile::getLessonClassId,classId));
+        // 3.删除班级的学生信息
+        lessonClassStuService.remove(new LambdaQueryWrapper<LessonClassStu>().eq(LessonClassStu::getLessonClassId,classId));
+        // 4.删除班级的上课时间安排信息
+        lessonClassAttendService.remove(new LambdaQueryWrapper<LessonClassAttend>().eq(LessonClassAttend::getLessonClassId,classId));
+        // 5.返回ok
         return Result.ok();
     }
 
