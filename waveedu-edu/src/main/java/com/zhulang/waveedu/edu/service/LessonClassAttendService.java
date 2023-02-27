@@ -22,4 +22,12 @@ public interface LessonClassAttendService extends IService<LessonClassAttend> {
      * @return 信息id
      */
     Result saveOne(SaveClassAttendVO saveClassAttendVO);
+
+    /**
+     * 删除一份上课时间信息
+     *
+     * @param attendId 信息id
+     * @return 删除状况
+     */
+    Result delOne(Long attendId);
 }

@@ -5,11 +5,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassAttendService;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassAttendVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -36,6 +32,17 @@ public class LessonClassAttendController {
     @PostMapping("/saveOne")
     public Result saveOne(@Validated @RequestBody SaveClassAttendVO saveClassAttendVO){
         return lessonClassAttendService.saveOne(saveClassAttendVO);
+    }
+
+    /**
+     * 删除一份上课时间信息
+     *
+     * @param attendId 信息id
+     * @return 删除状况
+     */
+    @DeleteMapping("/delOne")
+    public Result delOne(@RequestParam("attendId")Long attendId){
+        return lessonClassAttendService.delOne(attendId);
     }
 
 }

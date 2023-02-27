@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.LessonClassAttend;
 import com.zhulang.waveedu.edu.dao.LessonClassAttendMapper;
@@ -48,5 +49,25 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
         } catch (Exception e) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "此时间段已存在上课安排，请勿重复操作");
         }
+    }
+
+    @Override
+    public Result delOne(Long attendId) {
+        // 1.校验数据格式
+        if (RegexUtils.isSnowIdInvalid(attendId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"时间信息id格式错误");
+        }
+        // 2.判断是否为班级创建者
+        Long classId = lessonClassAttendMapper.selectLessonClassIdById(attendId);
+        if (classId==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"时间信息不存在");
+        }
+        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(),classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.删除信息
+        lessonClassAttendMapper.deleteById(attendId);
+        // 4.返回ok
+        return Result.ok();
     }
 }

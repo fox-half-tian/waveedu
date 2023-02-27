@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassAttend;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface LessonClassAttendMapper extends BaseMapper<LessonClassAttend> {
 
+    /**
+     * 通过 id 获取课程班级id
+     *
+     * @param id 主键
+     * @return 班级id
+     */
+    Long selectLessonClassIdById(@Param("id") Long id);
 }
