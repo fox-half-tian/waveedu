@@ -30,4 +30,12 @@ public interface LessonClassAttendService extends IService<LessonClassAttend> {
      * @return 删除状况
      */
     Result delOne(Long attendId);
+
+    /**
+     * 获取该班级的上课时间安排
+     *
+     * @param classId 班级id
+     * @return 上课时间安排
+     */
+    Result getClassPlan(Long classId);
 }

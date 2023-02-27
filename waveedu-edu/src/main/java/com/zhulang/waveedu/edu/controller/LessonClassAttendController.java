@@ -25,6 +25,7 @@ public class LessonClassAttendController {
 
     /**
      * 保存一份上课时间信息
+     * 只允许班级创建者操作
      *
      * @param saveClassAttendVO 班级id,星期，时间，课程名
      * @return 信息id
@@ -36,6 +37,7 @@ public class LessonClassAttendController {
 
     /**
      * 删除一份上课时间信息
+     * 只允许班级创建者操作
      *
      * @param attendId 信息id
      * @return 删除状况
@@ -43,6 +45,18 @@ public class LessonClassAttendController {
     @DeleteMapping("/delOne")
     public Result delOne(@RequestParam("attendId")Long attendId){
         return lessonClassAttendService.delOne(attendId);
+    }
+
+    /**
+     * 获取该班级的上课时间安排
+     * 只允许班级创建者和班级成员获取
+     *
+     * @param classId 班级id
+     * @return 上课时间安排
+     */
+    @GetMapping("/get/classPlan")
+    public Result getClassPlan(@RequestParam("classId")Long classId){
+        return lessonClassAttendService.getClassPlan(classId);
     }
 
 }

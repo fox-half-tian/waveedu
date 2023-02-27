@@ -127,4 +127,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 班级信息:班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，邀请码
      */
     Result getLessonSelfAllClassInfoList(Long lessonId);
+
+    /**
+     * 判断是否已经结课
+     *
+     * @param classId 班级id
+     * @return true-说明结课
+     */
+    boolean isEndClassById(Long classId);
 }

@@ -81,4 +81,9 @@
           AND `creator_id` = #{creatorId}
         ORDER BY `create_time` DESC
     </select>
+    <select id="selectIsEndClassById" resultType="java.lang.Integer">
+        SELECT `is_end_class`
+        FROM `edu_lesson_class`
+        WHERE `id` = #{id}
+    </select>
 </mapper>

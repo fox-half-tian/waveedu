@@ -88,4 +88,12 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      */
     List<LessonSelfClassInfoQuery> selectLessonSelfAllClassInfoList(@Param("lessonId") Long lessonId,
                                                                     @Param("creatorId") Long creatorId);
+
+    /**
+     * 判断课程班级是否已经结课
+     *
+     * @param id 班级id
+     * @return 1-说明结课
+     */
+    Integer selectIsEndClassById(@Param("id") Long id);
 }

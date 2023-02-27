@@ -243,5 +243,10 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
 
     }
 
+    @Override
+    public boolean isEndClassById(Long classId) {
+        return lessonClassMapper.selectIsEndClassById(classId) ==1;
+    }
+
 
 }
