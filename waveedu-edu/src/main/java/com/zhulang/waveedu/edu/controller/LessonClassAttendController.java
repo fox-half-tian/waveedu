@@ -31,7 +31,7 @@ public class LessonClassAttendController {
      * @return 信息id
      */
     @PostMapping("/saveOne")
-    public Result saveOne(@Validated @RequestBody SaveClassAttendVO saveClassAttendVO){
+    public Result saveOne(@Validated @RequestBody SaveClassAttendVO saveClassAttendVO) {
         return lessonClassAttendService.saveOne(saveClassAttendVO);
     }
 
@@ -43,7 +43,7 @@ public class LessonClassAttendController {
      * @return 删除状况
      */
     @DeleteMapping("/delOne")
-    public Result delOne(@RequestParam("attendId")Long attendId){
+    public Result delOne(@RequestParam("attendId") Long attendId) {
         return lessonClassAttendService.delOne(attendId);
     }
 
@@ -55,7 +55,7 @@ public class LessonClassAttendController {
      * @return 上课时间安排
      */
     @GetMapping("/get/classPlan")
-    public Result getClassPlan(@RequestParam("classId")Long classId){
+    public Result getClassPlan(@RequestParam("classId") Long classId) {
         return lessonClassAttendService.getClassPlan(classId);
     }
 
@@ -65,7 +65,7 @@ public class LessonClassAttendController {
      * @return 个人安排
      */
     @GetMapping("/get/selfTchPlan")
-    public Result getSelfTchPlan(){
+    public Result getSelfTchPlan() {
         return lessonClassAttendService.getSelfTchPlan();
     }
 
@@ -75,7 +75,7 @@ public class LessonClassAttendController {
      * @return 安排表
      */
     @GetMapping("/get/selfStuPlan")
-    public Result getSelfStuPlan(){
+    public Result getSelfStuPlan() {
         return lessonClassAttendService.getSelfStuPlan();
     }
 }

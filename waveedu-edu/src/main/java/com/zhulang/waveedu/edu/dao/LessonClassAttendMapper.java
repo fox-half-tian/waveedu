@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.dao;
 import com.zhulang.waveedu.edu.po.LessonClassAttend;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.ClassWeekPlanQuery;
+import com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery;
 import com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +42,12 @@ public interface LessonClassAttendMapper extends BaseMapper<LessonClassAttend> {
      * @return 安排
      */
     List<EveryTimeTchPlanQuery> selectTchPlan(@Param("creatorId") Long creatorId);
+
+    /**
+     * 查询自己的课程安排
+     *
+     * @param stuId 学生id
+     * @return 安排
+     */
+    List<EveryTImeStuPlanQuery> selectStuPlan(@Param("stuId") Long stuId);
 }

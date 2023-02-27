@@ -22,7 +22,7 @@
         WHERE `lesson_class_id` = #{classId}
         ORDER BY `week`, `time`
     </select>
-    <resultMap id="TchPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery">
+    <resultMap id="tchPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery">
         <result column="week" property="week"/>
         <result column="time" property="time"/>
         <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery$PlanLesson">
@@ -30,7 +30,7 @@
             <result column="lessonName" property="lessonName"/>
         </collection>
     </resultMap>
-    <select id="selectTchPlan" resultMap="TchPlanResultMap">
+    <select id="selectTchPlan" resultMap="tchPlanResultMap">
         SELECT a.`week`        AS `week`,
                a.`time`        AS `time`,
                c.`name`        AS `className`,
@@ -45,5 +45,33 @@
           AND l.`is_deleted` = 0
           AND c.`id` = a.`lesson_class_id`
         ORDER BY a.`week`, a.`time`
+    </select>
+    <resultMap id="stuPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery">
+        <result column="week" property="week"/>
+        <result column="time" property="time"/>
+        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery$PlanLesson">
+            <result column="tchName" property="tchName"/>
+            <result column="lessonName" property="lessonName"/>
+        </collection>
+    </resultMap>
+    <select id="selectStuPlan" resultMap="stuPlanResultMap">
+        select a.`week`        AS `week`,
+               a.`time`        AS `time`,
+               a.`lesson_name` AS `lessonName`,
+               i.`name`        as `tchName`
+        from `edu_lesson_class_stu` s,
+             `edu_lesson_class` c,
+             `basic_user_info` i,
+             `edu_lesson_class_attend` a,
+             `edu_lesson` l
+        where s.`stu_id` = #{stuId}
+          and s.`lesson_class_id` = c.`id`
+          and c.`is_deleted` = 0
+          AND c.`is_end_class` = 0
+          and c.`creator_id` = i.`id`
+          and c.`id` = a.`lesson_class_id`
+          and l.`id` = c.`lesson_id`
+          and l.`is_deleted` = 0
+        order by a.`week`, a.`time`
     </select>
 </mapper>

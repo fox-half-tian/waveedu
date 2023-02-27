@@ -100,7 +100,6 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
 
     @Override
     public Result getSelfStuPlan() {
-
-        return null;
+        return Result.ok(lessonClassAttendMapper.selectStuPlan(UserHolderUtils.getUserId()));
     }
 }

@@ -7,15 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 每个时间段的教学安排
+ * 每个时间段的学习安排
  *
  * @author 狐狸半面添
- * @create 2023-02-27 18:37
+ * @create 2023-02-27 21:33
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EveryTimeTchPlanQuery {
+public class EveryTImeStuPlanQuery {
     /**
      * 星期
      */
@@ -34,12 +34,12 @@ public class EveryTimeTchPlanQuery {
     @AllArgsConstructor
     public static class PlanLesson{
         /**
-         * 班级名
-         */
-        private String className;
-        /**
          * 课程名
          */
         private String lessonName;
+        /**
+         * 教师名
+         */
+        private String tchName;
     }
 }
