@@ -157,7 +157,7 @@ public class LessonClassStuServiceImpl extends ServiceImpl<LessonClassStuMapper,
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
 
-        // 3.获取学生信息：用户id，用户名，用户头像，学号，身份类型，院校名
+        // 3.获取学生信息：用户id，用户名，用户头像，学号，身份类型，院校名,手机号
         return Result.ok(lessonClassStuMapper.selectStuInfoList(classId));
     }
 }

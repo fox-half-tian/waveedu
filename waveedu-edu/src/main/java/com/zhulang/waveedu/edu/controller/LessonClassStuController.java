@@ -76,7 +76,7 @@ public class LessonClassStuController {
 
     /**
      * 获取班级的学生信息列表，只有创建者与班级成员可获取
-     * 返回：用户id，用户名，用户头像，学号，身份类型，院校名
+     * 返回：用户id，用户名，用户头像，学号，身份类型，院校名，手机号
      *
      * @param classId 班级id
      * @return 信息列表

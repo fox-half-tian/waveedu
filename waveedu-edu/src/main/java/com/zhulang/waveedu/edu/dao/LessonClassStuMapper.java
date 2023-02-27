@@ -47,7 +47,7 @@ public interface LessonClassStuMapper extends BaseMapper<LessonClassStu> {
     Integer existsByClassIdAndUserId(@Param("classId") Long classId, @Param("userId") Long userId);
 
     /**
-     * 查询班级中的所有学生信息：用户id，用户名，用户头像，学号，身份类型，院校名
+     * 查询班级中的所有学生信息：用户id，用户名，用户头像，学号，身份类型，院校名，手机号
      *
      * @param classId 班级id
      * @return 学生信息列表

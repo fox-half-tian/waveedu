@@ -38,4 +38,8 @@ public class ClassStuInfoQuery {
      * 学生身份-0代表学生，1代表教师
      */
     private Integer type;
+    /**
+     * 手机号
+     */
+    private String stuPhone;
 }

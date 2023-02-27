@@ -134,7 +134,7 @@ public class LessonClassController {
      */
     @GetMapping("/get/lessonSelfAllClassInfoList")
     public Result getLessonSelfAllClassInfoList(@RequestParam("lessonId")Long lessonId){
-        return lessonClassService.getLessonSelfAllClassInfoList(lessonId);
+        return lessonClassService.getLessonSelfAllClassInfoList(lessonId);  
     }
 
 }

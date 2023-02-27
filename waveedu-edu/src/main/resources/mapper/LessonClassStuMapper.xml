@@ -36,13 +36,15 @@
         SELECT s.`stu_id`       AS `stuId`,
                u.`icon`         AS `stuIcon`,
                u.`name`         AS `stuName`,
+               e.`phone`        AS `stuPhone`,
                i.`college_name` AS `collegeName`,
                i.`number`       AS `number`,
                i.`type`         AS `type`
-        FROM (`edu_lesson_class_stu` s,`basic_user_info` u)
+        FROM (`edu_lesson_class_stu` s,`basic_user_info` u,`basic_user` e)
                  LEFT JOIN `basic_identity` i
                            ON s.`stu_id` = i.`user_id`
         WHERE s.`lesson_class_id` = #{classId}
           AND s.`stu_id` = u.`id`
+          AND s.`stu_id` = e.`id`
     </select>
 </mapper>
