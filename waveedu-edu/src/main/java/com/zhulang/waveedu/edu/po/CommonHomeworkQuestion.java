@@ -1,55 +1,66 @@
 package com.zhulang.waveedu.edu.po;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 用户身份表
+ * <p>
+ * 普通作业表的题目表
+ * </p>
  *
  * @author 狐狸半面添
- * @create 2023-02-03 0:27
+ * @since 2023-02-28
  */
-@TableName("basic_identity")
+@TableName("edu_common_homework_question")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Identity {
+public class CommonHomeworkQuestion implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
-     * 数据库自增id
+     * 主键id（自增）
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
     /**
-     * 用户id
+     * 作业id
      */
-    private Long userId;
+    private Integer commonHomeworkId;
+
     /**
-     * 院校id
-     */
-    private Integer collegeId;
-    /**
-     * 身份类型，0代表学生，1代表老师
+     * 题目类型：0-单选,1-多选,2-填空，3-判断
      */
     private Integer type;
+
     /**
-     * 学号/工号，最大16长度
+     * 问题描述
      */
-    private String number;
+    private String problemDesc;
+
     /**
-     * 删除标志（0表示未删除，1表示删除）
+     * 答案
      */
-    @TableLogic
-    private Integer isDeleted;
+    private String answer;
+
+    /**
+     * 分值
+     */
+    private Integer score;
+
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
     /**
      * 修改时间
      */
