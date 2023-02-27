@@ -69,4 +69,13 @@ public class LessonClassAttendController {
         return lessonClassAttendService.getSelfTchPlan();
     }
 
+    /**
+     * 获得自己的学习课程的计划安排表
+     *
+     * @return 安排表
+     */
+    @GetMapping("/get/selfStuPlan")
+    public Result getSelfStuPlan(){
+        return lessonClassAttendService.getSelfStuPlan();
+    }
 }

@@ -35,7 +35,7 @@ public class LessonSectionFileController {
      * @return 保存成功-返回该资料的Id
      */
     @PostMapping("/save/file")
-    public Result saveFile(@Validated @RequestBody SaveSectionFileVO saveSectionFileVO){
+    public Result saveFile(@Validated @RequestBody SaveSectionFileVO saveSectionFileVO) {
         saveSectionFileVO.setUserId(UserHolderUtils.getUserId());
         return lessonSectionFileService.saveFile(saveSectionFileVO);
     }
@@ -43,16 +43,12 @@ public class LessonSectionFileController {
     /**
      * 删除小节的视频资料
      *
-     * @param object 资料Id
+     * @param fileId 资料Id
      * @return 删除状况
      */
     @DeleteMapping("/del/file")
-    public Result delVideoFile(@RequestBody JSONObject object){
-        try {
-            return lessonSectionFileService.removeFile(Integer.parseUnsignedInt(object.getString("fileId")));
-        }catch (Exception e){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id校验出错");
-        }
+    public Result delVideoFile(@RequestParam("fileId") Integer fileId) {
+        return lessonSectionFileService.removeFile(fileId);
     }
 
     /**
@@ -63,7 +59,7 @@ public class LessonSectionFileController {
      * @return 返回两个列表，第一歌列表是视频，第二个列表是资料
      */
     @GetMapping("/get/section/fileList")
-    public Result getSectionFileList(@RequestParam("sectionId")Integer sectionId){
+    public Result getSectionFileList(@RequestParam("sectionId") Integer sectionId) {
         return lessonSectionFileService.getSectionFileList(sectionId);
     }
 }

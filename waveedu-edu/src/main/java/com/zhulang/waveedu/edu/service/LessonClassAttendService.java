@@ -45,4 +45,11 @@ public interface LessonClassAttendService extends IService<LessonClassAttend> {
      * @return 个人安排
      */
     Result getSelfTchPlan();
+
+    /**
+     * 获得自己的学习课程的计划安排表
+     *
+     * @return 安排表
+     */
+    Result getSelfStuPlan();
 }
