@@ -60,7 +60,7 @@ public class LessonClassAttendController {
     }
 
     /**
-     * 获取自己的教学安排
+     * 获取自己的教学安排表
      *
      * @return 个人安排
      */

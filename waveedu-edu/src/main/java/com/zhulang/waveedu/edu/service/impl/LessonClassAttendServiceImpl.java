@@ -95,6 +95,6 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
 
     @Override
     public Result getSelfTchPlan() {
-        return null;
+        return Result.ok(lessonClassAttendMapper.selectTchPlan(UserHolderUtils.getUserId()));
     }
 }

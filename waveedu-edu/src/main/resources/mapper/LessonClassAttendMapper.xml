@@ -22,4 +22,28 @@
         WHERE `lesson_class_id` = #{classId}
         ORDER BY `week`, `time`
     </select>
+    <resultMap id="TchPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery">
+        <result column="week" property="week"/>
+        <result column="time" property="time"/>
+        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery$PlanLesson">
+            <result column="className" property="className"/>
+            <result column="lessonName" property="lessonName"/>
+        </collection>
+    </resultMap>
+    <select id="selectTchPlan" resultMap="TchPlanResultMap">
+        SELECT a.`week`        AS `week`,
+               a.`time`        AS `time`,
+               c.`name`        AS `className`,
+               a.`lesson_name` AS `lessonName`
+        FROM `edu_lesson_class` c,
+             `edu_lesson` l,
+             `edu_lesson_class_attend` a
+        WHERE c.`creator_id` = #{creatorId}
+          AND c.`is_end_class` = 0
+          AND c.`is_deleted` = 0
+          AND c.`lesson_id` = l.`id`
+          AND l.`is_deleted` = 0
+          AND c.`id` = a.`lesson_class_id`
+        ORDER BY a.`week`, a.`time`
+    </select>
 </mapper>
