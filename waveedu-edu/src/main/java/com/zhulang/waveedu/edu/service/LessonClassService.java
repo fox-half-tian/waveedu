@@ -117,4 +117,14 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 班级信息
      */
     Result getLessonAllClassInfoList(Long lessonId);
+
+    /**
+     * 获取该课程中自己创建的所有班级
+     * 教学团队成员可以操作
+     * 已按照时间由近到远排序
+     *
+     * @param lessonId 课程id
+     * @return 班级信息:班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，邀请码
+     */
+    Result getLessonSelfAllClassInfoList(Long lessonId);
 }

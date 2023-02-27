@@ -12,10 +12,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.dao.LessonClassMapper;
-import com.zhulang.waveedu.edu.query.ClassBasicInfoQuery;
-import com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonClassInfoQuery;
-import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.*;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonTchService;
@@ -221,6 +218,29 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         }
         // 5.返回信息
         return Result.ok(infoList);
+    }
+
+    @Override
+    public Result getLessonSelfAllClassInfoList(Long lessonId) {
+        // 1.数据格式校验
+        if (RegexUtils.isSnowIdInvalid(lessonId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "课程id格式错误");
+        }
+        // 2.身份校验
+        Long userId = UserHolderUtils.getUserId();
+        Result result = lessonTchService.isLessonTch(lessonId, userId);
+        if (result != null) {
+            return result;
+        }
+        // 3.获取所有班级的信息
+        List<LessonSelfClassInfoQuery> infoList = lessonClassMapper.selectLessonSelfAllClassInfoList(lessonId,userId);
+        // 4.加密邀请码
+        for (LessonSelfClassInfoQuery info : infoList) {
+            info.setInviteCode(CipherUtils.encrypt(InviteCodeTypeConstants.LESSON_LESSON_CLASS_CODE_TYPE + "-" + info.getId() + "-" + info.getInviteCode()));
+        }
+        // 5.返回信息
+        return Result.ok(infoList);
+
     }
 
 

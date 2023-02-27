@@ -120,8 +120,21 @@ public class LessonClassController {
      * @return 班级信息:班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，创建者姓名，邀请码
      */
     @GetMapping("/get/lessonAllClassInfoList")
-    public Result getLessonClassList(@RequestParam("lessonId")Long lessonId){
+    public Result getLessonAllClassInfoList(@RequestParam("lessonId")Long lessonId){
         return lessonClassService.getLessonAllClassInfoList(lessonId);
+    }
+
+    /**
+     * 获取该课程中自己创建的所有班级
+     * 教学团队成员可以操作
+     * 已按照时间由近到远排序
+     *
+     * @param lessonId 课程id
+     * @return 班级信息:班级id，班级名，学生人数，是否结课，是否禁止加入，创建时间，邀请码
+     */
+    @GetMapping("/get/lessonSelfAllClassInfoList")
+    public Result getLessonSelfAllClassInfoList(@RequestParam("lessonId")Long lessonId){
+        return lessonClassService.getLessonSelfAllClassInfoList(lessonId);
     }
 
 }

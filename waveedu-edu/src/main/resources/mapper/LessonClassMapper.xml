@@ -67,4 +67,18 @@
           AND c.`creator_id` = i.`id`
         ORDER BY c.`create_time` DESC
     </select>
+    <select id="selectLessonSelfAllClassInfoList"
+            resultType="com.zhulang.waveedu.edu.query.LessonSelfClassInfoQuery">
+        SELECT `id`,
+               `name`,
+               `num`,
+               `is_end_class`,
+               `is_forbid_join`,
+               `create_time`,
+               `invite_code`
+        FROM `edu_lesson_class`
+        WHERE `lesson_id` = #{lessonId}
+          AND `creator_id` = #{creatorId}
+        ORDER BY `create_time` DESC
+    </select>
 </mapper>
