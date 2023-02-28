@@ -65,6 +65,7 @@
              `basic_user_info` i
         WHERE c.`lesson_id` = #{lessonId}
           AND c.`creator_id` = i.`id`
+          AND c.`is_deleted` = 0
         ORDER BY c.`create_time` DESC
     </select>
     <select id="selectLessonSelfAllClassInfoList"
@@ -79,6 +80,7 @@
         FROM `edu_lesson_class`
         WHERE `lesson_id` = #{lessonId}
           AND `creator_id` = #{creatorId}
+          AND `is_deleted` = 0
         ORDER BY `create_time` DESC
     </select>
     <select id="selectIsEndClassById" resultType="java.lang.Integer">
