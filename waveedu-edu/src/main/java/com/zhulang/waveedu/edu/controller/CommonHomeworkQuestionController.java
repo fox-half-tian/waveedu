@@ -32,7 +32,7 @@ public class CommonHomeworkQuestionController {
      * @return 题目id
      */
     @PostMapping("/saveQuestion")
-    public Result saveQuestion(@Validated @RequestBody SaveCommonHomeworkQuestionVO saveCommonHomeworkQuestionVO){
+    public Result saveQuestion(@Validated @RequestBody SaveCommonHomeworkQuestionVO saveCommonHomeworkQuestionVO) {
         return commonHomeworkQuestionService.saveQuestion(saveCommonHomeworkQuestionVO);
     }
 
@@ -44,7 +44,7 @@ public class CommonHomeworkQuestionController {
      * @return 是否删除
      */
     @DeleteMapping("/delQuestion")
-    public Result delQuestion(@RequestParam("questionId")Integer questionId){
+    public Result delQuestion(@RequestParam("questionId") Integer questionId) {
         return commonHomeworkQuestionService.delQuestion(questionId);
     }
 

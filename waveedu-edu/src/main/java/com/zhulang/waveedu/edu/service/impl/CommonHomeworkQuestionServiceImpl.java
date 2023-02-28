@@ -101,7 +101,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         }
 
         // 3.查看是否为创建者
-        if (map.get("creator_id").equals(UserHolderUtils.getUserId())){
+        if (map.get("creator_id").equals(UserHolderUtils.getUserId())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 4.删除题目
