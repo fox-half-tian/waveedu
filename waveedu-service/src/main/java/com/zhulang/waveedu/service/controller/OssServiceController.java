@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 /**
+ * oss服务端签名后直传
+ *
  * @author 狐狸半面添
  * @create 2023-01-29 1:30
  */

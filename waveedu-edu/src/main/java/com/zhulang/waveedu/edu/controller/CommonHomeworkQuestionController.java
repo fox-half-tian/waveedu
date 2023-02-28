@@ -5,12 +5,9 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -37,6 +34,18 @@ public class CommonHomeworkQuestionController {
     @PostMapping("/saveQuestion")
     public Result saveQuestion(@Validated @RequestBody SaveCommonHomeworkQuestionVO saveCommonHomeworkQuestionVO){
         return commonHomeworkQuestionService.saveQuestion(saveCommonHomeworkQuestionVO);
+    }
+
+    /**
+     * 删除一个题目
+     * 只有未发布的作业才可以删除题目
+     *
+     * @param questionId 题目Id
+     * @return 是否删除
+     */
+    @DeleteMapping("/delQuestion")
+    public Result delQuestion(@RequestParam("questionId")Integer questionId){
+        return commonHomeworkQuestionService.delQuestion(questionId);
     }
 
 }

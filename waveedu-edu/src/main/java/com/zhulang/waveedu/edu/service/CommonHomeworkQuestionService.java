@@ -22,4 +22,13 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 题目id
      */
     Result saveQuestion(SaveCommonHomeworkQuestionVO saveCommonHomeworkQuestionVO);
+
+    /**
+     * 删除一个题目
+     * 只有未发布的作业才可以删除题目
+     *
+     * @param questionId 题目Id
+     * @return 是否删除
+     */
+    Result delQuestion(Integer questionId);
 }

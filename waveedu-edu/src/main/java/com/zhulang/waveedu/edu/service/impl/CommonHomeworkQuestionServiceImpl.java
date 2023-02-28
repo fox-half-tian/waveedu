@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>
@@ -42,14 +41,14 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         // 1.查询作业的信息：type + is_publish + creator_id
         Map<String, Object> map = lessonClassCommonHomeworkService.getMap(new LambdaQueryWrapper<LessonClassCommonHomework>()
                 .eq(LessonClassCommonHomework::getId, saveCommonHomeworkQuestionVO.getCommonHomeworkId())
-                .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getType,LessonClassCommonHomework::getCreatorId));
+                .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getType, LessonClassCommonHomework::getCreatorId));
         // 1.1 为空说明不存在该作业信息
         if (map == null || map.isEmpty()) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
         }
         // 1.2 如果不是创建者说明权限不足
-        if (map.get("creator_id").equals(UserHolderUtils.getUserId())){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        if (map.get("creator_id").equals(UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 1.3 如果已经发布则不能再修改
         if ((Integer) map.get("is_publish") == 1) {
@@ -68,21 +67,47 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         CommonHomeworkQuestion question = BeanUtil.copyProperties(saveCommonHomeworkQuestionVO, CommonHomeworkQuestion.class);
         // 3.根据问题类型校验答案的格式
         try {
-            verifyAnswerFormat(question.getType(),question.getProblemDesc(),question.getAnswer());
+            verifyAnswerFormat(question.getType(), question.getProblemDesc(), question.getAnswer());
         } catch (Exception e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"题目格式错误");
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目格式错误");
         }
         // 4.将无效的答案和解析设为空串
-        if (!StringUtils.hasText(question.getAnswer())){
+        if (!StringUtils.hasText(question.getAnswer())) {
             question.setAnswer("");
         }
-        if (!StringUtils.hasText(question.getAnalysis())){
+        if (!StringUtils.hasText(question.getAnalysis())) {
             question.setAnalysis("");
         }
         // 5.保存
         commonHomeworkQuestionMapper.insert(question);
         // 6.返回题目Id
         return Result.ok(question.getId());
+    }
+
+    @Override
+    public Result delQuestion(Integer questionId) {
+        // 1.判断 questionId 格式
+        if (questionId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目id格式错误");
+        }
+        // 2.查看问题是否发布
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdById(questionId);
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未查询到题目或作业信息");
+        }
+
+        if ((Integer) map.get("is_publish") == 1) {
+            return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "作业已发布，无法修改题目");
+        }
+
+        // 3.查看是否为创建者
+        if (map.get("creator_id").equals(UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.删除题目
+        commonHomeworkQuestionMapper.deleteById(questionId);
+        // 5.返回
+        return Result.ok();
     }
 
     /**
@@ -93,7 +118,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
      * @param answer       答案
      * @throws Exception 抛出异常说明验证失败
      */
-    public void verifyAnswerFormat(Integer questionType, String questionDesc, String answer){
+    public void verifyAnswerFormat(Integer questionType, String questionDesc, String answer) {
         switch (questionType) {
             case 0:
                 // 单选：第一个元素时题目，后面的元素是选项
