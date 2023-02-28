@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,17 @@ public class CommonHomeworkQuestionController {
     @DeleteMapping("/delQuestion")
     public Result delQuestion(@RequestParam("questionId") Integer questionId) {
         return commonHomeworkQuestionService.delQuestion(questionId);
+    }
+
+    /**
+     * 修改一个题目
+     *
+     * @param modifyCommonHomeworkQuestionVO 修改后的题目内容
+     * @return 修改状况
+     */
+    @PutMapping("/modifyQuestion")
+    public Result modifyQuestion(@Validated @RequestBody ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO){
+        return commonHomeworkQuestionService.modifyQuestion(modifyCommonHomeworkQuestionVO);
     }
 
 }

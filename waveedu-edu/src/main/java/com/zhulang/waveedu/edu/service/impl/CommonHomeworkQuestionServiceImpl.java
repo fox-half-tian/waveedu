@@ -13,6 +13,7 @@ import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -107,6 +108,53 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         // 4.删除题目
         commonHomeworkQuestionMapper.deleteById(questionId);
         // 5.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result modifyQuestion(ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO) {
+        // 1.查询作业的信息：type + is_publish + creator_id
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndTypeById(modifyCommonHomeworkQuestionVO.getId());
+
+        // 1.1 为空说明不存在该作业信息
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
+        }
+        // 1.2 如果不是创建者说明权限不足
+        if (map.get("creator_id").equals(UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 1.3 如果已经发布则不能再修改
+        if ((Integer) map.get("is_publish") == 1) {
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "作业已发布，无法添加");
+        }
+        // 1.4 如果作业类型为1并且题目类型不为4，或者，作业类型为0并且题目类型为4则操作失败
+        // 获取作业类型
+        int homeworkType = (Integer) map.get("type");
+        // 获取题目类型
+        int questionType = modifyCommonHomeworkQuestionVO.getType();
+        if ((homeworkType == 1 && questionType != 4) || (homeworkType == 0 && questionType == 4)) {
+            return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue());
+        }
+
+        // 2.属性转换
+        CommonHomeworkQuestion question = BeanUtil.copyProperties(modifyCommonHomeworkQuestionVO, CommonHomeworkQuestion.class);
+        // 3.根据问题类型校验答案的格式
+        try {
+            verifyAnswerFormat(question.getType(), question.getProblemDesc(), question.getAnswer());
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目格式错误");
+        }
+        // 4.将无效的答案和解析设为空串
+        if (!StringUtils.hasText(question.getAnswer())) {
+            question.setAnswer("");
+        }
+        if (!StringUtils.hasText(question.getAnalysis())) {
+            question.setAnalysis("");
+        }
+        // 5.修改题目
+        commonHomeworkQuestionMapper.updateById(question);
+        // 6.返回
         return Result.ok();
     }
 

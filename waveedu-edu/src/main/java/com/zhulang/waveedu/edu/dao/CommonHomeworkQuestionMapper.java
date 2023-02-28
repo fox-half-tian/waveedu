@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Map;
 
@@ -21,5 +22,16 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param id 问题id
      * @return 作业情况
      */
-    Map<String,Object> selectHomeworkIsPublishAndCreatorIdById(Integer id);
+    @SuppressWarnings("MybatisXMapperMethodInspection")
+    Map<String,Object> selectHomeworkIsPublishAndCreatorIdById(@Param("id") Integer id);
+
+    /**
+     * 根据题目查看作业的发布状况，创建者，作业类型
+     *
+     * @param id 问题id
+     * @return 作业情况
+     */
+    @SuppressWarnings("MybatisXMapperMethodInspection")
+    Map<String,Object> selectHomeworkIsPublishAndCreatorIdAndTypeById(@Param("id") Integer id);
+
 }

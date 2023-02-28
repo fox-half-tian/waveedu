@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
 
 /**
@@ -31,4 +32,12 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 是否删除
      */
     Result delQuestion(Integer questionId);
+
+    /**
+     * 修改一个题目
+     *
+     * @param modifyCommonHomeworkQuestionVO 修改后的题目内容
+     * @return 修改状况
+     */
+    Result modifyQuestion(ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO);
 }
