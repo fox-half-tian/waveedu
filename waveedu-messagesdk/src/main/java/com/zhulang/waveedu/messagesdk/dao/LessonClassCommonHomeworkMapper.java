@@ -4,6 +4,7 @@ import com.zhulang.waveedu.messagesdk.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,4 +24,16 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      * @return 学生列表
      */
     List<Long> selectStuIdListById(@Param("id") Integer id);
+
+    /**
+     * 根据作业id，开始时间和发布状态查询是否存在该记录
+     *
+     * @param id 作业id
+     * @param startTime 开始时间
+     * @param isPublish 发布状态
+     * @return null-不存在，不为空说明存在
+     */
+    Integer existsByIdAndStartTimeAndIsPublish(@Param("id") Integer id,
+                                               @Param("startTime") LocalDateTime startTime,
+                                               @Param("isPublish") Integer isPublish);
 }

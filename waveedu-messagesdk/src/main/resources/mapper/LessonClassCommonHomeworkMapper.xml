@@ -9,4 +9,11 @@
         WHERE h.`id` = #{id}
           AND h.lesson_class_id = s.`lesson_class_id`
     </select>
+    <select id="existsByIdAndStartTimeAndIsPublish" resultType="java.lang.Integer">
+        select 1
+        from `edu_lesson_class_common_homework`
+        where `id` = #{id}
+          and `start_time` = #{startTime}
+          and `is_publish` = #{isPublish}
+    </select>
 </mapper>

@@ -29,10 +29,7 @@ import org.springframework.util.concurrent.SuccessCallback;
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -83,7 +80,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         if (!map.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 1.2 如果是已经发布的状态，就不能发布
+        // 1.2 如果是已经发布了，就不能发布
         if ((Integer) map.get("is_publish") == 1) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
         }
@@ -128,12 +125,16 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                         } else {
                             // 重发
                             count++;
+                            // 设置发送的内容
+                            HashMap<String, Object> sendMap = new HashMap<>(2);
+                            sendMap.put("commonHomeworkId",publishCommonHomeworkVO.getCommonHomeworkId());
+                            sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
                             // 异步发送到消息队列
                             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
                                     RabbitConstants.COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY,
-                                    publishCommonHomeworkVO.getCommonHomeworkId(),
+                                    sendMap,
                                     msg -> {
                                         msg.getMessageProperties().setDelay(delayedTime);
                                         return msg;
@@ -156,16 +157,21 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                     log.error("失败原因：{}" + ex.getMessage());
                 }
             });
+            // 2.2 设置发送的内容
+            HashMap<String, Object> sendMap = new HashMap<>(2);
+            sendMap.put("commonHomeworkId",publishCommonHomeworkVO.getCommonHomeworkId());
+            sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
 
-            // 2.2 设置发送消息的延迟时长（单位 ms）
-            long delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
+            // 2.3 设置发送消息的延迟时长（单位 ms）
+            long delayedTime = Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
             if (delayedTime > 2073600000) {
                 return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "定时不能距离当前超过24天");
             }
-            // 2.3 异步发送到延迟队列
+
+            // 2.4 异步发送到延迟队列
             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
                     RabbitConstants.COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY,
-                    publishCommonHomeworkVO.getCommonHomeworkId(),
+                    sendMap,
                     msg -> {
                         msg.getMessageProperties().setDelay((int) delayedTime);
                         return msg;

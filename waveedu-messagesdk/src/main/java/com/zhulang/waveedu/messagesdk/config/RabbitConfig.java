@@ -101,7 +101,7 @@ public class RabbitConfig implements ApplicationContextAware {
      * @return 延迟交换机
      */
     @Bean
-    public CustomExchange delayedExchange() {
+    public CustomExchange commonHomeworkPublishDelayedExchange() {
         HashMap<String, Object> arguments = new HashMap<>(1);
         arguments.put("x-delayed-type", "direct");
 
@@ -119,18 +119,22 @@ public class RabbitConfig implements ApplicationContextAware {
      * 普通作业定时发布
      * 将延迟队列 与 延迟交换机进行捆绑
      *
-     * @param commonHomeworkPublishDelayedQueue 延迟队列
-     * @param delayedExchange                   延迟交换机
+     * @param commonHomeworkPublishDelayedQueue    延迟队列
+     * @param commonHomeworkPublishDelayedExchange 延迟交换机
      * @return 捆绑
      */
     @Bean
     public Binding commonHomeworkPublishDelayedQueueBindingExchange(@Qualifier("commonHomeworkPublishDelayedQueue") Queue commonHomeworkPublishDelayedQueue,
-                                                                    @Qualifier("delayedExchange") CustomExchange delayedExchange) {
-        return BindingBuilder.bind(commonHomeworkPublishDelayedQueue).to(delayedExchange).with(COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY).noargs();
+                                                                    @Qualifier("commonHomeworkPublishDelayedExchange") CustomExchange commonHomeworkPublishDelayedExchange) {
+        return BindingBuilder
+                .bind(commonHomeworkPublishDelayedQueue)
+                .to(commonHomeworkPublishDelayedExchange)
+                .with(COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY)
+                .noargs();
     }
 
     /**
-     * 测试使用 todo 需要删除
+     * todo 测试使用 需要删除
      */
     @Bean
     public Queue workQueue() {
