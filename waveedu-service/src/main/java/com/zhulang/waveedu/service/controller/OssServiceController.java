@@ -29,8 +29,22 @@ public class OssServiceController {
     public Result headImage(){
         return ossClientUtils.policy(OssConstants.HEAD_IMAGE_DIR);
     }
+    /**
+     * 获取课程的签名
+     *
+     * @return 签名信息
+     */
     @GetMapping("/lessonCover")
     public Result lessonCover(){
         return ossClientUtils.policy(OssConstants.LESSON_COVER_DIR);
+    }
+    /**
+     * 获取课程班级的签名
+     *
+     * @return 签名信息
+     */
+    @GetMapping("/lessonClassCover")
+    public Result lessonClassCover(){
+        return ossClientUtils.policy(OssConstants.LESSON_CLASS_COVER_DIR);
     }
 }

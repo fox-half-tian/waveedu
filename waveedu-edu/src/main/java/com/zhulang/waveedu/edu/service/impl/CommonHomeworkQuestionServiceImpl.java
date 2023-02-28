@@ -116,7 +116,6 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
      * @param questionType 问题类型
      * @param questionDesc 问题描述
      * @param answer       答案
-     * @throws Exception 抛出异常说明验证失败
      */
     public void verifyAnswerFormat(Integer questionType, String questionDesc, String answer) {
         switch (questionType) {
