@@ -105,22 +105,36 @@ public class LessonClassFileServiceImpl extends ServiceImpl<LessonClassFileMappe
         return this.update(wrapper) ? Result.ok() : Result.error();
     }
 
+//    @Override
+//    public Result getInfoList(Long lessonClassId, Long fileId) {
+//        // 1.校验班级id格式
+//        if (RegexUtils.isSnowIdInvalid(lessonClassId)) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级Id格式错误");
+//        }
+//        // 2.判断非空的fileId格式是否正确
+//        if (fileId != null && RegexUtils.isSnowIdInvalid(fileId)) {
+//            fileId = null;
+//        }
+//        // 3.查询信息，按照时间由近及远排序
+//        List<LessonClassFileInfoQuery> infoList = lessonClassFileMapper.selectInfoList(lessonClassId, fileId, EduConstants.DEFAULT_LESSON_CLASS_FILE_LIST_QUERY_LIMIT);
+//
+//        // 4.返回
+//        return Result.ok(infoList);
+//    }
+
     @Override
-    public Result getInfoList(Long lessonClassId, Long fileId) {
+    public Result getInfoList(Long lessonClassId) {
         // 1.校验班级id格式
         if (RegexUtils.isSnowIdInvalid(lessonClassId)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级Id格式错误");
         }
-        // 2.判断非空的fileId格式是否正确
-        if (fileId != null && RegexUtils.isSnowIdInvalid(fileId)) {
-            fileId = null;
-        }
-        // 3.查询信息，按照时间由近及远排序
-        List<LessonClassFileInfoQuery> infoList = lessonClassFileMapper.selectInfoList(lessonClassId, fileId, EduConstants.DEFAULT_LESSON_CLASS_FILE_LIST_QUERY_LIMIT);
+        // 2.查询信息，按照时间由近及远排序
+        List<LessonClassFileInfoQuery> infoList = lessonClassFileMapper.selectInfoList(lessonClassId);
 
-        // 4.返回
+        // 3.返回
         return Result.ok(infoList);
     }
+
 
     @Override
     public Result downloadLessonFile(Long lessonClassFileId) {

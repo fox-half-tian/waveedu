@@ -40,14 +40,20 @@ public interface LessonClassFileService extends IService<LessonClassFile> {
      */
     Result modifyFileName(Long fileId, String fileName);
 
+//    /**
+//     * 获取班级文件信息
+//     *
+//     * @param lessonClassId 班级id
+//     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
+//     */
+//    Result getInfoList(Long lessonClassId, Long fileId);
     /**
      * 获取班级文件信息
      *
      * @param lessonClassId 班级id
-     * @param fileId        文件id
      * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
-    Result getInfoList(Long lessonClassId, Long fileId);
+    Result getInfoList(Long lessonClassId);
 
     /**
      * 用于下载班级文件

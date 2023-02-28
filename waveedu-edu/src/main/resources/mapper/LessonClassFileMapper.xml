@@ -11,7 +11,26 @@
         SELECT `lesson_class_id`
         FROM `edu_lesson_class_file`
         WHERE `id` = #{id}
-    </select>
+    <!--</select>-->
+    <!--<select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery">-->
+    <!--    SELECT e.`id`,-->
+    <!--    e.`file_name`,-->
+    <!--    e.`file_type`,-->
+    <!--    e.`file_format`,-->
+    <!--    e.`file_format_size`,-->
+    <!--    e.`create_time`,-->
+    <!--    e.`download_count`,-->
+    <!--    e.`user_id`,-->
+    <!--    b.`name` AS `userName`-->
+    <!--    FROM `edu_lesson_class_file` e,`basic_user_info` b-->
+    <!--    WHERE e.`lesson_class_id` = #{lessonClassId}-->
+    <!--    <if test="fileId != null">-->
+    <!--        AND e.`id` &lt; #{fileId}-->
+    <!--    </if>-->
+    <!--    AND b.`id` = e.`user_id`-->
+    <!--    ORDER BY e.`create_time` DESC-->
+    <!--    LIMIT #{queryLimit}-->
+    <!--</select>-->
     <select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery">
         SELECT e.`id`,
         e.`file_name`,
@@ -24,12 +43,8 @@
         b.`name` AS `userName`
         FROM `edu_lesson_class_file` e,`basic_user_info` b
         WHERE e.`lesson_class_id` = #{lessonClassId}
-        <if test="fileId != null">
-            AND e.`id` &lt; #{fileId}
-        </if>
         AND b.`id` = e.`user_id`
         ORDER BY e.`create_time` DESC
-        LIMIT #{queryLimit}
     </select>
     <select id="selectFilePathAndDownLoadCount" resultType="java.util.Map">
         SELECT `file_path`, `download_count`

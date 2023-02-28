@@ -26,17 +26,25 @@ public interface LessonClassFileMapper extends BaseMapper<LessonClassFile> {
      */
     Long selectLessonClassIdById(@Param("id") Long id);
 
+//    /**
+//     * 获取班级文件信息
+//     *
+//     * @param lessonClassId   课程班级id
+//     * @param fileId     文件id
+//     * @param queryLimit 查询最大条数
+//     * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
+//     */
+//    List<LessonClassFileInfoQuery> selectInfoList(@Param("lessonClassId") Long lessonClassId,
+//                                                  @Param("fileId") Long fileId,
+//                                                  @Param("queryLimit") Integer queryLimit);
     /**
      * 获取班级文件信息
      *
      * @param lessonClassId   课程班级id
-     * @param fileId     文件id
-     * @param queryLimit 查询最大条数
      * @return 文件列表信息：文件id + 文件名 + 文件类型 + 文件格式 + 文件大小 + 上传的时间 + 上传者id与名字 + 下载次数，按照时间由近到远排序
      */
-    List<LessonClassFileInfoQuery> selectInfoList(@Param("lessonClassId") Long lessonClassId,
-                                                  @Param("fileId") Long fileId,
-                                                  @Param("queryLimit") Integer queryLimit);
+    List<LessonClassFileInfoQuery> selectInfoList(@Param("lessonClassId") Long lessonClassId);
+
 
     /**
      * 增加一次下载次数
