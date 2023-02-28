@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
+import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,15 +43,11 @@ public class LessonClassCommonHomeworkController {
     /**
      * 发布作业
      *
-     * @param object 作业id
+     * @param publishCommonHomeworkVO 作业id+是否定时发布+定时发布时间
      * @return 发布状况
      */
     @PostMapping("/publish")
-    public Result publish(@RequestBody JSONObject object){
-        try {
-            return lessonClassCommonHomeworkService.publish(Integer.parseInt(object.getString("commonHomeworkId")));
-        } catch (NumberFormatException e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"作业id格式错误");
-        }
+    public Result publish(@Validated @RequestBody PublishCommonHomeworkVO publishCommonHomeworkVO){
+            return lessonClassCommonHomeworkService.publish(publishCommonHomeworkVO);
     }
 }

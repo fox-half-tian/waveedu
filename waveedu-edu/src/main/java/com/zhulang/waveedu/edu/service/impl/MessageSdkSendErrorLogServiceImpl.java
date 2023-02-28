@@ -1,7 +1,7 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.dto.MessageSdkSendErrorLogMapper;
+import com.zhulang.waveedu.edu.dao.MessageSdkSendErrorLogMapper;
 import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.dto;
+package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

@@ -19,12 +19,8 @@ import javax.annotation.Resource;
 @Component
 @Slf4j
 public class CommonHomeworkPublishListener {
-    @Resource
-    private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
-    @Resource
-    private LessonClassCommonHomeworkService lessonClassCommonHomeworkService;
 
-    @RabbitListener(queues = RabbitConstants.COMMON_HOMEWORK_PUBLISH_QUEUE)
+    @RabbitListener(queues = RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME)
     public void listenerCommonHomeworkPublishQueue(Integer commonHomeworkId) throws Exception {
 
     }

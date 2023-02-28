@@ -65,7 +65,11 @@ public enum HttpStatus {
     /**
      * 操作重复，该操作之前已生效
      */
-    HTTP_REPEAT_SUCCESS_OPERATE(707,"重复已生效的操作");
+    HTTP_REPEAT_SUCCESS_OPERATE(707,"重复已生效的操作"),
+    /**
+     * 被拒绝操作
+     */
+    HTTP_REFUSE_OPERATE(708,"被拒绝操作");
 
     private final int code;
     private final String value;

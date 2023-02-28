@@ -6,7 +6,15 @@ package com.zhulang.waveedu.common.constant;
  */
 public class RabbitConstants {
     /**
-     * 普通作业发布队列
+     * 延迟队列
      */
-    public static final String COMMON_HOMEWORK_PUBLISH_QUEUE = "common.homework.publish.queue";
+    public static final String COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME = "common.homework.publish.delayed.queue";
+    /**
+     * 延迟交换机
+     */
+    public static final String COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME = "common.homework.publish.delayed.exchange";
+    /**
+     * routingKey
+     */
+    public static final String COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY = "publish";
 }

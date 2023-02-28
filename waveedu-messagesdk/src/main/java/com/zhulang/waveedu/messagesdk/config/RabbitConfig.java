@@ -5,13 +5,12 @@ import com.zhulang.waveedu.messagesdk.po.SendErrorLog;
 import com.zhulang.waveedu.messagesdk.service.SendErrorLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.ReturnedMessage;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +18,9 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.HashMap;
 
-import static com.zhulang.waveedu.common.constant.RabbitConstants.COMMON_HOMEWORK_PUBLISH_QUEUE;
+import static com.zhulang.waveedu.common.constant.RabbitConstants.*;
 
 /**
  * @author 狐狸半面添
@@ -28,7 +28,7 @@ import static com.zhulang.waveedu.common.constant.RabbitConstants.COMMON_HOMEWOR
  */
 @Configuration
 @Slf4j
-public class RabbitConfig implements ApplicationContextAware{
+public class RabbitConfig implements ApplicationContextAware {
     @Resource
     private SendErrorLogService sendErrorLogService;
 
@@ -71,7 +71,7 @@ public class RabbitConfig implements ApplicationContextAware{
                 sendErrorLog.setType(MessageSdkSendErrorTypeConstants.EXCHANGE_TO_QUEUE_SEND_ERROR);
                 sendErrorLog.setContent(Arrays.toString(message.getBody()));
                 sendErrorLog.setErrorMsg(replyText);
-                sendErrorLog.setRemark("状态码："+replyCode+"使用的交换机："+exchange+"，路由为："+routingKey);
+                sendErrorLog.setRemark("状态码：" + replyCode + "使用的交换机：" + exchange + "，路由为：" + routingKey);
                 sendErrorLogService.save(sendErrorLog);
             }
         });
@@ -81,19 +81,57 @@ public class RabbitConfig implements ApplicationContextAware{
      * 使用JSON方式来做序列化和反序列化。
      */
     @Bean
-    public MessageConverter jsonMessageConverter(){
+    public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
+
     /**
-     * 创建一个普通作业发布队列，并且存储到 spring 容器中
-     * 该队列与默认交换机配合，完成工作模式
+     * 声明普通作业定时发布延迟队列
      *
-     * @return 队列
+     * @return 延迟队列
      */
     @Bean
-    public Queue commonHomeworkPublishQueue() {
-        return new Queue(COMMON_HOMEWORK_PUBLISH_QUEUE);
+    public Queue commonHomeworkPublishDelayedQueue() {
+        return new Queue(COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME);
     }
+
+    /**
+     * 声明普通作业定时发布延迟交换机
+     *
+     * @return 延迟交换机
+     */
+    @Bean
+    public CustomExchange delayedExchange() {
+        HashMap<String, Object> arguments = new HashMap<>(1);
+        arguments.put("x-delayed-type", "direct");
+
+        /*
+            第一个参数：交换机的名称
+            第二个参数：交换机的类型
+            第三个参数：是否需要持久化
+            第四个参数：是否需要自动删除
+            第五个参数：其它的参数
+         */
+        return new CustomExchange(COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME, "x-delayed-message", true, false, arguments);
+    }
+
+    /**
+     * 普通作业定时发布
+     * 将延迟队列 与 延迟交换机进行捆绑
+     *
+     * @param commonHomeworkPublishDelayedQueue 延迟队列
+     * @param delayedExchange                   延迟交换机
+     * @return 捆绑
+     */
+    @Bean
+    public Binding commonHomeworkPublishDelayedQueueBindingExchange(@Qualifier("commonHomeworkPublishDelayedQueue") Queue commonHomeworkPublishDelayedQueue,
+                                                                    @Qualifier("delayedExchange") CustomExchange delayedExchange) {
+        return BindingBuilder.bind(commonHomeworkPublishDelayedQueue).to(delayedExchange).with(COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY).noargs();
+    }
+
+    /**
+     * 测试使用 todo 需要删除
+     */
     @Bean
     public Queue workQueue() {
         return new Queue("work.queue");
