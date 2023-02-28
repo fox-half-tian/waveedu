@@ -10,6 +10,7 @@
         <module name="xxl-job-core" />
         <module name="waveedu-dispatch" />
         <module name="waveedu-edu" />
+        <module name="waveedu-messagesdk" />
         <module name="xxl-job-executor-sample-frameless" />
         <module name="waveedu-service" />
         <module name="waveedu-basic" />
@@ -26,6 +27,7 @@
       <module name="waveedu-common" options="" />
       <module name="waveedu-dispatch" options="-parameters" />
       <module name="waveedu-edu" options="-parameters" />
+      <module name="waveedu-messagesdk" options="-parameters" />
       <module name="waveedu-service" options="-parameters" />
     </option>
   </component>

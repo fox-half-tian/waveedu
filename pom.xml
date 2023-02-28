@@ -21,6 +21,7 @@
         <module>waveedu-generator</module>
         <module>waveedu-dispatch</module>
         <module>waveedu-xxl-job</module>
+        <module>waveedu-messagesdk</module>
     </modules>
 
 </project>
