@@ -22,4 +22,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 作业id
      */
     Result saveHomework(SaveCommonHomeworkVO saveCommonHomeworkVO);
+
+    /**
+     * 发布作业
+     *
+     * @param commonHomeworkId 作业id
+     * @return 发布状况
+     */
+    Result publish(Integer commonHomeworkId);
 }
