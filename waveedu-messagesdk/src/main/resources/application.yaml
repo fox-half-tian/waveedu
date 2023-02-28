@@ -15,6 +15,15 @@ spring:
 #      oss:
 #        endpoint: oss-cn-hangzhou.aliyuncs.com
 #        bucket: waveedu
+  rabbitmq:
+    host: 8.134.136.211
+    port: 5672
+    username: root
+    password: root
+    virtual-host: /
+    listener:
+      simple:
+        prefetch: 1  # 监听器一次只能拿一条消息，处理完一条马上可以拿下一条
   datasource:
     username: root
     password: 123456
@@ -44,6 +53,8 @@ spring:
     hiddenmethod:
       filter:
         enabled: true # 启用HiddenHttpMethodFilter,支持rest风格
+  main:
+    allow-circular-references: true # 允许循环依赖
 #  redis:
 #    host: 8.134.136.211
 #    port: 6379

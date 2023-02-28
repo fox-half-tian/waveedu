@@ -1,7 +1,8 @@
-package com.zhulang.waveedu.edu.dao;
+package com.zhulang.waveedu.messagesdk.dao;
 
-import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
+import com.zhulang.waveedu.messagesdk.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,15 +12,15 @@ import java.util.List;
  * </p>
  *
  * @author 狐狸半面添
- * @since 2023-02-27
+ * @since 2023-02-28
  */
 public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassCommonHomework> {
 
     /**
      *根据 作业id 查询对应的班级学生
      *
-     * @param commonHomeworkId 作业id
+     * @param id 作业id
      * @return 学生列表
      */
-    List<Long> selectStuIdListByCommonHomeworkId(Integer commonHomeworkId);
+    List<Long> selectStuIdListById(@Param("id") Integer id);
 }

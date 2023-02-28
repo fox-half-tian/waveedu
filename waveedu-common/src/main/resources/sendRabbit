@@ -1,0 +1,54 @@
+       // 1.创建一个消息回调对象，需要指定一个唯一的id，因为每一个消息发送成功或失败都需要回调，用于区分是哪一个消息
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        // 2.注册回调函数
+        correlationData.getFuture().addCallback(new SuccessCallback<CorrelationData.Confirm>() {
+            private int count = 0;
+
+            /**
+             * 回调实际：消息发送到交换机，成功或者失败的时候都会调用
+             *
+             * @param result the result
+             */
+            @Override
+            public void onSuccess(CorrelationData.Confirm result) {
+                // 获取本次发送消息的结果
+                boolean ack = result.isAck();
+                if (!ack) {
+                    log.error("发布普通作业任务的消息没有到达交换机，原因是：{}", result.getReason());
+                    if (count == 3) {
+                        // 消息没有到达交换机，则需要重发，重发三次之后如果还是失败，那么这个消息需要存储到数据库中做兜底工作
+                        MessageSdkSendErrorLog messageSdkSendErrorLog = new MessageSdkSendErrorLog();
+                        // 设置错误信息
+                        messageSdkSendErrorLog.setErrorMsg(result.getReason());
+                        // /设置发送者
+                        messageSdkSendErrorLog.setSender(UserHolderUtils.getUserId() + "");
+                        // 设置消息内容
+                        messageSdkSendErrorLog.setContent(commonHomeworkId + "");
+                        // 设置消息备注
+                        messageSdkSendErrorLog.setRemark("发送到默认交换机错误");
+                        // 设置消息类型
+                        messageSdkSendErrorLog.setType(MessageSdkSendErrorTypeConstants.COMMON_HOMEWORK_PUBLISH_SEND_ERROR);
+                        // 保存
+                        messageSdkSendErrorLogService.save(messageSdkSendErrorLog);
+                    } else {
+                        // 重发
+                        count++;
+                        rabbitTemplate.convertAndSend("", RabbitConstants.COMMON_HOMEWORK_PUBLISH_QUEUE, commonHomeworkId, correlationData);
+                    }
+
+                }
+            }
+        }, new FailureCallback() {
+            /**
+             * 这个方法回调的时机：
+             * 消息到达交换机，但是交换机的消息到队列的时候，队列没有给消息绘制的时候调用
+             * 这种情况发生很少
+             *
+             * @param ex the failure
+             */
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("失败原因：{}" + ex.getMessage());
+            }
+        });
+        rabbitTemplate.convertAndSend("", RabbitConstants.COMMON_HOMEWORK_PUBLISH_QUEUE, commonHomeworkId, correlationData);

@@ -54,6 +54,25 @@ spring:
     database: 0
   main:
     allow-circular-references: true # 允许循环依赖
+  rabbitmq:
+    host: 8.134.136.211
+    port: 5672
+    username: root
+    password: root
+    virtual-host: /
+    listener:
+      simple:
+        prefetch: 1  # 监听器一次只能拿一条消息，处理完一条马上可以拿下一条
+    # 开启生产者的消息确认机制:
+    # 默认值是none，就是关闭消息的确认机制。
+    # simple 发送消息的时候是 同步调用 的方式。
+    # correlated 是异步调用。
+    publisher-confirm-type: correlated
+    # 开启生产者的消息回执：消息投递到交换机了，但是没有路由到队列。返回ACK，以及路由失败原因。
+    publisher-returns: true
+    template:
+      # true ,消息从交换机到队列的时候，如果发送失败会回调你的函数。如果是false，消息从交换机到队列的时候如果是失败直接丢弃
+      mandatory: true
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:

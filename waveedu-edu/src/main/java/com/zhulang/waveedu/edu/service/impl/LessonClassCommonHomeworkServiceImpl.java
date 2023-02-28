@@ -5,16 +5,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
+import com.zhulang.waveedu.edu.service.CommonHomeworkStuScoreService;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassService;
+import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
-import org.springframework.security.core.userdetails.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,11 +32,18 @@ import java.util.Map;
  * @since 2023-02-27
  */
 @Service
+@Slf4j
 public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClassCommonHomeworkMapper, LessonClassCommonHomework> implements LessonClassCommonHomeworkService {
     @Resource
     private LessonClassCommonHomeworkMapper lessonClassCommonHomeworkMapper;
     @Resource
     private LessonClassService lessonClassService;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+    @Resource
+    private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
+    @Resource
+    private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
 
     @Override
     public Result saveHomework(SaveCommonHomeworkVO saveCommonHomeworkVO) {
@@ -67,8 +80,12 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         if ((Integer) map.get("is_publish") != 0) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
         }
-        // 3.发布，将命令传给 rabbitmq
-
-        return null;
+        // 3.修改作业状态
+        LessonClassCommonHomework homework = new LessonClassCommonHomework();
+        homework.setId(commonHomeworkId);
+        homework.setIsPublish(1);
+        lessonClassCommonHomeworkMapper.updateById(homework);
+        // 4.返回
+        return Result.ok();
     }
 }
