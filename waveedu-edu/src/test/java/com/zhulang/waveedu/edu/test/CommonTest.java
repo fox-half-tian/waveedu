@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.edu.po.LessonFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author 狐狸半面添
@@ -16,7 +18,14 @@ public class CommonTest {
     }
 
     public static void test03(){
-        System.out.println(Integer.parseInt(null));
+        List<String> info = new ArrayList<>();
+        info.add("狐狸半面添");
+        info.add("唐雨浪");
+        String s = JSON.toJSONString(info);
+        System.out.println(s);
+        System.out.println(JSON.toJSONString(s));
+        ArrayList arrayList = JSON.parseObject(s, ArrayList.class);
+        System.out.println(arrayList.get(0)+"    "+arrayList.get(1));
     }
     public static void test02(){
         Long a=1623220363309776897L;

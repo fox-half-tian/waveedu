@@ -46,6 +46,11 @@ public class LessonClassCommonHomework implements Serializable {
     private Long lessonClassId;
 
     /**
+     * 作业创建者
+     */
+    private Long creatorId;
+
+    /**
      * 难度：0表示简单，1表示中等，2表示困难
      */
     private Integer difficulty;

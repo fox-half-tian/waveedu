@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -62,6 +59,7 @@ public class SaveCommonHomeworkQuestionVO {
      * 分值
      */
     @NotNull(message = "分值不允许为空")
-    @Min(value = 0, message = "分值最少为0分")
+    @Min(value = 0, message = "单题分值最少为0分")
+    @Max(value = 100,message = "单题分值最多为100分")
     private Integer score;
 }

@@ -123,13 +123,14 @@ public class RegexUtils {
          */
         public static final String LESSON_CLASS_HOMEWORK_TITLE_REGEX = "^.{1,64}$";
         /**
-         * 作业问题描述正则，1-1000个字符，不允许\n
+         * 作业单选正则
          */
-        public static final String LESSON_CLASS_HOMEWORK_QUESTION_DESC_REGEX = "^.{1,1000}$";
+        public static final String LESSON_CLASS_HOMEWORK_SINGLE_CHOICE_REGEX = "^[a-f]$";
         /**
          * 作业答案&参考答案正则，1-1000个字符，不允许\n
          */
         public static final String LESSON_CLASS_HOMEWORK_ANSWER_REGEX = "^.{1,1000}$";
+
     }
 
     /**

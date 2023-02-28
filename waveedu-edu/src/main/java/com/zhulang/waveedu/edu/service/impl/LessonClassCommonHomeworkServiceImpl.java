@@ -39,9 +39,11 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         }
         // 2.属性转换
         LessonClassCommonHomework homework = BeanUtil.copyProperties(saveCommonHomeworkVO, LessonClassCommonHomework.class);
-        // 3.添加
+        // 3.添加创建者
+        homework.setCreatorId(userId);
+        // 3.插入数据
         lessonClassCommonHomeworkMapper.insert(homework);
-        // 4.返回作业id
+        // 5.返回作业id
         return Result.ok(homework.getId());
     }
 }
