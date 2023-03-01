@@ -22,6 +22,7 @@
         <module>waveedu-dispatch</module>
         <module>waveedu-xxl-job</module>
         <module>waveedu-messagesdk</module>
+        <module>waveedu-note</module>
     </modules>
 
 </project>
