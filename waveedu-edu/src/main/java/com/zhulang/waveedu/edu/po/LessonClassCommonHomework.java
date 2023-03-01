@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -76,9 +77,14 @@ public class LessonClassCommonHomework implements Serializable {
     private Integer isPublish;
 
     /**
-     * 是否开启解析，0表示关闭，1表示开启
+     * 完成作业后是否开启解析，0表示不开启，1表示开启，默认0
      */
-    private Integer isOpenExplain;
+    private Integer isCompleteAfterExplain;
+
+    /**
+     * 时间截止后是否开启解析，0表示不开启，1表示开启，默认1
+     */
+    private Integer isEndAfterExplain;
 
     /**
      * 创建时间

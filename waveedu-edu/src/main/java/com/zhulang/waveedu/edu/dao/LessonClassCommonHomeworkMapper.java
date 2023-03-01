@@ -16,10 +16,10 @@ import java.util.List;
 public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassCommonHomework> {
 
     /**
-     *根据 作业id 查询对应的班级学生
+     * 查询 班级创建者/课程创建者 的id
      *
-     * @param commonHomeworkId 作业id
-     * @return 学生列表
+     * @param id 普通作业id
+     * @return 创建者id
      */
-    List<Long> selectStuIdListByCommonHomeworkId(Integer commonHomeworkId);
+    Long selectCreatorIdById(Integer id);
 }

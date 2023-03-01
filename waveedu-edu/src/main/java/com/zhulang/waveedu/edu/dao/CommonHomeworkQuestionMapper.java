@@ -33,5 +33,12 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      */
     @SuppressWarnings("MybatisXMapperMethodInspection")
     Map<String,Object> selectHomeworkIsPublishAndCreatorIdAndTypeById(@Param("id") Integer id);
+    /**
+     * 根据 作业id 查询到该作业的总分数
+     *
+     * @param commonHomeworkId 作业id
+     * @return 作业总分数
+     */
+    Integer selectTotalScoreByCommonHomeworkId(@Param("commonHomeworkId") Integer commonHomeworkId);
 
 }

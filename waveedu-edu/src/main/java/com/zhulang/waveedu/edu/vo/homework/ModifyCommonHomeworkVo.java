@@ -43,4 +43,15 @@ public class ModifyCommonHomeworkVo {
     @Future(message = "截止时间必须是一个未来的时间")
     private LocalDateTime endTime;
 
+    /**
+     * 完成作业后是否开启解析，0表示不开启，1表示开启，默认0
+     */
+    @Range(min = 0,max = 1,message = "解析策略参数格式错误")
+    private Integer isCompleteAfterExplain;
+    /**
+     * 时间截止后是否开启解析，0表示不开启，1表示开启，默认1
+     */
+    @Range(min = 0,max = 1,message = "解析策略参数格式错误")
+    private Integer isEndAfterExplain;
+
 }

@@ -158,6 +158,11 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         return Result.ok();
     }
 
+    @Override
+    public Integer getTotalScoreByCommonHomeworkId(Integer commonHomeworkId) {
+        return commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(commonHomeworkId);
+    }
+
     /**
      * 根据问题类型校验答案的格式
      *

@@ -16,4 +16,9 @@
         WHERE q.`id` = #{id}
           AND q.`common_homework_id` = h.`id`
     </select>
+    <select id="selectTotalScoreByCommonHomeworkId" resultType="java.lang.Integer">
+        SELECT SUM(score)
+        FROM `edu_common_homework_question`
+        WHERE `common_homework_id` = #{commonHomeworkId}
+    </select>
 </mapper>

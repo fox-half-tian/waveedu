@@ -3,6 +3,7 @@ package com.zhulang.waveedu.messagesdk.listener;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.messagesdk.po.LessonClassCommonHomework;
+import com.zhulang.waveedu.messagesdk.service.CommonHomeworkQuestionService;
 import com.zhulang.waveedu.messagesdk.service.LessonClassCommonHomeworkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -26,27 +27,37 @@ import java.util.HashMap;
 public class CommonHomeworkTimePublishListener {
     @Resource
     private LessonClassCommonHomeworkService lessonClassCommonHomeworkService;
+    @Resource
+    private CommonHomeworkQuestionService commonHomeworkQuestionService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @RabbitListener(queues = RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME)
     public void listenerCommonHomeworkPublishQueue(HashMap<String, Object> map) throws Exception {
         Integer id = (Integer) map.get("commonHomeworkId");
-        LocalDateTime startTime =  LocalDateTime.parse((String)map.get("startTime"),formatter);
+        LocalDateTime startTime = LocalDateTime.parse((String) map.get("startTime"), formatter);
+
+
         // 如果预发布状态，并且时间正是该延迟消息设置的开始时间，则设置状态为已发布
-//        if(lessonClassCommonHomeworkService.existsByIdAndStartTimeAndIsPublish(id,startTime,2)){
-//            lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
-//                    .eq(LessonClassCommonHomework::getId,id)
-//                    .set(LessonClassCommonHomework::getIsPublish,1));
-//        }
-        lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
-                .eq(LessonClassCommonHomework::getId, id)
-                .eq(LessonClassCommonHomework::getStartTime, startTime)
-                // 如果状态是0，说明状态改为了未发布，那就没必要修改状态
-                // 如果状态是1，说明状态已经是已发布，则没必要修改状态了
-                // 只有是预发布的作业才可以修改状态为已发布
-                .eq(LessonClassCommonHomework::getIsPublish, 2)
-                .set(LessonClassCommonHomework::getIsPublish, 1));
+        // 如果状态是0，说明状态改为了未发布，那就没必要修改状态
+        // 如果状态是1，说明状态已经是已发布，则没必要修改状态了
+        // 只有是预发布的作业才可以修改状态为已发布
+        if (lessonClassCommonHomeworkService.existsByIdAndStartTimeAndIsPublish(id, startTime, 2)) {
+            // 查询到作业的总分数
+            Integer totalScore = commonHomeworkQuestionService.getTotalScoreByCommonHomeworkId(id);
+            // 保存分数，并修改状态
+            lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                    .eq(LessonClassCommonHomework::getId, id)
+                    .set(LessonClassCommonHomework::getIsPublish, 1)
+                    .set(LessonClassCommonHomework::getTotalScore, totalScore)
+            );
+        }
+//        lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
+//                .eq(LessonClassCommonHomework::getId, id)
+//                .eq(LessonClassCommonHomework::getStartTime, startTime)
+//
+//                .eq(LessonClassCommonHomework::getIsPublish, 2)
+//                .set(LessonClassCommonHomework::getIsPublish, 1));
     }
 
     /**

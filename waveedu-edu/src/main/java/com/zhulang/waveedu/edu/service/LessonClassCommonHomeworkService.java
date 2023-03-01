@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 
@@ -31,4 +32,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 发布状况
      */
     Result publish(PublishCommonHomeworkVO publishCommonHomeworkVO);
+
+    /**
+     * 修改普通作业信息
+     *
+     * @param modifyCommonHomeworkVo 作业id，作业标题，难度，截止时间
+     * @return 修改状况
+     */
+    Result modifyInfo(ModifyCommonHomeworkVo modifyCommonHomeworkVo);
 }

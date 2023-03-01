@@ -31,12 +31,12 @@ public class LessonClassCommonHomework implements Serializable {
     private Integer id;
 
     /**
-     * 作业类型，0表示探究题，1其它表示类型的题目
+     * 作业类型，0表示探究题，1表示其它类型的题目
      */
     private Integer type;
 
     /**
-     * 作业的标题
+     * 作业的标题，不超过64字
      */
     private String title;
 
@@ -46,7 +46,7 @@ public class LessonClassCommonHomework implements Serializable {
     private Long lessonClassId;
 
     /**
-     * 作业的创建者
+     * 作业创建者
      */
     private Long creatorId;
 
@@ -74,6 +74,16 @@ public class LessonClassCommonHomework implements Serializable {
      * 是否发布，0-未发布，1-发布
      */
     private Integer isPublish;
+
+    /**
+     * 完成作业后是否开启解析，0表示不开启，1表示开启，默认0
+     */
+    private Integer isCompleteAfterExplain;
+
+    /**
+     * 时间截止后是否开启解析，0表示不开启，1表示开启，默认1
+     */
+    private Integer isEndAfterExplain;
 
     /**
      * 创建时间

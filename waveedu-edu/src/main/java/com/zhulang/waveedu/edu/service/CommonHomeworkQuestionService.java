@@ -40,4 +40,12 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 修改状况
      */
     Result modifyQuestion(ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO);
+
+    /**
+     * 根据 作业id 查询到该作业的总分数
+     *
+     * @param commonHomeworkId 作业id
+     * @return 作业总分数
+     */
+    Integer getTotalScoreByCommonHomeworkId(Integer commonHomeworkId);
 }

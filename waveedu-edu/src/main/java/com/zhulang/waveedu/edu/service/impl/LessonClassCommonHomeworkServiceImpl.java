@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -8,14 +9,13 @@ import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.service.CommonHomeworkStuScoreService;
-import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
+import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhulang.waveedu.edu.service.LessonClassService;
-import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     @Resource
     private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
     @Resource
-    private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
+    private CommonHomeworkQuestionService commonHomeworkQuestionService;
 
     @Override
     public Result saveHomework(SaveCommonHomeworkVO saveCommonHomeworkVO) {
@@ -87,15 +87,22 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         if ((Integer) map.get("is_publish") == 1) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
         }
-        // 2.如果是定时发布就加入到延迟队列
+        // 2.查询题目数量，如果为0则无法发布
+        long count = commonHomeworkQuestionService.count(new LambdaQueryWrapper<CommonHomeworkQuestion>()
+                .eq(CommonHomeworkQuestion::getCommonHomeworkId, publishCommonHomeworkVO.getCommonHomeworkId()));
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "请先添加至少一道题目");
+        }
+
+        // 3.如果是定时发布就加入到延迟队列
         if (publishCommonHomeworkVO.getIsRegularTime() == 1) {
-            // 2.1 判断是否设置定时时间
+            // 3.1 判断是否设置定时时间
             if (publishCommonHomeworkVO.getStartTime() == null) {
                 return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "未设置发布时间");
             }
-            // 2.2 创建一个消息回调对象，需要指定一个唯一的id，因为每一个消息发送成功或失败都需要回调，用于区分是哪一个消息
+            // 3.2 创建一个消息回调对象，需要指定一个唯一的id，因为每一个消息发送成功或失败都需要回调，用于区分是哪一个消息
             CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-            // 2.3 注册回调函数
+            // 3.3 注册回调函数
             correlationData.getFuture().addCallback(new SuccessCallback<CorrelationData.Confirm>() {
                 private int count = 0;
 
@@ -126,16 +133,16 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                             // 保存错误信息
                             messageSdkSendErrorLogService.save(messageSdkSendErrorLog);
                             // 修改作业状态为0-未发布
-                            lessonClassCommonHomeworkMapper.update(null,new LambdaUpdateWrapper<LessonClassCommonHomework>()
-                                    .eq(LessonClassCommonHomework::getId,publishCommonHomeworkVO.getCommonHomeworkId())
-                                    .set(LessonClassCommonHomework::getIsPublish,0));
+                            lessonClassCommonHomeworkMapper.update(null, new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                                    .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
+                                    .set(LessonClassCommonHomework::getIsPublish, 0));
                         } else {
                             // 重发
                             count++;
                             // 设置发送的内容
                             HashMap<String, Object> sendMap = new HashMap<>(2);
-                            sendMap.put("commonHomeworkId",publishCommonHomeworkVO.getCommonHomeworkId());
-                            sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
+                            sendMap.put("commonHomeworkId", publishCommonHomeworkVO.getCommonHomeworkId());
+                            sendMap.put("startTime", publishCommonHomeworkVO.getStartTime());
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
                             // 异步发送到消息队列 todo 有bug，在交换机不存在情况下无法重发三次
@@ -165,18 +172,19 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                     log.error("发送到普通作业预发布交换机失败原因：{}" + ex.getMessage());
                 }
             });
-            // 2.4 设置发送的内容
-            HashMap<String, Object> sendMap = new HashMap<>(2);
-            sendMap.put("commonHomeworkId",publishCommonHomeworkVO.getCommonHomeworkId());
-            sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
 
-            // 2.5 设置发送消息的延迟时长（单位 ms）
+            // 3.4 设置发送的内容
+            HashMap<String, Object> sendMap = new HashMap<>(2);
+            sendMap.put("commonHomeworkId", publishCommonHomeworkVO.getCommonHomeworkId());
+            sendMap.put("startTime", publishCommonHomeworkVO.getStartTime());
+
+            // 3.5 设置发送消息的延迟时长（单位 ms）
             long delayedTime = Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
             if (delayedTime > 2073600000) {
                 return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "定时不能距离当前超过24天");
             }
 
-            // 2.4 异步发送到延迟队列
+            // 3.6 异步发送到延迟队列
             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
                     RabbitConstants.COMMON_HOMEWORK_PUBLISH_ROUTING_KEY,
                     sendMap,
@@ -186,7 +194,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                     },
                     correlationData
             );
-            // 2.4 将时间保存到数据库，并修改状态为 定时发布中
+            // 3.7 将时间保存到数据库，并修改状态为 定时发布中
             this.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
                     .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
                     .set(LessonClassCommonHomework::getStartTime, publishCommonHomeworkVO.getStartTime())
@@ -194,13 +202,38 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
             return Result.ok();
         }
 
-        // 3.如果不是定时发布，就直接发布，并修改发布状态为已发布，设置发布时间为当前时间
+        // 4.如果不是定时发布，就获取总分数，并修改发布状态为已发布，设置发布时间为当前时间
+        Integer totalScore =
+                commonHomeworkQuestionService.getTotalScoreByCommonHomeworkId(publishCommonHomeworkVO.getCommonHomeworkId());
         this.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
                 .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
                 .set(LessonClassCommonHomework::getStartTime, LocalDateTime.now())
                 .set(LessonClassCommonHomework::getIsPublish, 1)
+                .set(LessonClassCommonHomework::getTotalScore, totalScore)
         );
 
+        // 5.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result modifyInfo(ModifyCommonHomeworkVo modifyCommonHomeworkVo) {
+        // 1.校验是否为创建者
+        Long creatorId = lessonClassCommonHomeworkMapper.selectCreatorIdById(modifyCommonHomeworkVo.getId());
+        if (creatorId == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
+        }
+        if (!creatorId.equals(UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.作业标题如果传，则需校验格式
+        String title = modifyCommonHomeworkVo.getTitle();
+        if (StrUtil.isBlank(title)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业标题不允许为空");
+        }
+        modifyCommonHomeworkVo.setTitle(title.trim());
+        // 3.修改数据库信息
+        lessonClassCommonHomeworkMapper.updateById(BeanUtil.copyProperties(modifyCommonHomeworkVo, LessonClassCommonHomework.class));
         // 4.返回
         return Result.ok();
     }

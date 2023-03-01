@@ -37,7 +37,7 @@ public class LessonClassCommonHomeworkController {
      * @return 作业id
      */
     @PostMapping("/saveHomework")
-    public Result saveHomework(@Validated @RequestBody SaveCommonHomeworkVO saveCommonHomeworkVO){
+    public Result saveHomework(@Validated @RequestBody SaveCommonHomeworkVO saveCommonHomeworkVO) {
         return lessonClassCommonHomeworkService.saveHomework(saveCommonHomeworkVO);
     }
 
@@ -48,12 +48,19 @@ public class LessonClassCommonHomeworkController {
      * @return 发布状况
      */
     @PostMapping("/publish")
-    public Result publish(@Validated @RequestBody PublishCommonHomeworkVO publishCommonHomeworkVO){
-            return lessonClassCommonHomeworkService.publish(publishCommonHomeworkVO);
+    public Result publish(@Validated @RequestBody PublishCommonHomeworkVO publishCommonHomeworkVO) {
+        return lessonClassCommonHomeworkService.publish(publishCommonHomeworkVO);
     }
 
+    /**
+     * 修改普通作业信息，只允许创建者进行操作
+     * 允许修改：作业标题，难度，截止时间
+     *
+     * @param modifyCommonHomeworkVo 作业id，作业标题，难度，截止时间
+     * @return 修改状况
+     */
     @PutMapping("/modify/info")
-    public Result modifyInfo(@Validated @RequestBody ModifyCommonHomeworkVo modifyCommonHomeworkVo){
-        return null;
+    public Result modifyInfo(@Validated @RequestBody ModifyCommonHomeworkVo modifyCommonHomeworkVo) {
+        return lessonClassCommonHomeworkService.modifyInfo(modifyCommonHomeworkVo);
     }
 }
