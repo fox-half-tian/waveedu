@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -201,6 +202,11 @@ public class LessonClassServiceImpl extends ServiceImpl<LessonClassMapper, Lesso
         lessonClassAttendService.remove(new LambdaQueryWrapper<LessonClassAttend>().eq(LessonClassAttend::getLessonClassId,classId));
         // 5.返回ok
         return Result.ok();
+    }
+
+    @Override
+    public Map<String, Object> getLessonNameAndCreatorIdById(Long classId) {
+        return lessonClassMapper.selectLessonNameAndCreatorIdById(classId);
     }
 
     @Override

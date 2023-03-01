@@ -6,6 +6,7 @@ import com.zhulang.waveedu.edu.query.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -96,4 +97,13 @@ public interface LessonClassMapper extends BaseMapper<LessonClass> {
      * @return 1-说明结课
      */
     Integer selectIsEndClassById(@Param("id") Long id);
+
+    /**
+     * 根据班级id 查询班级的创建者以及班级所在课程的课程名
+     *
+     * @param classId 班级id
+     * @return 班级的创建者以及班级所在课程的课程名
+     */
+    @SuppressWarnings("MybatisXMapperMethodInspection")
+    Map<String, Object> selectLessonNameAndCreatorIdById(@Param("id") Long classId);
 }

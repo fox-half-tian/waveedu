@@ -88,4 +88,13 @@
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
     </select>
+    <select id="selectLessonNameAndCreatorIdById" resultType="java.util.Map">
+        SELECT l.`name`, a.`creator_id`
+        FROM `edu_lesson_class` a,
+             `edu_lesson` l
+        WHERE a.`id` = #{id}
+          AND a.`is_deleted` = 0
+          AND a.`lesson_id` = l.`id`
+          AND l.`is_deleted` = 0
+    </select>
 </mapper>

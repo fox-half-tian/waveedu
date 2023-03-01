@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,14 +38,18 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
 
     @Override
     public Result saveOne(SaveClassAttendVO saveClassAttendVO) {
-        // 1.校验是否为课程创建者
-        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), saveClassAttendVO.getLessonClassId())) {
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        // 1.根据班级 id 查询 班级所在的课程名以及班级创建者
+        Map<String, Object> info = lessonClassService.getLessonNameAndCreatorIdById(saveClassAttendVO.getLessonClassId());
+        if (info==null||info.isEmpty()){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程或班级不存在");
         }
-        // 2.取出课程名的前后空格
-        saveClassAttendVO.setLessonName(saveClassAttendVO.getLessonName().trim());
-        // 3.对象属性转换
+        if (!info.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.对象属性转换
         LessonClassAttend lessonClassAttend = BeanUtil.copyProperties(saveClassAttendVO, LessonClassAttend.class);
+        // 3.设置课程名
+        lessonClassAttend.setLessonName((String) info.get("name"));
         try {
             // 4.保存
             lessonClassAttendMapper.insert(lessonClassAttend);

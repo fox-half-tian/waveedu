@@ -45,10 +45,10 @@ public class SaveClassAttendVO{
     @Range(min = 1,max = 5,message = "上课时间格式错误")
     private Integer time;
 
-    /**
-     * 课程名
-     */
-    @NotBlank(message = "课程名不允许为空")
-    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_NAME_REGEX,message = "课程名不允许超过24字")
-    private String lessonName;
+//    /**
+//     * 课程名
+//     */
+//    @NotBlank(message = "课程名不允许为空")
+//    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_NAME_REGEX,message = "课程名不允许超过24字")
+//    private String lessonName;
 }

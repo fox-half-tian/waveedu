@@ -7,6 +7,8 @@ import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
 
+import java.util.Map;
+
 /**
  * <p>
  * 课程班级表 服务类
@@ -143,4 +145,12 @@ public interface LessonClassService extends IService<LessonClass> {
      * @return 删除状况
      */
     Result delClassInfo(Long classId);
+
+    /**
+     * 根据班级id 查询班级的创建者以及班级所在课程的课程名
+     *
+     * @param classId 班级id
+     * @return 班级的创建者以及班级所在课程的课程名
+     */
+    Map<String,Object> getLessonNameAndCreatorIdById(Long classId);
 }
