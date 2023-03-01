@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.messagesdk.config;
 
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
+import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import com.zhulang.waveedu.messagesdk.po.SendErrorLog;
 import com.zhulang.waveedu.messagesdk.service.SendErrorLogService;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,6 +34,15 @@ public class RabbitConfig implements ApplicationContextAware {
     @Resource
     private SendErrorLogService sendErrorLogService;
 
+    /**
+     * 定义处理失败消息的监听器，同时失败消息处理交换机和队列
+     * 一旦 spring 重试消费失败后，就会使用  RepublishMessageRecoverer 的对象查找到错误的交换机，然后把消息投递到指定的交换机与队列中
+     */
+    @Bean
+    public RepublishMessageRecoverer republishMessageRecoverer(RabbitTemplate rabbitTemplate) {
+        return new RepublishMessageRecoverer(rabbitTemplate, "error.exchange", "error.key");
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         // 1.从 spring 容器 中获取 RabbitTemplate 对象
@@ -47,14 +58,18 @@ public class RabbitConfig implements ApplicationContextAware {
              */
             @Override
             public void returnedMessage(@NotNull ReturnedMessage returnedMessage) {
+                // 发送时使用的交换机
+                String exchange = returnedMessage.getExchange();
+                // 如果是普通作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
+                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)) {
+                    return;
+                }
                 // 当前失败的消息对象
                 Message message = returnedMessage.getMessage();
                 // 消息失败的状态码
                 int replyCode = returnedMessage.getReplyCode();
                 // 发送失败的原因说明
                 String replyText = returnedMessage.getReplyText();
-                // 发送时使用的交换机
-                String exchange = returnedMessage.getExchange();
                 // 发送时使用的路由Key
                 String routingKey = returnedMessage.getRoutingKey();
 
@@ -81,7 +96,7 @@ public class RabbitConfig implements ApplicationContextAware {
      * 使用JSON方式来做序列化和反序列化。
      */
     @Bean
-    public Jackson2JsonMessageConverter rabbitMessageConverter(){
+    public Jackson2JsonMessageConverter rabbitMessageConverter() {
         return new Jackson2JsonMessageConverter(new JacksonObjectMapper());
     }
 
@@ -139,5 +154,16 @@ public class RabbitConfig implements ApplicationContextAware {
     @Bean
     public Queue workQueue() {
         return new Queue("work.queue");
+    }
+
+    @Bean
+    public DirectExchange workExchange() {
+        return new DirectExchange("work.exchange");
+    }
+
+    @Bean
+    public Binding binding(@Qualifier("workQueue") Queue workQueue,
+                           @Qualifier("workExchange") DirectExchange workExchange) {
+        return BindingBuilder.bind(workQueue).to(workExchange).with("work.key");
     }
 }

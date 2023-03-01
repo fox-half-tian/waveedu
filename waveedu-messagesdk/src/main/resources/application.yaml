@@ -24,6 +24,23 @@ spring:
     listener:
       simple:
         prefetch: 1  # 监听器一次只能拿一条消息，处理完一条马上可以拿下一条
+        acknowledge-mode: auto # 自动签收模式，如果监听的方法没有出现异常，就会自动签收。如果出现异常，那么消息就会回到队列当中
+        retry:
+          enabled: true # 开启消费者失败重试机制
+          initial-interval: 1000 # 第一次消费失败后等待的时间，单位 ms
+          multiplier: 3 # 等待时间的倍数，即下一次等待的时间 = 等待时间倍数(multiplier) * 最后一次等待的时间间隔
+          max-attempts: 4 # 失败之后总共消费的次数（包含第一次），即重试3次
+          stateless: true # true无状态；false有状态。如果业务中包含事务，改为false
+    # 开启生产者的消息确认机制:
+    # 默认值是none，就是关闭消息的确认机制。
+    # simple 发送消息的时候是 同步调用 的方式。
+    # correlated 是异步调用。
+    publisher-confirm-type: correlated
+    # 开启生产者的消息回执：消息投递到交换机了，但是没有路由到队列。返回ACK，以及路由失败原因。
+    publisher-returns: true
+    template:
+    # true ,消息从交换机到队列的时候，如果发送失败会回调你的函数。如果是false，消息从交换机到队列的时候如果是失败直接丢弃
+      mandatory: true
   datasource:
     username: root
     password: 123456

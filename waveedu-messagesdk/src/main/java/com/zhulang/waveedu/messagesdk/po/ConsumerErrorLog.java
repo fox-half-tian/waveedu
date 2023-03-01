@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 普通作业表的学生成绩表
+ * 关联消息处理的消费异常
  * </p>
  *
  * @author 狐狸半面添
- * @since 2023-02-28
+ * @since 2023-03-01
  */
-@TableName("edu_common_homework_stu_score")
+@TableName("messagesdk_consumer_error_log")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonHomeworkStuScore implements Serializable {
+public class ConsumerErrorLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,34 +31,9 @@ public class CommonHomeworkStuScore implements Serializable {
     private Integer id;
 
     /**
-     * 作业id
+     * 消息内容
      */
-    private Integer homeworkId;
-
-    /**
-     * 学生id
-     */
-    private Long stuId;
-
-    /**
-     * 分数
-     */
-    private Integer score;
-
-    /**
-     * 满分
-     */
-    private Integer fullScore;
-
-    /**
-     * 是否提交
-     */
-    private Integer isCommit;
-
-    /**
-     * 提交时间
-     */
-    private LocalDateTime commitTime;
+    private String content;
 
     /**
      * 创建时间

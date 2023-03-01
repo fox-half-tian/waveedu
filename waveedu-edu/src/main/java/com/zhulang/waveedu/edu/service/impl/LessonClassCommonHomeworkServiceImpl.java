@@ -19,6 +19,10 @@ import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
 import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -134,7 +138,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                             sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
-                            // 异步发送到消息队列
+                            // 异步发送到消息队列 todo 有bug，在交换机不存在情况下无法重发三次
 //                            correlationData.setId(UUID.randomUUID().toString());
                             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
                                     RabbitConstants.COMMON_HOMEWORK_PUBLISH_ROUTING_KEY,
@@ -179,9 +183,9 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                     msg -> {
                         msg.getMessageProperties().setDelay((int) delayedTime);
                         return msg;
-                    }, correlationData
+                    },
+                    correlationData
             );
-
             // 2.4 将时间保存到数据库，并修改状态为 定时发布中
             this.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
                     .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())

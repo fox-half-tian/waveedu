@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.config;
 
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
+import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
@@ -45,14 +46,18 @@ public class RabbitConfig implements ApplicationContextAware {
              */
             @Override
             public void returnedMessage(@NotNull ReturnedMessage returnedMessage) {
+                // 发送时使用的交换机
+                String exchange = returnedMessage.getExchange();
+                // 如果是普通作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
+                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)){
+                    return;
+                }
                 // 当前失败的消息对象
                 Message message = returnedMessage.getMessage();
                 // 消息失败的状态码
                 int replyCode = returnedMessage.getReplyCode();
                 // 发送失败的原因说明
                 String replyText = returnedMessage.getReplyText();
-                // 发送时使用的交换机
-                String exchange = returnedMessage.getExchange();
                 // 发送时使用的路由Key
                 String routingKey = returnedMessage.getRoutingKey();
 

@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.messagesdk.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.messagesdk.service.LessonClassCommonHomeworkService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -51,8 +52,13 @@ public class CommonHomeworkTimePublishListener {
     /**
      * 测试
      */
+//    @RabbitListener(bindings = @QueueBinding(
+//            value = @Queue(name = "work.queue"),
+//            // 交换机 durable 默认就是 true
+//            exchange = @Exchange(name = "work.exchange", type = ExchangeTypes.DIRECT, durable = "true"),
+//            key = "work.key"))
     @RabbitListener(queues = "work.queue")
-    public void listenerWorkQueue1(Integer message) throws Exception {
-        log.info("监听器 1 接收到的消息：{}", message);
+    public void listenerWorkQueue1(Message message) throws Exception {
+        log.info("监听器 1 接收到的消息：{}", new String(message.getBody()));
     }
 }
