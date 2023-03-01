@@ -5,7 +5,6 @@ import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.messagesdk.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.messagesdk.service.LessonClassCommonHomeworkService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * 工作模式 todo 需要修改

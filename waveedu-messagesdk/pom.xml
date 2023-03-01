@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.zhulang.waveedu</groupId>
-    <artifactId>waveedu-service</artifactId>
+    <artifactId>waveedu-messagesdk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>waveedu-messagesdk</name>
     <description>逐浪教育-消息处理模块</description>

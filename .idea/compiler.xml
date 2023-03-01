@@ -11,6 +11,7 @@
         <module name="waveedu-dispatch" />
         <module name="waveedu-note" />
         <module name="waveedu-edu" />
+        <module name="waveedu-messagesdk" />
         <module name="xxl-job-executor-sample-frameless" />
         <module name="waveedu-service" />
         <module name="waveedu-basic" />
@@ -18,12 +19,6 @@
         <module name="waveedu-generator" />
         <module name="xxl-job-executor-sample-springboot" />
         <module name="xxl-job-admin" />
-      </profile>
-      <profile name="Annotation profile for waveedu" enabled="true">
-        <sourceOutputDir name="../waveedu-service/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../waveedu-service/target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="waveedu-messagesdk" />
       </profile>
     </annotationProcessing>
   </component>
