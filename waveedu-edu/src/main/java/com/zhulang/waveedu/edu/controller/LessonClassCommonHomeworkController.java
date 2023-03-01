@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
+import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import org.springframework.validation.annotation.Validated;
@@ -51,5 +52,8 @@ public class LessonClassCommonHomeworkController {
             return lessonClassCommonHomeworkService.publish(publishCommonHomeworkVO);
     }
 
-//    @GetMapping("/get/")
+    @PutMapping("/modify/info")
+    public Result modifyInfo(@Validated @RequestBody ModifyCommonHomeworkVo modifyCommonHomeworkVo){
+        return null;
+    }
 }
