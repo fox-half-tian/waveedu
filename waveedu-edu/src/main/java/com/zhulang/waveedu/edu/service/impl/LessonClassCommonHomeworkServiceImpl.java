@@ -255,4 +255,21 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         // 3.返回
         return Result.ok();
     }
+
+    @Override
+    public Result getHomeworkDetailListInfo(Long classId, Integer isPublish) {
+        // 1.校验是否为创建者
+        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.查询
+        List<LessonClassCommonHomework> listInfo = lessonClassCommonHomeworkMapper
+                .selectList(new LambdaQueryWrapper<LessonClassCommonHomework>()
+                        .eq(LessonClassCommonHomework::getLessonClassId, classId)
+                        .eq(isPublish != null, LessonClassCommonHomework::getIsPublish, isPublish)
+                        .orderByDesc(LessonClassCommonHomework::getCreateTime)
+                );
+        // 3.返回
+        return Result.ok(listInfo);
+    }
 }

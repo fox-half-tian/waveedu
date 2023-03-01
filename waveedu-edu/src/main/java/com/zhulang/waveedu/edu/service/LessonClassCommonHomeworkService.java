@@ -48,4 +48,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 修改状况
      */
     Result modifyCancelPreparePublish(Integer homeworkId);
+
+    /**
+     * 获取班级作业的详细信息，班级创建者可以调用这个接口
+     * @param classId 班级id
+     * @param isPublish 发布状态
+     * @return 作业信息，按照时间从近到远进行了排序
+     */
+    Result getHomeworkDetailListInfo(Long classId,Integer isPublish);
 }

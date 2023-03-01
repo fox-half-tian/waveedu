@@ -74,4 +74,18 @@ public class LessonClassCommonHomeworkController {
     public Result modifyCancelPreparePublish(@RequestParam("homeworkId")Integer homeworkId){
         return lessonClassCommonHomeworkService.modifyCancelPreparePublish(homeworkId);
     }
+
+    /**
+     * 创建者获取班级作业的详细信息，班级创建者可以调用这个接口 //todo 加上班级总人数与提交人数
+     * 可传 isPublish
+     *
+     * @param classId 班级id
+     * @param isPublish 发布状态
+     * @return 作业信息，按照时间从近到远进行了排序
+     */
+    @GetMapping("/get/tch/homeworkDetailListInfo")
+    public Result getHomeworkDetailListInfo(@RequestParam("classId")Long classId,
+                                            @RequestParam(value = "isPublish",required = false)Integer isPublish){
+        return lessonClassCommonHomeworkService.getHomeworkDetailListInfo(classId,isPublish);
+    }
 }
