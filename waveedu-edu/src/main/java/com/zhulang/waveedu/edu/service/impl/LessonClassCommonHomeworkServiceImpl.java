@@ -19,10 +19,6 @@ import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -235,6 +231,28 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         // 3.修改数据库信息
         lessonClassCommonHomeworkMapper.updateById(BeanUtil.copyProperties(modifyCommonHomeworkVo, LessonClassCommonHomework.class));
         // 4.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result modifyCancelPreparePublish(Integer homeworkId) {
+        // 1.校验是否为创建者
+        Long creatorId = lessonClassCommonHomeworkMapper.selectCreatorIdById(homeworkId);
+        if (creatorId == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
+        }
+        if (!creatorId.equals(UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.将状况为预发布的作业修改为未发布
+        int recordCount = lessonClassCommonHomeworkMapper.update(null, new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                .eq(LessonClassCommonHomework::getId, homeworkId)
+                .eq(LessonClassCommonHomework::getIsPublish, 2)
+                .set(LessonClassCommonHomework::getIsPublish, 0));
+        if (recordCount == 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许将预发布的作业修改为未发布");
+        }
+        // 3.返回
         return Result.ok();
     }
 }

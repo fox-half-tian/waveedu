@@ -63,4 +63,15 @@ public class LessonClassCommonHomeworkController {
     public Result modifyInfo(@Validated @RequestBody ModifyCommonHomeworkVo modifyCommonHomeworkVo) {
         return lessonClassCommonHomeworkService.modifyInfo(modifyCommonHomeworkVo);
     }
+
+    /**
+     * 取消预发布，状态变为未发布，只允许创建者操作
+     *
+     * @param homeworkId 作业Id
+     * @return 修改状况
+     */
+    @PutMapping("/modify/cancelPreparePublish")
+    public Result modifyCancelPreparePublish(@RequestParam("homeworkId")Integer homeworkId){
+        return lessonClassCommonHomeworkService.modifyCancelPreparePublish(homeworkId);
+    }
 }

@@ -40,4 +40,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 修改状况
      */
     Result modifyInfo(ModifyCommonHomeworkVo modifyCommonHomeworkVo);
+
+    /**
+     * 取消预发布，状态变为未发布
+     *
+     * @param homeworkId 作业Id
+     * @return 修改状况
+     */
+    Result modifyCancelPreparePublish(Integer homeworkId);
 }
