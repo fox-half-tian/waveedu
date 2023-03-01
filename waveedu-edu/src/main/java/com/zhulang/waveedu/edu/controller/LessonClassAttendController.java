@@ -78,4 +78,6 @@ public class LessonClassAttendController {
     public Result getSelfStuPlan() {
         return lessonClassAttendService.getSelfStuPlan();
     }
+
+
 }

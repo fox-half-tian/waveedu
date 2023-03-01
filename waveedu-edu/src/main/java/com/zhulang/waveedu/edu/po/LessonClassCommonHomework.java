@@ -76,6 +76,11 @@ public class LessonClassCommonHomework implements Serializable {
     private Integer isPublish;
 
     /**
+     * 是否开启解析，0表示关闭，1表示开启
+     */
+    private Integer isOpenExplain;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
