@@ -8,7 +8,6 @@ import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
@@ -117,11 +116,15 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                             // 设置消息内容
                             messageSdkSendErrorLog.setContent(publishCommonHomeworkVO.getCommonHomeworkId() + "");
                             // 设置消息备注
-                            messageSdkSendErrorLog.setRemark("发送到默认交换机错误");
+                            messageSdkSendErrorLog.setRemark("发送到普通作业预发布交换机错误");
                             // 设置消息类型
                             messageSdkSendErrorLog.setType(MessageSdkSendErrorTypeConstants.COMMON_HOMEWORK_PUBLISH_SEND_ERROR);
-                            // 保存
+                            // 保存错误信息
                             messageSdkSendErrorLogService.save(messageSdkSendErrorLog);
+                            // 修改作业状态为0-未发布
+                            lessonClassCommonHomeworkMapper.update(null,new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                                    .eq(LessonClassCommonHomework::getId,publishCommonHomeworkVO.getCommonHomeworkId())
+                                    .set(LessonClassCommonHomework::getIsPublish,0));
                         } else {
                             // 重发
                             count++;
@@ -132,8 +135,9 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
                             // 异步发送到消息队列
+//                            correlationData.setId(UUID.randomUUID().toString());
                             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
-                                    RabbitConstants.COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY,
+                                    RabbitConstants.COMMON_HOMEWORK_PUBLISH_ROUTING_KEY,
                                     sendMap,
                                     msg -> {
                                         msg.getMessageProperties().setDelay(delayedTime);
@@ -154,15 +158,15 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                  */
                 @Override
                 public void onFailure(Throwable ex) {
-                    log.error("失败原因：{}" + ex.getMessage());
+                    log.error("发送到普通作业预发布交换机失败原因：{}" + ex.getMessage());
                 }
             });
-            // 2.2 设置发送的内容
+            // 2.4 设置发送的内容
             HashMap<String, Object> sendMap = new HashMap<>(2);
             sendMap.put("commonHomeworkId",publishCommonHomeworkVO.getCommonHomeworkId());
             sendMap.put("startTime",publishCommonHomeworkVO.getStartTime());
 
-            // 2.3 设置发送消息的延迟时长（单位 ms）
+            // 2.5 设置发送消息的延迟时长（单位 ms）
             long delayedTime = Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
             if (delayedTime > 2073600000) {
                 return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "定时不能距离当前超过24天");
@@ -170,7 +174,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
             // 2.4 异步发送到延迟队列
             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
-                    RabbitConstants.COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY,
+                    RabbitConstants.COMMON_HOMEWORK_PUBLISH_ROUTING_KEY,
                     sendMap,
                     msg -> {
                         msg.getMessageProperties().setDelay((int) delayedTime);

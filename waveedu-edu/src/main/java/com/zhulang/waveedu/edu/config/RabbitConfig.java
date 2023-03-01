@@ -1,15 +1,16 @@
 package com.zhulang.waveedu.edu.config;
 
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
+import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.zhulang.waveedu.edu.service.MessageSdkSendErrorLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.ReturnedMessage;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,7 +26,7 @@ import java.util.Arrays;
  */
 @Configuration
 @Slf4j
-public class RabbitConfig  implements ApplicationContextAware {
+public class RabbitConfig implements ApplicationContextAware {
     @Resource
     private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
 
@@ -66,18 +67,19 @@ public class RabbitConfig  implements ApplicationContextAware {
                 // 保存到数据库
                 MessageSdkSendErrorLog messageSdkSendErrorLog = new MessageSdkSendErrorLog();
                 messageSdkSendErrorLog.setType(MessageSdkSendErrorTypeConstants.EXCHANGE_TO_QUEUE_SEND_ERROR);
-                messageSdkSendErrorLog.setContent(Arrays.toString(message.getBody()));
+                messageSdkSendErrorLog.setContent(new String(message.getBody()));
                 messageSdkSendErrorLog.setErrorMsg(replyText);
-                messageSdkSendErrorLog.setRemark("状态码："+replyCode+"使用的交换机："+exchange+"，路由为："+routingKey);
+                messageSdkSendErrorLog.setRemark("状态码：" + replyCode + "，使用的交换机：" + exchange + "，路由为：" + routingKey);
                 messageSdkSendErrorLogService.save(messageSdkSendErrorLog);
             }
         });
     }
+
     /**
      * 使用JSON方式来做序列化和反序列化。
      */
     @Bean
-    public MessageConverter jsonMessageConverter(){
-        return new Jackson2JsonMessageConverter();
+    public Jackson2JsonMessageConverter rabbitMessageConverter(){
+        return new Jackson2JsonMessageConverter(new JacksonObjectMapper());
     }
 }

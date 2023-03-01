@@ -16,5 +16,5 @@ public class RabbitConstants {
     /**
      * routingKey
      */
-    public static final String COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY = "publish";
+    public static final String COMMON_HOMEWORK_PUBLISH_ROUTING_KEY = "publish";
 }

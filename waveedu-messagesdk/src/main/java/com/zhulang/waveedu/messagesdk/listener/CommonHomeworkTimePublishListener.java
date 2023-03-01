@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -27,10 +28,12 @@ public class CommonHomeworkTimePublishListener {
     @Resource
     private LessonClassCommonHomeworkService lessonClassCommonHomeworkService;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @RabbitListener(queues = RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME)
     public void listenerCommonHomeworkPublishQueue(HashMap<String, Object> map) throws Exception {
         Integer id = (Integer) map.get("commonHomeworkId");
-        LocalDateTime startTime = (LocalDateTime) map.get("startTime");
+        LocalDateTime startTime =  LocalDateTime.parse((String)map.get("startTime"),formatter);
         // 如果预发布状态，并且时间正是该延迟消息设置的开始时间，则设置状态为已发布
 //        if(lessonClassCommonHomeworkService.existsByIdAndStartTimeAndIsPublish(id,startTime,2)){
 //            lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()

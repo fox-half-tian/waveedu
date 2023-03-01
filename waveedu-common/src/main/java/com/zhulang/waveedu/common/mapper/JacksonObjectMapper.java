@@ -1,10 +1,5 @@
 package com.zhulang.waveedu.common.mapper;
 
-/**
- * @author 狐狸半面添
- * @create 2023-02-11 23:22
- */
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -56,7 +51,6 @@ public class JacksonObjectMapper extends ObjectMapper {
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
                 .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
                 .addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
-
         //注册功能模块 例如，可以添加自定义序列化器和反序列化器
         this.registerModule(simpleModule);
     }

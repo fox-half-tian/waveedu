@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.messagesdk.config;
 
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
+import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import com.zhulang.waveedu.messagesdk.po.SendErrorLog;
 import com.zhulang.waveedu.messagesdk.service.SendErrorLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -81,8 +81,8 @@ public class RabbitConfig implements ApplicationContextAware {
      * 使用JSON方式来做序列化和反序列化。
      */
     @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public Jackson2JsonMessageConverter rabbitMessageConverter(){
+        return new Jackson2JsonMessageConverter(new JacksonObjectMapper());
     }
 
     /**
@@ -129,7 +129,7 @@ public class RabbitConfig implements ApplicationContextAware {
         return BindingBuilder
                 .bind(commonHomeworkPublishDelayedQueue)
                 .to(commonHomeworkPublishDelayedExchange)
-                .with(COMMON_HOMEWORK_PUBLISH_EXCHANGE_ROUTING_KEY)
+                .with(COMMON_HOMEWORK_PUBLISH_ROUTING_KEY)
                 .noargs();
     }
 
