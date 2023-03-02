@@ -15,6 +15,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
+import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -303,5 +304,20 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     @Override
     public boolean existsByIdAndUserId(Integer id, Long userId) {
         return lessonClassCommonHomeworkMapper.existsByIdAndUserId(id, userId) != null;
+    }
+
+    @Override
+    public Result getTchHomeworkDetailInfo(Integer homeworkId) {
+        // 1.格式校验
+        if (homeworkId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
+        // 2.判断是否为创建者
+        if (!this.existsByIdAndUserId(homeworkId, UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.查询并返回
+        TchHomeworkDetailInfoQuery info = lessonClassCommonHomeworkMapper.selectTchHomeworkDetailInfo(homeworkId);
+        return Result.ok(info);
     }
 }

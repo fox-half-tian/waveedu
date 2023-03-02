@@ -45,12 +45,11 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      */
     Integer existsByIdAndUserId(@Param("id") Integer id,@Param("userId") Long userId);
 
-//    /**
-//     * 教师身份查询作业的详细信息列表
-//     *
-//     * @param classId 班级id
-//     * @param isPublish 发布状况
-//     * @return
-//     */
-//    List<TchHomeworkDetailInfoQuery> selectTchHomeworkDetailInfoList(Long classId, Integer isPublish);
+    /**
+     * 教师身份查询作业的详细信息列表
+     *
+     * @param id 作业id
+     * @return 作业表全部信息 + 班级人数
+     */
+    TchHomeworkDetailInfoQuery selectTchHomeworkDetailInfo(@Param("id")Integer id);
 }

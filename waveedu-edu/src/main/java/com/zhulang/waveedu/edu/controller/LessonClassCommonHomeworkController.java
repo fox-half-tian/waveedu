@@ -98,6 +98,15 @@ public class LessonClassCommonHomeworkController {
         return lessonClassCommonHomeworkService.getTchHomeworkSimpleListInfo(classId, isPublish);
     }
 
-//    @GetMapping("/get/stu/homework")
+    /**
+     * 创建者获取班级一个作业的详细信息，班级创建者可以调用这个接口
+     *
+     * @param homeworkId 作业id
+     * @return 作业信息
+     */
+    @GetMapping("/get/tch/homeworkDetailInfo")
+    public Result getTchHomeworkDetailListInfo(@RequestParam("homeworkId")Integer homeworkId ) {
+        return lessonClassCommonHomeworkService.getTchHomeworkDetailInfo(homeworkId);
+    }
 
 }

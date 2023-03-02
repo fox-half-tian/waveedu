@@ -1,9 +1,8 @@
 package com.zhulang.waveedu.edu.query.homeworkquery;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +10,13 @@ import java.time.LocalDateTime;
  * @author 狐狸半面添
  * @create 2023-03-02 21:59
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TchHomeworkDetailInfoQuery {
     /**
      * 主键id（自增）
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

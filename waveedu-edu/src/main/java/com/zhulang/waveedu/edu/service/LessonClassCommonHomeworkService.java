@@ -75,4 +75,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return true-说明是，false-不是
      */
     boolean existsByIdAndUserId(Integer id, Long userId);
+
+    /**
+     * 创建者获取班级一个作业的详细信息，班级创建者可以调用这个接口
+     *
+     * @param homeworkId 作业id
+     * @return 作业信息
+     */
+    Result getTchHomeworkDetailInfo(Integer homeworkId);
 }
