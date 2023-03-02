@@ -1,9 +1,6 @@
 package com.zhulang.waveedu.edu.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
@@ -11,8 +8,6 @@ import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 
@@ -71,7 +66,7 @@ public class LessonClassCommonHomeworkController {
      * @return 修改状况
      */
     @PutMapping("/modify/cancelPreparePublish")
-    public Result modifyCancelPreparePublish(@RequestParam("homeworkId")Integer homeworkId){
+    public Result modifyCancelPreparePublish(@RequestParam("homeworkId") Integer homeworkId) {
         return lessonClassCommonHomeworkService.modifyCancelPreparePublish(homeworkId);
     }
 
@@ -79,13 +74,27 @@ public class LessonClassCommonHomeworkController {
      * 创建者获取班级作业的详细信息，班级创建者可以调用这个接口 //todo 加上班级总人数与提交人数
      * 可传 isPublish
      *
-     * @param classId 班级id
+     * @param classId   班级id
      * @param isPublish 发布状态
      * @return 作业信息，按照时间从近到远进行了排序
      */
     @GetMapping("/get/tch/homeworkDetailListInfo")
-    public Result getHomeworkDetailListInfo(@RequestParam("classId")Long classId,
-                                            @RequestParam(value = "isPublish",required = false)Integer isPublish){
-        return lessonClassCommonHomeworkService.getHomeworkDetailListInfo(classId,isPublish);
+    public Result getTchHomeworkDetailListInfo(@RequestParam("classId") Long classId,
+                                               @RequestParam(value = "isPublish", required = false) Integer isPublish) {
+        return lessonClassCommonHomeworkService.getTchHomeworkDetailListInfo(classId, isPublish);
+    }
+
+    /**
+     * 创建者获取班级作业的简单信息，班级创建者可以调用这个接口
+     * 可传 isPublish
+     *
+     * @param classId   班级id
+     * @param isPublish 发布状态
+     * @return 作业信息：作业id，作业标题，作业状态，按照时间从近到远进行了排序
+     */
+    @GetMapping("/get/tch/homeworkSimpleListInfo")
+    public Result getTchHomeworkSimpleListInfo(@RequestParam("classId") Long classId,
+                                               @RequestParam(value = "isPublish", required = false) Integer isPublish) {
+        return lessonClassCommonHomeworkService.getTchHomeworkSimpleListInfo(classId, isPublish);
     }
 }

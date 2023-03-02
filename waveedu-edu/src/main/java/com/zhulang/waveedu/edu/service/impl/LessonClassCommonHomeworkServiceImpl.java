@@ -8,11 +8,13 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
+import com.zhulang.waveedu.edu.query.TchHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
@@ -257,7 +259,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     }
 
     @Override
-    public Result getHomeworkDetailListInfo(Long classId, Integer isPublish) {
+    public Result getTchHomeworkDetailListInfo(Long classId, Integer isPublish) {
         // 1.校验是否为创建者
         if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
@@ -269,6 +271,22 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                         .eq(isPublish != null, LessonClassCommonHomework::getIsPublish, isPublish)
                         .orderByDesc(LessonClassCommonHomework::getCreateTime)
                 );
+        // 3.返回
+        return Result.ok(listInfo);
+    }
+
+    @Override
+    public Result getTchHomeworkSimpleListInfo(Long classId, Integer isPublish) {
+        // 0.格式校验
+        if (RegexUtils.isSnowIdInvalid(classId) || (isPublish != null && (isPublish < 0 || isPublish > 2))) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), HttpStatus.HTTP_BAD_REQUEST.getValue());
+        }
+        // 1.校验是否为创建者
+        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.查询
+        List<TchHomeworkSimpleInfoQuery> listInfo = lessonClassCommonHomeworkMapper.getTchHomeworkSimpleListInfo(classId, isPublish);
         // 3.返回
         return Result.ok(listInfo);
     }

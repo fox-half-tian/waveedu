@@ -55,5 +55,15 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @param isPublish 发布状态
      * @return 作业信息，按照时间从近到远进行了排序
      */
-    Result getHomeworkDetailListInfo(Long classId,Integer isPublish);
+    Result getTchHomeworkDetailListInfo(Long classId, Integer isPublish);
+
+    /**
+     * 创建者获取班级作业的简单信息，班级创建者可以调用这个接口
+     * 可传 isPublish
+     *
+     * @param classId 班级id
+     * @param isPublish 发布状态
+     * @return 作业信息，按照时间从近到远进行了排序
+     */
+    Result getTchHomeworkSimpleListInfo(Long classId, Integer isPublish);
 }
