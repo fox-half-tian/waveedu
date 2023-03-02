@@ -8,8 +8,6 @@ import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
 
 /**
@@ -56,8 +54,18 @@ public class CommonHomeworkQuestionController {
      * @return 修改状况
      */
     @PutMapping("/modifyQuestion")
-    public Result modifyQuestion(@Validated @RequestBody ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO){
+    public Result modifyQuestion(@Validated @RequestBody ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO) {
         return commonHomeworkQuestionService.modifyQuestion(modifyCommonHomeworkQuestionVO);
     }
 
+    /**
+     * 查询作业的总分数
+     *
+     * @param homeworkId 作业id
+     * @return 总分
+     */
+    @GetMapping("/get/homeworkTotalScore")
+    public Result getHomeworkTotalScore(@RequestParam("homeworkId") Integer homeworkId) {
+        return commonHomeworkQuestionService.getHomeworkTotalScore(homeworkId);
+    }
 }

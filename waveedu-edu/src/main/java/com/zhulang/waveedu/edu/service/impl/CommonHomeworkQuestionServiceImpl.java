@@ -163,6 +163,14 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         return commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(commonHomeworkId);
     }
 
+    @Override
+    public Result getHomeworkTotalScore(Integer homeworkId) {
+        if (homeworkId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
+        return Result.ok(commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId));
+    }
+
     /**
      * 根据问题类型校验答案的格式
      *

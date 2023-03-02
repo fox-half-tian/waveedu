@@ -46,22 +46,12 @@ public class CommonHomeworkStuScore implements Serializable {
     private Integer score;
 
     /**
-     * 满分
+     * 状态，0-批阅中，1-已批阅
      */
-    private Integer fullScore;
+    private Integer status;
 
     /**
-     * 是否提交
-     */
-    private Integer isCommit;
-
-    /**
-     * 提交时间
-     */
-    private LocalDateTime commitTime;
-
-    /**
-     * 创建时间
+     * 创建时间（提交时间）
      */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
