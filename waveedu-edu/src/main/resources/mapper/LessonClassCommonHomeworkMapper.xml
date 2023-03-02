@@ -46,9 +46,9 @@
         SELECT h.`id`,h.`title`,h.`difficulty`,h.`end_time`,s.`status`
         FROM `edu_lesson_class_common_homework` h LEFT JOIN `edu_common_homework_stu_score` s
                                                             ON h.`id` = s.`homework_id`
+                                                                AND s.`stu_id` = #{stuId}
         WHERE h.`lesson_class_id` = #{classId}
           AND h.`is_publish` = 1
-          AND s.`stu_id` = #{stuId}
         ORDER BY h.`create_time` DESC
     </select>
 </mapper>

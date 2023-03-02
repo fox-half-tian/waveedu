@@ -110,11 +110,10 @@ public class LessonClassCommonHomeworkController {
     }
 
     /**
-     * 学生获取班级作业的简单信息，班级的学生可以调用这个接口 todo 待测试
-     * 可传 isPublish
+     * 学生获取班级作业的简单信息列表，班级的学生可以调用这个接口 todo 待测试
      *
      * @param classId   班级id
-     * @return 作业信息：作业id，作业标题，作业状态，按照时间从近到远进行了排序
+     * @return 作业信息：作业id，作业标题，作业状态，截止时间，按照时间从近到远进行了排序
      */
     @GetMapping("/get/stu/homeworkSimpleListInfo")
     public Result getStuHomeworkSimpleListInfo(@RequestParam("classId") Long classId) {
