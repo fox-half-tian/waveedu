@@ -2,11 +2,13 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuScoreMapper;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.service.CommonHomeworkStuScoreService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -20,4 +22,5 @@ import javax.annotation.Resource;
 public class CommonHomeworkStuScoreServiceImpl extends ServiceImpl<CommonHomeworkStuScoreMapper, CommonHomeworkStuScore> implements CommonHomeworkStuScoreService {
     @Resource
     private CommonHomeworkStuScoreMapper commonHomeworkStuScoreMapper;
+
 }

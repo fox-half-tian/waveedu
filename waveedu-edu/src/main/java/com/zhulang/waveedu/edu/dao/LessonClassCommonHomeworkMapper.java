@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
 import org.apache.ibatis.annotations.Param;
@@ -59,4 +60,15 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      * @param id 作业Id
      */
     void updateTotalScore(@Param("id") Integer id);
+
+
+    /**
+     * 学生查询对班级作业的简单信息列表
+     *
+     * @param classId 班级id
+     * @param stuId 学生id
+     * @return 信息列表
+     */
+    List<StuHomeworkSimpleInfoQuery> selectStuHomeworkSimpleInfoList(@Param("classId") Long classId, @Param("stuId") Long stuId);
+
 }

@@ -15,6 +15,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
@@ -55,6 +56,10 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
     @Resource
     private CommonHomeworkQuestionService commonHomeworkQuestionService;
+    @Resource
+    private LessonClassStuService lessonClassStuService;
+    @Resource
+    private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
 
     @Override
     public Result saveHomework(SaveCommonHomeworkVO saveCommonHomeworkVO) {
@@ -324,5 +329,47 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     @Override
     public void modifyTotalScore(Integer id) {
         lessonClassCommonHomeworkMapper.updateTotalScore(id);
+    }
+
+    @Override
+    public Result getStuHomeworkSimpleListInfo(Long classId) {
+        // 1.校验格式
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级格式错误");
+        }
+        // 2.校验是否为班级成员
+        Long userId = UserHolderUtils.getUserId();
+        if (!lessonClassStuService.existsByClassIdAndUserId(classId, userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取信息
+        List<StuHomeworkSimpleInfoQuery> infoList = lessonClassCommonHomeworkMapper.selectStuHomeworkSimpleInfoList(classId, userId);
+        // 4.状态判断
+        // 规定：0-进行中（未提交且未过截止日期），1-已截止（未提交且过了截止日期），2-批阅中（已提交且处于批阅中）
+        //      3-已批阅（已提交并且已批阅）
+        for (StuHomeworkSimpleInfoQuery info : infoList) {
+            Integer status = info.getStatus();
+            // 4.1 如果是空，说明还没有提交
+            if (status == null) {
+                // 如果现在还没过截止时间，则状态为 进行中
+                // 如果当前的时间在截止时间之前
+                if (LocalDateTime.now().isBefore(info.getEndTime())) {
+                    info.setStatus(0);
+                } else {
+                    info.setStatus(1);
+                }
+            } else {
+                // 4.2 如果不是空，说明已经提交
+                if (status == 0) {
+                    // 说明正在批阅中
+                    info.setStatus(2);
+                } else {
+                    // 说明已批阅
+                    info.setStatus(3);
+                }
+            }
+
+        }
+        return Result.ok(infoList);
     }
 }

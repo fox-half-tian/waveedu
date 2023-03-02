@@ -90,4 +90,13 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @param id 作业Id
      */
     void modifyTotalScore(Integer id);
+
+    /**
+     * 学生获取班级作业的简单信息，班级的学生可以调用这个接口
+     * 可传 isPublish
+     *
+     * @param classId   班级id
+     * @return 作业信息：作业id，作业标题，作业状态，按照时间从近到远进行了排序
+     */
+    Result getStuHomeworkSimpleListInfo(Long classId);
 }
