@@ -66,4 +66,13 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 作业信息，按照时间从近到远进行了排序
      */
     Result getTchHomeworkSimpleListInfo(Long classId, Integer isPublish);
+
+    /**
+     * 校验该 userId 是否为作业的创建者
+     *
+     * @param id 作业id
+     * @param userId 用户id
+     * @return true-说明是，false-不是
+     */
+    boolean existsByIdAndUserId(Integer id, Long userId);
 }

@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.edu.config;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.MybatisMapWrapperFactory;
 import com.zhulang.waveedu.common.handler.MyMetaObjectHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +23,10 @@ public class MyBatisPlusConfig {
     @Bean
     public MetaObjectHandler metaObjectHandler(){
         return new MyMetaObjectHandler();
+    }
+
+    @Bean
+    public ConfigurationCustomizer mybatisConfigurationCustomizer(){
+        return configuration -> configuration.setObjectWrapperFactory(new MybatisMapWrapperFactory());
     }
 }

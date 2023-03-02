@@ -43,7 +43,7 @@ public class LessonClassAttendServiceImpl extends ServiceImpl<LessonClassAttendM
         if (info==null||info.isEmpty()){
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "课程或班级不存在");
         }
-        if (!info.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())){
+        if (!info.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())){
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 2.对象属性转换

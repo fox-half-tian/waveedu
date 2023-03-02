@@ -1,9 +1,9 @@
 package com.zhulang.waveedu.messagesdk.service.impl;
 
-import com.zhulang.waveedu.messagesdk.po.ConsumerErrorLog;
-import com.zhulang.waveedu.messagesdk.dao.ConsumerErrorLogMapper;
-import com.zhulang.waveedu.messagesdk.service.ConsumerErrorLogService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhulang.waveedu.messagesdk.dao.ConsumerErrorLogMapper;
+import com.zhulang.waveedu.messagesdk.po.ConsumerErrorLog;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author 狐狸半面添
- * @since 2023-03-01
+ * @since 2023-03-02
  */
 @Service
-public class ConsumerErrorLogServiceImpl extends ServiceImpl<ConsumerErrorLogMapper, ConsumerErrorLog> implements ConsumerErrorLogService {
+public class ConsumerErrorLogServiceImpl extends ServiceImpl<ConsumerErrorLogMapper, ConsumerErrorLog> implements IService<ConsumerErrorLog> {
 
 }

@@ -18,4 +18,10 @@
         </if>
         ORDER BY `create_time` DESC
     </select>
+    <select id="existsByIdAndUserId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_common_homework`
+        WHERE `id` = #{id}
+          AND `creator_id` = #{userId}
+    </select>
 </mapper>

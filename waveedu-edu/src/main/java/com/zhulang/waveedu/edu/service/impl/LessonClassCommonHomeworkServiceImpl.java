@@ -78,11 +78,11 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                 .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
                 .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getCreatorId));
         // 1.1 是否为创建者
-        if (!map.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())) {
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 1.2 如果是已经发布了，就不能发布
-        if ((Integer) map.get("is_publish") == 1) {
+        if ((Integer) map.get("isPublish") == 1) {
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
         }
         // 2.查询题目数量，如果为0则无法发布
@@ -289,5 +289,10 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         List<TchHomeworkSimpleInfoQuery> listInfo = lessonClassCommonHomeworkMapper.getTchHomeworkSimpleListInfo(classId, isPublish);
         // 3.返回
         return Result.ok(listInfo);
+    }
+
+    @Override
+    public boolean existsByIdAndUserId(Integer id, Long userId) {
+        return lessonClassCommonHomeworkMapper.existsByIdAndUserId(id,userId)!=null;
     }
 }

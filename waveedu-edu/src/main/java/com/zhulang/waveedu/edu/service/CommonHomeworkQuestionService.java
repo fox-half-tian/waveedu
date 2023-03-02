@@ -56,4 +56,13 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 总分
      */
     Result getTmpTotalScore(Integer homeworkId);
+
+    /**
+     * 教师预览作业的所有题目
+     *
+     * @param homeworkId 作业Id
+     * @param pattern 预览模式，0-普通预览（无答案与解析），1-详细预览（有答案与解析）
+     * @return 题目列表
+     */
+    Result getTchHomeworkQuestionListInfo(Integer homeworkId, Integer pattern);
 }

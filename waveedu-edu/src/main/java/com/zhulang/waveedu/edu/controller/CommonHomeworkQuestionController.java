@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 
 /**
  * <p>
@@ -67,5 +68,19 @@ public class CommonHomeworkQuestionController {
     @GetMapping("/get/tmp/homeworkTotalScore")
     public Result getTmpHomeworkTotalScore(@RequestParam("homeworkId") Integer homeworkId) {
         return commonHomeworkQuestionService.getTmpTotalScore(homeworkId);
+    }
+
+
+    /**
+     * 教师预览作业的所有题目
+     *
+     * @param homeworkId 作业Id
+     * @param pattern 预览模式，0-普通预览（无答案与解析），1-详细预览（有答案与解析）
+     * @return 题目列表
+     */
+    @GetMapping("/get/tch/homeworkQuestionListInfo")
+    public Result getTchHomeworkQuestionListInfo(@Min(value = 1) @RequestParam("homeworkId")Integer homeworkId,
+                                                 @RequestParam("pattern")Integer pattern){
+        return commonHomeworkQuestionService.getTchHomeworkQuestionListInfo(homeworkId,pattern);
     }
 }

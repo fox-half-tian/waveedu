@@ -7,6 +7,7 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
@@ -48,11 +49,11 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
         }
         // 1.2 如果不是创建者说明权限不足
-        if (!map.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())) {
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 1.3 如果已经发布则不能再修改
-        if ((Integer) map.get("is_publish") != 0) {
+        if ((Integer) map.get("isPublish") != 0) {
             return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "作业已发布，无法添加");
         }
         // 1.4 如果作业类型为1并且题目类型不为4，或者，作业类型为0并且题目类型为4则操作失败
@@ -97,12 +98,12 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未查询到题目或作业信息");
         }
 
-        if ((Integer) map.get("is_publish") != 0) {
+        if ((Integer) map.get("isPublish") != 0) {
             return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "作业已发布，无法修改题目");
         }
 
         // 3.查看是否为创建者
-        if (!map.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())) {
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 4.删除题目
@@ -121,11 +122,11 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
         }
         // 1.2 如果不是创建者说明权限不足
-        if (!map.get("creator_id").toString().equals(UserHolderUtils.getUserId().toString())) {
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 1.3 如果已经发布则不能再修改
-        if ((Integer) map.get("is_publish") != 0) {
+        if ((Integer) map.get("isPublish") != 0) {
             return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "作业已发布，无法添加");
         }
         // 1.4 如果作业类型为1并且题目类型不为4，或者，作业类型为0并且题目类型为4则操作失败
@@ -169,6 +170,18 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
         }
         return Result.ok(commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId));
+    }
+
+    @Override
+    public Result getTchHomeworkQuestionListInfo(Integer homeworkId, Integer pattern) {
+        // 1.校验是否为作业班级创建者
+        if(!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.根据模式查询不同的信息
+//        commonHomeworkQuestionMapper.select
+        return null;
+
     }
 
     /**
