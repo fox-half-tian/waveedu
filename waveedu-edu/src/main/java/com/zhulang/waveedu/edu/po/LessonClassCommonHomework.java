@@ -87,6 +87,11 @@ public class LessonClassCommonHomework implements Serializable {
     private Integer isEndAfterExplain;
 
     /**
+     * 提交人数
+     */
+    private Integer commitNum;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)

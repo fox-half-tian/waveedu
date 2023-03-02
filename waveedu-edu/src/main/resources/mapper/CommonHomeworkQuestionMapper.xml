@@ -22,14 +22,14 @@
         WHERE `common_homework_id` = #{commonHomeworkId}
     </select>
     <select id="selectTchHomeworkQuestionSimpleInfoList"
-            resultType="com.zhulang.waveedu.edu.query.TchHomeworkQuestionSimpleInfo">
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkQuestionSimpleInfoQuery">
         SELECT `id`, `type`, `problem_desc`, `score`
         FROM `edu_common_homework_question`
         WHERE `common_homework_id` = #{homeworkId}
         ORDER BY `create_time`
     </select>
     <select id="selectTchHomeworkQuestionDetailInfoList"
-            resultType="com.zhulang.waveedu.edu.query.TchHomeworkQuestionDetailInfo">
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkQuestionDetailInfoQuery">
         SELECT `id`, `type`, `problem_desc`, `score`, `answer`, `analysis`
         FROM `edu_common_homework_question`
         WHERE `common_homework_id` = #{homeworkId}

@@ -1,7 +1,7 @@
 package com.zhulang.waveedu.edu.test.dao;
 
 import com.zhulang.waveedu.edu.dao.LessonMapper;
-import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

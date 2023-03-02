@@ -14,13 +14,13 @@
           AND `creator_id` = #{userId}
           AND `is_deleted` = 0
     </select>
-    <select id="selectBasicInfo" resultType="com.zhulang.waveedu.edu.query.ClassBasicInfoQuery">
+    <select id="selectBasicInfo" resultType="com.zhulang.waveedu.edu.query.classquery.ClassBasicInfoQuery">
         SELECT `creator_id`, `name`, `cover`, `num`, `is_end_class`, `lesson_id`, `create_time`
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
           AND `is_deleted` = 0
     </select>
-    <select id="selectInviteCodeById" resultType="com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery">
+    <select id="selectInviteCodeById" resultType="com.zhulang.waveedu.edu.query.classquery.LessonClassInviteCodeQuery">
         SELECT `invite_code`, `is_forbid_join`, `lesson_id`
         FROM `edu_lesson_class`
         WHERE `id` = #{id}
@@ -33,7 +33,7 @@
           AND `creator_id` = #{userId}
     </select>
     <select id="selectCreateClassInfoList"
-            resultType="com.zhulang.waveedu.edu.query.CreateLessonClassInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.classquery.CreateLessonClassInfoQuery">
         SELECT c.`id` AS `classId`,
         c.`name` AS `className`,
         c.`num` AS `classNum`,
@@ -52,7 +52,7 @@
         ORDER BY c.`create_time` DESC
         LIMIT #{limitQuery}
     </select>
-    <select id="selectLessonAllClassInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassInfoQuery">
+    <select id="selectLessonAllClassInfoList" resultType="com.zhulang.waveedu.edu.query.classquery.LessonClassInfoQuery">
         SELECT c.`id`,
                c.`name`,
                c.`num`,
@@ -69,7 +69,7 @@
         ORDER BY c.`create_time` DESC
     </select>
     <select id="selectLessonSelfAllClassInfoList"
-            resultType="com.zhulang.waveedu.edu.query.LessonSelfClassInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.classquery.LessonSelfClassInfoQuery">
         SELECT `id`,
                `name`,
                `num`,

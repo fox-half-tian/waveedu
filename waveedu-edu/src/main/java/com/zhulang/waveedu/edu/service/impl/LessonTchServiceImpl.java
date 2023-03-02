@@ -8,14 +8,13 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.*;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.dao.LessonTchMapper;
-import com.zhulang.waveedu.edu.query.LessonCacheQuery;
-import com.zhulang.waveedu.edu.query.LessonTchInfoQuery;
-import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonCacheQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonTchInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonService;
 import com.zhulang.waveedu.edu.service.LessonTchService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collections;

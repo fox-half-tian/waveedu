@@ -15,7 +15,7 @@ import com.zhulang.waveedu.edu.dao.LessonClassMapper;
 import com.zhulang.waveedu.edu.po.LessonClassAttend;
 import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.zhulang.waveedu.edu.po.LessonClassStu;
-import com.zhulang.waveedu.edu.query.*;
+import com.zhulang.waveedu.edu.query.classquery.*;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;

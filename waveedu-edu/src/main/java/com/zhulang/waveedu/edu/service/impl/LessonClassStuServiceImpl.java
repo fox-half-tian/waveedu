@@ -8,7 +8,7 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.LessonClassStu;
 import com.zhulang.waveedu.edu.dao.LessonClassStuMapper;
-import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.classquery.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.service.LessonClassStuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

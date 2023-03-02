@@ -8,7 +8,7 @@
         WHERE lesson_id = #{lessonId}
           AND user_id = #{userId}
     </select>
-    <select id="selectTchTeamInfo" resultType="com.zhulang.waveedu.edu.query.LessonTchInfoQuery">
+    <select id="selectTchTeamInfo" resultType="com.zhulang.waveedu.edu.query.lessonquery.LessonTchInfoQuery">
         SELECT u.id           AS userId,
                u.name         AS userName,
                u.icon         AS icon,

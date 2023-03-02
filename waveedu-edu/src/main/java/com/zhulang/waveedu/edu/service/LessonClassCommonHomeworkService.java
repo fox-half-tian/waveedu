@@ -3,9 +3,9 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
-import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
-import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
+import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
 
 /**
  * <p>

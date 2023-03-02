@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClass;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.LessonClassInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.classquery.LessonClassInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.classvo.ModifyClassBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.classvo.SaveClassVO;
 

@@ -3,9 +3,9 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
-import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
-import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
-import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
+import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,7 +71,7 @@ public class LessonClassCommonHomeworkController {
     }
 
     /**
-     * 创建者获取班级作业的详细信息，班级创建者可以调用这个接口 //todo 加上班级总人数与提交人数
+     * 创建者获取班级作业的详细信息列表，班级创建者可以调用这个接口
      * 可传 isPublish
      *
      * @param classId   班级id
@@ -97,5 +97,7 @@ public class LessonClassCommonHomeworkController {
                                                @RequestParam(value = "isPublish", required = false) Integer isPublish) {
         return lessonClassCommonHomeworkService.getTchHomeworkSimpleListInfo(classId, isPublish);
     }
+
+//    @GetMapping("/get/stu/homework")
 
 }

@@ -4,8 +4,8 @@ package com.zhulang.waveedu.edu.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.Lesson;
-import com.zhulang.waveedu.edu.query.LessonCacheQuery;
-import com.zhulang.waveedu.edu.query.TchInviteCodeQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonCacheQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
 import com.zhulang.waveedu.edu.vo.lessonvo.ModifyLessonBasicInfoVO;
 import com.zhulang.waveedu.edu.vo.lessonvo.SaveLessonVO;
 

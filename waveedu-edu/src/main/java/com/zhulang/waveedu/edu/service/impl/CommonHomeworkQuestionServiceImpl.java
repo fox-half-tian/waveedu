@@ -7,21 +7,19 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
-import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
-import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**

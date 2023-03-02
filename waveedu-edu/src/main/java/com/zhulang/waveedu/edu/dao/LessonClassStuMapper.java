@@ -2,8 +2,8 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassStu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.ClassStuInfoQuery;
-import com.zhulang.waveedu.edu.query.JoinClassInfoQuery;
+import com.zhulang.waveedu.edu.query.classquery.ClassStuInfoQuery;
+import com.zhulang.waveedu.edu.query.classquery.JoinClassInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -8,7 +8,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.LessonSectionFile;
 import com.zhulang.waveedu.edu.dao.LessonSectionFileMapper;
-import com.zhulang.waveedu.edu.query.SectionFileInfoQuery;
+import com.zhulang.waveedu.edu.query.sectionquery.SectionFileInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonSectionFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonSectionService;

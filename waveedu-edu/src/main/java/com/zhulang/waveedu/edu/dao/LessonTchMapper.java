@@ -2,7 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.LessonTchInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonTchInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

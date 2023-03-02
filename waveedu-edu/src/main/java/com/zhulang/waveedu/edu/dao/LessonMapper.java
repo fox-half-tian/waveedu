@@ -2,7 +2,11 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
-import com.zhulang.waveedu.edu.query.*;
+import com.zhulang.waveedu.edu.query.chapterquery.ChapterNameInfoWithSectionListQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.CreateLessonSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonBasicInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.LessonCacheQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

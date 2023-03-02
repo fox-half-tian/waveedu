@@ -11,15 +11,16 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
+import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.query.TchHomeworkSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhulang.waveedu.edu.vo.homework.ModifyCommonHomeworkVo;
-import com.zhulang.waveedu.edu.vo.homework.PublishCommonHomeworkVO;
-import com.zhulang.waveedu.edu.vo.homework.SaveCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
+import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -264,15 +265,23 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 2.查询
+        // 2.查询班级总人数
+        Map<String, Object> map = lessonClassService.getMap(new LambdaQueryWrapper<LessonClass>()
+                .eq(LessonClass::getId, classId)
+                .select(LessonClass::getNum));
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "班级信息不存在");
+        }
+        // 3.查询作业详情
         List<LessonClassCommonHomework> listInfo = lessonClassCommonHomeworkMapper
                 .selectList(new LambdaQueryWrapper<LessonClassCommonHomework>()
                         .eq(LessonClassCommonHomework::getLessonClassId, classId)
                         .eq(isPublish != null, LessonClassCommonHomework::getIsPublish, isPublish)
                         .orderByDesc(LessonClassCommonHomework::getCreateTime)
                 );
-        // 3.返回
-        return Result.ok(listInfo);
+        // 4.返回
+        map.put("homeworkInfoList", listInfo);
+        return Result.ok(map);
     }
 
     @Override
@@ -293,6 +302,6 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
     @Override
     public boolean existsByIdAndUserId(Integer id, Long userId) {
-        return lessonClassCommonHomeworkMapper.existsByIdAndUserId(id,userId)!=null;
+        return lessonClassCommonHomeworkMapper.existsByIdAndUserId(id, userId) != null;
     }
 }

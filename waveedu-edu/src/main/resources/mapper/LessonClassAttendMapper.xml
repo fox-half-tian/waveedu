@@ -8,9 +8,9 @@
         WHERE `id` = #{id}
     </select>
 
-    <resultMap id="classPlanResultMap" type="com.zhulang.waveedu.edu.query.ClassWeekPlanQuery">
+    <resultMap id="classPlanResultMap" type="com.zhulang.waveedu.edu.query.classquery.ClassWeekPlanQuery">
         <id column="week" property="week"/>
-        <collection property="times" ofType="com.zhulang.waveedu.edu.query.ClassAttendDayTimeQuery">
+        <collection property="times" ofType="com.zhulang.waveedu.edu.query.classquery.ClassAttendDayTimeQuery">
             <id column="id" property="id"/>
             <result column="lesson_name" property="lessonName"/>
             <result column="time" property="time"/>
@@ -22,10 +22,10 @@
         WHERE `lesson_class_id` = #{classId}
         ORDER BY `week`, `time`
     </select>
-    <resultMap id="tchPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery">
+    <resultMap id="tchPlanResultMap" type="com.zhulang.waveedu.edu.query.planquery.EveryTimeTchPlanQuery">
         <result column="week" property="week"/>
         <result column="time" property="time"/>
-        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery$PlanLesson">
+        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.planquery.EveryTimeTchPlanQuery$PlanLesson">
             <result column="className" property="className"/>
             <result column="lessonName" property="lessonName"/>
         </collection>
@@ -46,10 +46,10 @@
           AND c.`id` = a.`lesson_class_id`
         ORDER BY a.`week`, a.`time`
     </select>
-    <resultMap id="stuPlanResultMap" type="com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery">
+    <resultMap id="stuPlanResultMap" type="com.zhulang.waveedu.edu.query.planquery.EveryTImeStuPlanQuery">
         <result column="week" property="week"/>
         <result column="time" property="time"/>
-        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery$PlanLesson">
+        <collection property="planLessons" ofType="com.zhulang.waveedu.edu.query.planquery.EveryTImeStuPlanQuery$PlanLesson">
             <result column="tchName" property="tchName"/>
             <result column="lessonName" property="lessonName"/>
         </collection>

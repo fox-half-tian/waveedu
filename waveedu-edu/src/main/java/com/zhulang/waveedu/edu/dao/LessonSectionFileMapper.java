@@ -2,7 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonSectionFile;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.SectionFileInfoQuery;
+import com.zhulang.waveedu.edu.query.sectionquery.SectionFileInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

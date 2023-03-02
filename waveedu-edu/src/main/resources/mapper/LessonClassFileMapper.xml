@@ -12,7 +12,7 @@
         FROM `edu_lesson_class_file`
         WHERE `id` = #{id}
     </select>
-    <!--<select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery">-->
+    <!--<select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.classquery.LessonClassFileInfoQuery">-->
     <!--    SELECT e.`id`,-->
     <!--    e.`file_name`,-->
     <!--    e.`file_type`,-->
@@ -31,7 +31,7 @@
     <!--    ORDER BY e.`create_time` DESC-->
     <!--    LIMIT #{queryLimit}-->
     <!--</select>-->
-    <select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.LessonClassFileInfoQuery">
+    <select id="selectInfoList" resultType="com.zhulang.waveedu.edu.query.classquery.LessonClassFileInfoQuery">
         SELECT e.`id`,
         e.`file_name`,
         e.`file_type`,

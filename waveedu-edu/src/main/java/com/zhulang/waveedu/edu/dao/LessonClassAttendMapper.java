@@ -2,13 +2,12 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassAttend;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.ClassWeekPlanQuery;
-import com.zhulang.waveedu.edu.query.EveryTImeStuPlanQuery;
-import com.zhulang.waveedu.edu.query.EveryTimeTchPlanQuery;
+import com.zhulang.waveedu.edu.query.classquery.ClassWeekPlanQuery;
+import com.zhulang.waveedu.edu.query.planquery.EveryTImeStuPlanQuery;
+import com.zhulang.waveedu.edu.query.planquery.EveryTimeTchPlanQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
