@@ -308,7 +308,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
     @Override
     public boolean existsByIdAndUserId(Integer id, Long userId) {
-        return lessonClassCommonHomeworkMapper.existsByIdAndUserId(id, userId) != null;
+        return lessonClassCommonHomeworkMapper.existsByIdAndCreatorId(id, userId) != null;
     }
 
     @Override
@@ -371,5 +371,25 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
         }
         return Result.ok(infoList);
+    }
+
+    @Override
+    public Result getStuHomeworkDetailInfo(Integer homeworkId) {
+        // 1.校验格式
+        if (homeworkId<1){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级格式错误");
+        }
+        // 2.校验是否是班级成员
+        Long userId = UserHolderUtils.getUserId();
+        if (!this.isClassStuByIdAndStuId(homeworkId,userId)){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取信息
+        return null;
+
+    }
+
+    public boolean isClassStuByIdAndStuId(Integer id, Long stuId){
+        return lessonClassCommonHomeworkMapper.isClassStuByIdAndStuId(id,stuId)!=null;
     }
 }

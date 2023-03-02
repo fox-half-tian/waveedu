@@ -41,10 +41,10 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      * 校验该 userId 是否为作业的创建者
      *
      * @param id 作业id
-     * @param userId 用户id
+     * @param creatorId 用户id
      * @return 非null-是，Null-不是
      */
-    Integer existsByIdAndUserId(@Param("id") Integer id,@Param("userId") Long userId);
+    Integer existsByIdAndCreatorId(@Param("id") Integer id, @Param("creatorId") Long creatorId);
 
     /**
      * 教师身份查询作业的详细信息列表
@@ -71,4 +71,12 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      */
     List<StuHomeworkSimpleInfoQuery> selectStuHomeworkSimpleInfoList(@Param("classId") Long classId, @Param("stuId") Long stuId);
 
+    /**
+     * 通过作业id和用户id判断用户是否该作业所在班级的学生
+     *
+     * @param id 作业id
+     * @param stuId 用户id
+     * @return null-说明不是，非null-说明是
+     */
+    Integer isClassStuByIdAndStuId(@Param("id") Integer id, @Param("stuId") Long stuId);
 }

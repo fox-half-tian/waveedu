@@ -26,11 +26,11 @@
         </if>
         ORDER BY `create_time` DESC
     </select>
-    <select id="existsByIdAndUserId" resultType="java.lang.Integer">
+    <select id="existsByIdAndCreatorId" resultType="java.lang.Integer">
         SELECT 1
         FROM `edu_lesson_class_common_homework`
         WHERE `id` = #{id}
-          AND `creator_id` = #{userId}
+          AND `creator_id` = #{creatorId}
     </select>
     <select id="selectTchHomeworkDetailInfo"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery">
@@ -50,5 +50,12 @@
         WHERE h.`lesson_class_id` = #{classId}
           AND h.`is_publish` = 1
         ORDER BY h.`create_time` DESC
+    </select>
+    <select id="isClassStuByIdAndStuId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_common_homework` h,`edu_lesson_class_stu` s
+        WHERE h.`id` = #{id}
+          AND h.`lesson_class_id` = s.`lesson_class_id`
+          AND s.`stu_id` =  #{stuId}
     </select>
 </mapper>

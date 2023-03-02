@@ -105,7 +105,7 @@ public class LessonClassCommonHomeworkController {
      * @return 作业信息
      */
     @GetMapping("/get/tch/homeworkDetailInfo")
-    public Result getTchHomeworkDetailListInfo(@RequestParam("homeworkId") Integer homeworkId) {
+    public Result getTchHomeworkDetailInfo(@RequestParam("homeworkId") Integer homeworkId) {
         return lessonClassCommonHomeworkService.getTchHomeworkDetailInfo(homeworkId);
     }
 
@@ -119,5 +119,17 @@ public class LessonClassCommonHomeworkController {
     public Result getStuHomeworkSimpleListInfo(@RequestParam("classId") Long classId) {
         return lessonClassCommonHomeworkService.getStuHomeworkSimpleListInfo(classId);
     }
+
+    /**
+     * 学生获取班级一个作业的详细信息
+     *
+     * @param homeworkId 班级id
+     * @return 作业详细信息
+     */
+    @GetMapping("/get/stu/homeworkDetailInfo")
+    public Result getStuHomeworkDetailInfo(@RequestParam("homeworkId") Integer homeworkId){
+        return lessonClassCommonHomeworkService.getStuHomeworkDetailInfo(homeworkId);
+    }
+
 
 }

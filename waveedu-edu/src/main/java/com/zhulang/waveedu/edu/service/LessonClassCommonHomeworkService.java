@@ -99,4 +99,21 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 作业信息：作业id，作业标题，作业状态，按照时间从近到远进行了排序
      */
     Result getStuHomeworkSimpleListInfo(Long classId);
+
+    /**
+     * 学生获取班级一个作业的详细信息
+     *
+     * @param homeworkId 班级id
+     * @return 作业详细信息
+     */
+    Result getStuHomeworkDetailInfo(Integer homeworkId);
+
+    /**
+     * 通过作业id和用户id判断用户是否该作业所在班级的学生
+     *
+     * @param id 作业id
+     * @param stuId 用户id
+     * @return false-说明不是，true-说明是
+     */
+    boolean isClassStuByIdAndStuId(Integer id, Long stuId);
 }
