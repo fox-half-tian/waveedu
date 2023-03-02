@@ -23,6 +23,7 @@
         <module>waveedu-xxl-job</module>
         <module>waveedu-messagesdk</module>
         <module>waveedu-note</module>
+        <module>waveedu-chat</module>
     </modules>
 
 </project>
