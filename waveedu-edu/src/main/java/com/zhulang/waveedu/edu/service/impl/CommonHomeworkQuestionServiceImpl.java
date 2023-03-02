@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
@@ -15,7 +16,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -60,7 +63,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         int homeworkType = (Integer) map.get("type");
         // 获取题目类型
         int questionType = saveCommonHomeworkQuestionVO.getType();
-        if ((homeworkType == 1 && questionType != 4) || (homeworkType == 0 && questionType == 4)) {
+        if ((homeworkType == 1 && questionType == 4) || (homeworkType == 0 && questionType != 4)) {
             return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue());
         }
 
@@ -79,10 +82,31 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         if (!StringUtils.hasText(question.getAnalysis())) {
             question.setAnalysis("");
         }
-        // 5.保存
-        commonHomeworkQuestionMapper.insert(question);
+        // 5.保存问题并修改总分数
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).saveQuestionAndModifyTotalScore(question);
         // 6.返回题目Id
         return Result.ok(question.getId());
+    }
+
+    /**
+     * 保存问题并修改总分数
+     *
+     * @param question 问题信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void saveQuestionAndModifyTotalScore(CommonHomeworkQuestion question) {
+        // 问题保存
+        commonHomeworkQuestionMapper.insert(question);
+        // 查询到作业的总分数
+        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(question.getCommonHomeworkId());
+        // 将作业总分数保存
+        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                .eq(LessonClassCommonHomework::getId, question.getCommonHomeworkId())
+                .set(LessonClassCommonHomework::getTotalScore, totalScore));
+        if (!success) {
+            throw new RuntimeException();
+        }
     }
 
     @Override
@@ -92,7 +116,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目id格式错误");
         }
         // 2.查看问题是否发布
-        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdById(questionId);
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndCommonHomeworkIdById(questionId);
         if (map == null || map.isEmpty()) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未查询到题目或作业信息");
         }
@@ -106,15 +130,32 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 4.删除题目
-        commonHomeworkQuestionMapper.deleteById(questionId);
+        ((CommonHomeworkQuestionService)AopContext.currentProxy()).removeQuestionAndModifyTotalScore(questionId, Integer.parseInt(map.get("homeworkId").toString()));
+
         // 5.返回
         return Result.ok();
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void removeQuestionAndModifyTotalScore(Integer questionId, Integer homeworkId) {
+        // 问题删除
+        commonHomeworkQuestionMapper.deleteById(questionId);
+        // 查询到作业的总分数
+        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId);
+        // 将作业总分数保存
+        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                .eq(LessonClassCommonHomework::getId, homeworkId)
+                .set(LessonClassCommonHomework::getTotalScore, totalScore));
+        if (!success) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
     public Result modifyQuestion(ModifyCommonHomeworkQuestionVO modifyCommonHomeworkQuestionVO) {
         // 1.查询作业的信息：type + is_publish + creator_id
-        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndTypeById(modifyCommonHomeworkQuestionVO.getId());
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndTypeAndHomeworkIdById(modifyCommonHomeworkQuestionVO.getId());
 
         // 1.1 为空说明不存在该作业信息
         if (map == null || map.isEmpty()) {
@@ -133,7 +174,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         int homeworkType = (Integer) map.get("type");
         // 获取题目类型
         int questionType = modifyCommonHomeworkQuestionVO.getType();
-        if ((homeworkType == 1 && questionType != 4) || (homeworkType == 0 && questionType == 4)) {
+        if ((homeworkType == 1 && questionType == 4) || (homeworkType == 0 && questionType != 4)) {
             return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue());
         }
 
@@ -153,9 +194,31 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             question.setAnalysis("");
         }
         // 5.修改题目
-        commonHomeworkQuestionMapper.updateById(question);
+        ((CommonHomeworkQuestionService)AopContext.currentProxy()).modifyQuestionAndModifyTotalScore(question,Integer.parseInt(map.get("homeworkId").toString()));
         // 6.返回
         return Result.ok();
+    }
+
+    /**
+     * 修改问题并修改总分数
+     *
+     * @param question 问题信息
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void modifyQuestionAndModifyTotalScore(CommonHomeworkQuestion question, Integer homeworkId) {
+        // 问题保存
+        commonHomeworkQuestionMapper.updateById(question);
+        // 查询到作业的总分数
+        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId);
+        // 将作业总分数保存
+        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
+                .eq(LessonClassCommonHomework::getId, homeworkId)
+                .set(LessonClassCommonHomework::getTotalScore, totalScore));
+        if (!success) {
+            throw new RuntimeException();
+        }
+
     }
 
     @Override

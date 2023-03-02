@@ -26,7 +26,7 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @return 作业情况
      */
     @SuppressWarnings("MybatisXMapperMethodInspection")
-    Map<String,Object> selectHomeworkIsPublishAndCreatorIdById(@Param("id") Integer id);
+    Map<String,Object> selectHomeworkIsPublishAndCreatorIdAndCommonHomeworkIdById(@Param("id") Integer id);
 
     /**
      * 根据题目查看作业的发布状况，创建者，作业类型
@@ -35,7 +35,7 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @return 作业情况
      */
     @SuppressWarnings("MybatisXMapperMethodInspection")
-    Map<String,Object> selectHomeworkIsPublishAndCreatorIdAndTypeById(@Param("id") Integer id);
+    Map<String,Object> selectHomeworkIsPublishAndCreatorIdAndTypeAndHomeworkIdById(@Param("id") Integer id);
     /**
      * 根据 作业id 查询到该作业的总分数
      *

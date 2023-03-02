@@ -61,8 +61,31 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * 教师预览作业的所有题目
      *
      * @param homeworkId 作业Id
-     * @param pattern 预览模式，0-普通预览（无答案与解析），1-详细预览（有答案与解析）
+     * @param pattern    预览模式，0-普通预览（无答案与解析），1-详细预览（有答案与解析）
      * @return 题目列表
      */
     Result getTchHomeworkQuestionListInfo(Integer homeworkId, Integer pattern);
+
+    /**
+     * 保存问题并修改总分数
+     *
+     * @param question 问题信息
+     */
+    void saveQuestionAndModifyTotalScore(CommonHomeworkQuestion question);
+
+    /**
+     * 删除问题并修改总分数
+     *
+     * @param questionId 问题id
+     * @param homeworkId 问题所在的作业id
+     */
+    void removeQuestionAndModifyTotalScore(Integer questionId, Integer homeworkId);
+
+    /**
+     * 修改问题并修改总分数
+     *
+     * @param question   问题信息
+     * @param homeworkId 问题所在的作业id
+     */
+    void modifyQuestionAndModifyTotalScore(CommonHomeworkQuestion question, Integer homeworkId);
 }

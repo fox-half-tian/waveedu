@@ -7,7 +7,7 @@
         FROM `edu_lesson_class_common_homework`
         WHERE `id` = #{id}
     </select>
-    <select id="getTchHomeworkSimpleListInfo"
+    <select id="selectTchHomeworkSimpleListInfo"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery">
         SELECT `id`,
         `title`,

@@ -2,15 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper">
 
-    <select id="selectHomeworkIsPublishAndCreatorIdById" resultType="java.util.Map">
-        SELECT h.`is_publish`, h.`creator_id`
+    <select id="selectHomeworkIsPublishAndCreatorIdAndCommonHomeworkIdById" resultType="java.util.Map">
+        SELECT h.`is_publish`,
+               h.`creator_id`,
+               q.`common_homework_id` AS `homeworkId`
         FROM `edu_common_homework_question` q,
              `edu_lesson_class_common_homework` h
         WHERE q.`id` = #{id}
           AND q.`common_homework_id` = h.`id`
     </select>
-    <select id="selectHomeworkIsPublishAndCreatorIdAndTypeById" resultType="java.util.Map">
-        SELECT h.`is_publish`, h.`creator_id`, h.`type`
+    <select id="selectHomeworkIsPublishAndCreatorIdAndTypeAndHomeworkIdById" resultType="java.util.Map">
+        SELECT h.`is_publish`,
+               h.`creator_id`,
+               h.`type`,
+               h.`id` AS `homeworkId`
         FROM `edu_common_homework_question` q,
              `edu_lesson_class_common_homework` h
         WHERE q.`id` = #{id}

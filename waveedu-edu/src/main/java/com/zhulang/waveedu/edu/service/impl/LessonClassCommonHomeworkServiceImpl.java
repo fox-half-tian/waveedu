@@ -296,7 +296,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 2.查询
-        List<TchHomeworkSimpleInfoQuery> listInfo = lessonClassCommonHomeworkMapper.getTchHomeworkSimpleListInfo(classId, isPublish);
+        List<TchHomeworkSimpleInfoQuery> listInfo = lessonClassCommonHomeworkMapper.selectTchHomeworkSimpleListInfo(classId, isPublish);
         // 3.返回
         return Result.ok(listInfo);
     }
