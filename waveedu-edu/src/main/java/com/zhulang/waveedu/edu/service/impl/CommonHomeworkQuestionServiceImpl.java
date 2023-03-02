@@ -159,12 +159,12 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     }
 
     @Override
-    public Integer getTotalScoreByCommonHomeworkId(Integer commonHomeworkId) {
-        return commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(commonHomeworkId);
+    public Integer getTmpTotalScoreByCommonHomeworkId(Integer homeworkId) {
+        return commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId);
     }
 
     @Override
-    public Result getHomeworkTotalScore(Integer homeworkId) {
+    public Result getTmpTotalScore(Integer homeworkId) {
         if (homeworkId < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
         }

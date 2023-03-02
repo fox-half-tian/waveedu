@@ -202,7 +202,7 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
         // 4.如果不是定时发布，就获取总分数，并修改发布状态为已发布，设置发布时间为当前时间
         Integer totalScore =
-                commonHomeworkQuestionService.getTotalScoreByCommonHomeworkId(publishCommonHomeworkVO.getCommonHomeworkId());
+                commonHomeworkQuestionService.getTmpTotalScoreByCommonHomeworkId(publishCommonHomeworkVO.getCommonHomeworkId());
         this.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
                 .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
                 .set(LessonClassCommonHomework::getStartTime, LocalDateTime.now())

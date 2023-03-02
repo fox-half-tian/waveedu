@@ -64,8 +64,8 @@ public class CommonHomeworkQuestionController {
      * @param homeworkId 作业id
      * @return 总分
      */
-    @GetMapping("/get/homeworkTotalScore")
-    public Result getHomeworkTotalScore(@RequestParam("homeworkId") Integer homeworkId) {
-        return commonHomeworkQuestionService.getHomeworkTotalScore(homeworkId);
+    @GetMapping("/get/tmp/homeworkTotalScore")
+    public Result getTmpHomeworkTotalScore(@RequestParam("homeworkId") Integer homeworkId) {
+        return commonHomeworkQuestionService.getTmpTotalScore(homeworkId);
     }
 }
