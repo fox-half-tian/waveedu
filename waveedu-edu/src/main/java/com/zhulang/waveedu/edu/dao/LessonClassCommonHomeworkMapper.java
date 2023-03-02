@@ -53,4 +53,10 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      */
     TchHomeworkDetailInfoQuery selectTchHomeworkDetailInfo(@Param("id")Integer id);
 
+    /**
+     * 修改作业表的总分数，根据问题表的题目累加得到总分
+     *
+     * @param id 作业Id
+     */
+    void updateTotalScore(@Param("id") Integer id);
 }

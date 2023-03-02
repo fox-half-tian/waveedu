@@ -71,4 +71,11 @@ public class RedisConstants {
     public static final String LESSON_INFO_KEY = "lesson:info:";
     public static final Long LESSON_INFO_TTL = 60 * 10L;
 
+    /**
+     * 修改普通作业的总分数时，只允许该用户的单线程操作，防止并发导致总分数改变
+     * TTL为 10s
+     */
+    public static final String LOCK_COMMON_HOMEWORK_SCORE_KEY = "lock:commonHomework:score:";
+    public static final Long LOCK_COMMON_HOMEWORK_SCORE_TTL = 10L;
+
 }

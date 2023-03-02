@@ -98,15 +98,8 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     public void saveQuestionAndModifyTotalScore(CommonHomeworkQuestion question) {
         // 问题保存
         commonHomeworkQuestionMapper.insert(question);
-        // 查询到作业的总分数
-        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(question.getCommonHomeworkId());
-        // 将作业总分数保存
-        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
-                .eq(LessonClassCommonHomework::getId, question.getCommonHomeworkId())
-                .set(LessonClassCommonHomework::getTotalScore, totalScore));
-        if (!success) {
-            throw new RuntimeException();
-        }
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(question.getCommonHomeworkId());
     }
 
     @Override
@@ -141,15 +134,8 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     public void removeQuestionAndModifyTotalScore(Integer questionId, Integer homeworkId) {
         // 问题删除
         commonHomeworkQuestionMapper.deleteById(questionId);
-        // 查询到作业的总分数
-        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId);
-        // 将作业总分数保存
-        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
-                .eq(LessonClassCommonHomework::getId, homeworkId)
-                .set(LessonClassCommonHomework::getTotalScore, totalScore));
-        if (!success) {
-            throw new RuntimeException();
-        }
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(homeworkId);
     }
 
     @Override
@@ -209,15 +195,8 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     public void modifyQuestionAndModifyTotalScore(CommonHomeworkQuestion question, Integer homeworkId) {
         // 问题保存
         commonHomeworkQuestionMapper.updateById(question);
-        // 查询到作业的总分数
-        Integer totalScore = commonHomeworkQuestionMapper.selectTotalScoreByCommonHomeworkId(homeworkId);
-        // 将作业总分数保存
-        boolean success = lessonClassCommonHomeworkService.update(new LambdaUpdateWrapper<LessonClassCommonHomework>()
-                .eq(LessonClassCommonHomework::getId, homeworkId)
-                .set(LessonClassCommonHomework::getTotalScore, totalScore));
-        if (!success) {
-            throw new RuntimeException();
-        }
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(homeworkId);
 
     }
 

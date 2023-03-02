@@ -83,4 +83,11 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 作业信息
      */
     Result getTchHomeworkDetailInfo(Integer homeworkId);
+
+    /**
+     * 修改作业表的总分数，根据问题表的题目累加得到总分
+     *
+     * @param id 作业Id
+     */
+    void modifyTotalScore(Integer id);
 }

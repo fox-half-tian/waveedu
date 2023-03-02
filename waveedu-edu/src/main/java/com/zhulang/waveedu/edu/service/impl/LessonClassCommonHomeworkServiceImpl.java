@@ -320,4 +320,9 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         TchHomeworkDetailInfoQuery info = lessonClassCommonHomeworkMapper.selectTchHomeworkDetailInfo(homeworkId);
         return Result.ok(info);
     }
+
+    @Override
+    public void modifyTotalScore(Integer id) {
+        lessonClassCommonHomeworkMapper.updateTotalScore(id);
+    }
 }

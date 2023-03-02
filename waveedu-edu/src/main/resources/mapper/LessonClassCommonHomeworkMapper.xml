@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper">
+    <update id="updateTotalScore">
+        UPDATE `edu_lesson_class_common_homework`
+        SET `total_score` = (SELECT IFNULL(SUM(score), 0)
+                             FROM `edu_common_homework_question`
+                             WHERE `common_homework_id` = #{id})
+        WHERE `id` = #{id}
+    </update>
 
     <select id="selectCreatorIdById" resultType="java.lang.Long">
         SELECT `creator_id`
@@ -30,7 +37,7 @@
         SELECT h.*, c.`num` AS `classStuNum`
         FROM `edu_lesson_class_common_homework` h,
              `edu_lesson_class` c
-        WHERE h.`id` = 1
+        WHERE h.`id` = #{id}
           AND h.`lesson_class_id` = c.`id`
           AND c.`is_deleted` = 0
     </select>
