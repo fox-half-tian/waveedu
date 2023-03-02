@@ -2,8 +2,11 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.TchHomeworkQuestionDetailInfo;
+import com.zhulang.waveedu.edu.query.TchHomeworkQuestionSimpleInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,4 +44,19 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      */
     Integer selectTotalScoreByCommonHomeworkId(@Param("commonHomeworkId") Integer commonHomeworkId);
 
+    /**
+     * 根据id查询作业问题普通信息列表
+     *
+     * @param homeworkId 作业Id
+     * @return 主键，题目类型，问题描述，分值
+     */
+     List<TchHomeworkQuestionSimpleInfo> selectTchHomeworkQuestionSimpleInfoList(@Param("homeworkId") Integer homeworkId);
+
+    /**
+     * 根据id查询作业问题普通信息列表
+     *
+     * @param homeworkId 作业Id
+     * @return 主键，题目类型，问题描述，分值
+     */
+    List<TchHomeworkQuestionDetailInfo> selectTchHomeworkQuestionDetailInfoList(@Param("homeworkId") Integer homeworkId);
 }

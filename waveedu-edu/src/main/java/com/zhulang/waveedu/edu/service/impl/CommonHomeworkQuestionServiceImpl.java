@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -174,14 +175,24 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
 
     @Override
     public Result getTchHomeworkQuestionListInfo(Integer homeworkId, Integer pattern) {
+        // 校验格式
+        if (homeworkId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业Id格式错误");
+        }
+        if (pattern != 0 && pattern != 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "模式格式错误");
+        }
+
         // 1.校验是否为作业班级创建者
-        if(!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,UserHolderUtils.getUserId())){
+        if (!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId, UserHolderUtils.getUserId())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 2.根据模式查询不同的信息
-//        commonHomeworkQuestionMapper.select
-        return null;
-
+        // 2.根据模式查询不同的信息并返回
+        if (pattern == 0) {
+            return Result.ok(commonHomeworkQuestionMapper.selectTchHomeworkQuestionSimpleInfoList(homeworkId));
+        } else {
+            return Result.ok(commonHomeworkQuestionMapper.selectTchHomeworkQuestionDetailInfoList(homeworkId));
+        }
     }
 
     /**

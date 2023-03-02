@@ -72,14 +72,16 @@ public class CommonHomeworkQuestionController {
 
 
     /**
-     * 教师预览作业的所有题目
+     * 创建者预览作业的所有题目
+     * 0：主键，题目类型，问题描述，分值
+     * 1：主键，题目类型，问题描述，分值，答案，解析
      *
      * @param homeworkId 作业Id
      * @param pattern 预览模式，0-普通预览（无答案与解析），1-详细预览（有答案与解析）
      * @return 题目列表
      */
     @GetMapping("/get/tch/homeworkQuestionListInfo")
-    public Result getTchHomeworkQuestionListInfo(@Min(value = 1) @RequestParam("homeworkId")Integer homeworkId,
+    public Result getTchHomeworkQuestionListInfo(@RequestParam("homeworkId")Integer homeworkId,
                                                  @RequestParam("pattern")Integer pattern){
         return commonHomeworkQuestionService.getTchHomeworkQuestionListInfo(homeworkId,pattern);
     }
