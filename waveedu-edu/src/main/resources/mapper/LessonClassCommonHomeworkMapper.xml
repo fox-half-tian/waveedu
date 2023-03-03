@@ -69,7 +69,8 @@
                h.`start_time`,
                h.`end_time`,
                s.`status`,
-               s.`score` AS `stuScore`
+               s.`score` AS `stuScore`,
+               s.`comment`
         FROM `edu_lesson_class_common_homework` h
                  LEFT JOIN `edu_common_homework_stu_score` s
                            ON h.`id` = s.`homework_id`

@@ -51,6 +51,11 @@ public class CommonHomeworkStuScore implements Serializable {
     private Integer status;
 
     /**
+     * 教师评价
+     */
+    private String comment;
+
+    /**
      * 创建时间（提交时间）
      */
     @TableField(fill = FieldFill.INSERT)

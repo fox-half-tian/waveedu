@@ -86,7 +86,7 @@ public class CommonHomeworkQuestionController {
     }
 
     /**
-     * 班级学生获取问题信息
+     * 班级学生获取作业的所有问题信息
      *
      * @param homeworkId 作业id
      * @return 根据学生对作业的状态进行返回
@@ -95,6 +95,5 @@ public class CommonHomeworkQuestionController {
     public Result getStuHomeworkQuestionListInfo(@RequestParam("homeworkId")Integer homeworkId){
         return commonHomeworkQuestionService.getStuHomeworkQuestionListInfo(homeworkId);
     }
-
 
 }

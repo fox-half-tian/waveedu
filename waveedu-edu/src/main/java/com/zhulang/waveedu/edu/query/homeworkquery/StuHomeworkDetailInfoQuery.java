@@ -46,4 +46,8 @@ public class StuHomeworkDetailInfoQuery {
      * 状态
      */
     private Integer status;
+    /**
+     * 教师评价
+     */
+    private String comment;
 }

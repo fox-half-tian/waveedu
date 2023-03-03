@@ -33,11 +33,69 @@
         WHERE `common_homework_id` = #{homeworkId}
         ORDER BY `create_time`
     </select>
-     <select id="selectHomeworkQuestionDetailInfoList"
+    <select id="selectHomeworkQuestionDetailInfoList"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkQuestionDetailInfoQuery">
         SELECT `id`, `type`, `problem_desc`, `score`, `answer`, `analysis`
         FROM `edu_common_homework_question`
         WHERE `common_homework_id` = #{homeworkId}
         ORDER BY `create_time`
+    </select>
+    <select id="selectQuestionDetailAndSelfAnswerWithoutScore"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery">
+        SELECT q.`id`,
+               q.`type`,
+               q.`problem_desc`,
+               q.`answer` AS `suggestAnswer`,
+               q.`analysis`,
+               q.`score`  AS `fullScore`,
+               a.`answer` AS `stuAnswer`
+        FROM `edu_common_homework_question` q,
+             `edu_common_homework_stu_answer` a
+        WHERE q.`common_homework_id` = #{homeworkId}
+          AND a.`stu_id` = #{stuId}
+          AND q.`id` = a.`question_id`
+    </select>
+    <select id="selectQuestionSimpleAndSelfAnswerWithoutScore"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
+        SELECT q.`id`,
+               q.`type`,
+               q.`problem_desc`,
+               q.`score`  AS `fullScore`,
+               a.`answer` AS `stuAnswer`
+        FROM `edu_common_homework_question` q,
+             `edu_common_homework_stu_answer` a
+        WHERE q.`common_homework_id` = #{homeworkId}
+          AND a.`stu_id` = #{stuId}
+          AND q.`id` = a.`question_id`
+    </select>
+    <select id="selectQuestionDetailAndSelfAnswerWithScore"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery">
+        SELECT q.`id`,
+               q.`type`,
+               q.`problem_desc`,
+               q.`answer` AS `suggestAnswer`,
+               q.`analysis`,
+               q.`score`  AS `fullScore`,
+               a.`answer` AS `stuAnswer`,
+               a.`score`  AS `stuScore`
+        FROM `edu_common_homework_question` q,
+             `edu_common_homework_stu_answer` a
+        WHERE q.`common_homework_id` = #{homeworkId}
+          AND a.`stu_id` = #{stuId}
+          AND q.`id` = a.`question_id`
+    </select>
+    <select id="selectQuestionSimpleAndSelfAnswerWithScore"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
+        SELECT q.`id`,
+               q.`type`,
+               q.`problem_desc`,
+               q.`score`  AS `fullScore`,
+               a.`answer` AS `stuAnswer`,
+               a.`score`  AS `stuScore`
+        FROM `edu_common_homework_question` q,
+             `edu_common_homework_stu_answer` a
+        WHERE q.`common_homework_id` = #{homeworkId}
+          AND a.`stu_id` = #{stuId}
+          AND q.`id` = a.`question_id`
     </select>
 </mapper>
