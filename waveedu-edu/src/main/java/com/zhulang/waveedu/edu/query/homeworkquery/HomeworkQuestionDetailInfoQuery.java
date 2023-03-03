@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TchHomeworkQuestionDetailInfoQuery {
+public class HomeworkQuestionDetailInfoQuery {
     /**
      * 主键id（自增）
      */

@@ -88,4 +88,12 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @param homeworkId 问题所在的作业id
      */
     void modifyQuestionAndModifyTotalScore(CommonHomeworkQuestion question, Integer homeworkId);
+
+    /**
+     * 班级学生获取问题信息
+     *
+     * @param homeworkId 作业id
+     * @return 根据学生对作业的状态进行返回
+     */
+    Result getStuHomeworkQuestionListInfo(Integer homeworkId);
 }

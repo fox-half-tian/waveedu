@@ -15,10 +15,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.*;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
@@ -415,5 +412,10 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
 
     public boolean isClassStuByIdAndStuId(Integer id, Long stuId){
         return lessonClassCommonHomeworkMapper.isClassStuByIdAndStuId(id,stuId)!=null;
+    }
+
+    @Override
+    public StuHomeworkStatusQuery getStuHomeworkStatus(Integer homeworkId, Long stuId) {
+        return lessonClassCommonHomeworkMapper.selectStuHomeworkStatus(homeworkId,stuId);
     }
 }

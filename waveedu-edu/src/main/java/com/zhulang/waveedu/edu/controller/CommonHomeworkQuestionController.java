@@ -85,5 +85,16 @@ public class CommonHomeworkQuestionController {
         return commonHomeworkQuestionService.getTchHomeworkQuestionListInfo(homeworkId,pattern);
     }
 
+    /**
+     * 班级学生获取问题信息
+     *
+     * @param homeworkId 作业id
+     * @return 根据学生对作业的状态进行返回
+     */
+    @GetMapping("/get/stu/homeworkQuestionListInfo")
+    public Result getStuHomeworkQuestionListInfo(@RequestParam("homeworkId")Integer homeworkId){
+        return commonHomeworkQuestionService.getStuHomeworkQuestionListInfo(homeworkId);
+    }
+
 
 }

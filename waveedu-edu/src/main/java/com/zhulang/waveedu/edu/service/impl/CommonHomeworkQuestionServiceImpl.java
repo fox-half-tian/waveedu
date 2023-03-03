@@ -3,7 +3,6 @@ package com.zhulang.waveedu.edu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
@@ -11,6 +10,7 @@ import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -123,7 +125,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 4.删除题目
-        ((CommonHomeworkQuestionService)AopContext.currentProxy()).removeQuestionAndModifyTotalScore(questionId, Integer.parseInt(map.get("homeworkId").toString()));
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).removeQuestionAndModifyTotalScore(questionId, Integer.parseInt(map.get("homeworkId").toString()));
 
         // 5.返回
         return Result.ok();
@@ -180,7 +182,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
             question.setAnalysis("");
         }
         // 5.修改题目
-        ((CommonHomeworkQuestionService)AopContext.currentProxy()).modifyQuestionAndModifyTotalScore(question,Integer.parseInt(map.get("homeworkId").toString()));
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).modifyQuestionAndModifyTotalScore(question, Integer.parseInt(map.get("homeworkId").toString()));
         // 6.返回
         return Result.ok();
     }
@@ -198,6 +200,76 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         // 修改作业表的总分数
         lessonClassCommonHomeworkService.modifyTotalScore(homeworkId);
 
+    }
+
+    @Override
+    public Result getStuHomeworkQuestionListInfo(Integer homeworkId) {
+        // 1.校验格式
+        if (homeworkId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
+        // 2.校验是否为班级学生
+        Long userId = UserHolderUtils.getUserId();
+        if (!lessonClassCommonHomeworkService.isClassStuByIdAndStuId(homeworkId, userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取作业状态与作业策略
+        StuHomeworkStatusQuery statusInfo = lessonClassCommonHomeworkService.getStuHomeworkStatus(homeworkId, userId);
+        if (statusInfo == null) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.根据状态与策略查询不同的信息
+        // 规定：0-进行中（未提交且未过截止日期），1-已截止（未提交且过了截止日期），2-批阅中（已提交且处于批阅中）
+        //      3-已批阅（已提交并且已批阅）
+        HashMap<String, Object> resultMap = new HashMap<>(2);
+        if (statusInfo.getStatus() == null) {
+            // 4.1 说明没有提交
+            if (LocalDateTime.now().isBefore(statusInfo.getEndTime())) {
+                // 如果现在还没过截止时间，则状态为 进行中
+                // 如果当前的时间在截止时间之前，则只查询题目信息
+                resultMap.put("status", 0);
+                resultMap.put("questions", commonHomeworkQuestionMapper.selectHomeworkQuestionSimpleInfoList(homeworkId));
+            } else {
+                // 说明是未提交且已经截止
+                resultMap.put("status", 1);
+                // 根据是否开启截止后提交判断获取的信息
+                Integer isEndAfterExplain = statusInfo.getIsEndAfterExplain();
+                resultMap.put("isEndAfterExplain", isEndAfterExplain);
+                if (isEndAfterExplain == 0) {
+                    // 未开启
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectHomeworkQuestionSimpleInfoList(homeworkId));
+                } else {
+                    // 开启 --> 需要去获取问题的答案与解析
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectHomeworkQuestionDetailInfoList(homeworkId));
+                }
+            }
+        } else {
+            // 3.2 说明已经提交
+            if (statusInfo.getStatus() == 0) {
+                // 如果是批阅中
+                resultMap.put("status", 2);
+                if (statusInfo.getIsCompleteAfterExplain() == 1 ||
+                        (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
+                    // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看 作业解析
+                    // todo 从答案表中获取信息，不需要分数
+
+                }else{
+                    // 获取问题情况以及自己的答案
+                }
+            } else {
+                // 如果已批阅
+                resultMap.put("status", 3);
+                if (statusInfo.getIsCompleteAfterExplain() == 1 ||
+                        (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
+                    // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看
+                    // todo 从答案白中获取信息
+
+                }else{
+                    // 获取问题情况以及自己的答案
+                }
+            }
+        }
+        return Result.ok(resultMap);
     }
 
     @Override
@@ -229,9 +301,9 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         }
         // 2.根据模式查询不同的信息并返回
         if (pattern == 0) {
-            return Result.ok(commonHomeworkQuestionMapper.selectTchHomeworkQuestionSimpleInfoList(homeworkId));
+            return Result.ok(commonHomeworkQuestionMapper.selectHomeworkQuestionSimpleInfoList(homeworkId));
         } else {
-            return Result.ok(commonHomeworkQuestionMapper.selectTchHomeworkQuestionDetailInfoList(homeworkId));
+            return Result.ok(commonHomeworkQuestionMapper.selectHomeworkQuestionDetailInfoList(homeworkId));
         }
     }
 

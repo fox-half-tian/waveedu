@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
@@ -116,4 +117,13 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return false-说明不是，true-说明是
      */
     boolean isClassStuByIdAndStuId(Integer id, Long stuId);
+
+    /**
+     * 根据作业id查询作业的状态
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 作业状态信息
+     */
+    StuHomeworkStatusQuery getStuHomeworkStatus(Integer homeworkId, Long stuId);
 }

@@ -62,17 +62,28 @@
     </select>
     <select id="selectStuHomeworkDetailInfo"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery">
-        select h.`type`,
+        SELECT h.`type`,
                h.`title`,
                h.`difficulty`,
                h.`total_score`,
                h.`start_time`,
                h.`end_time`,
                s.`status`,
-               s.`score` as `stuScore`
-        from `edu_lesson_class_common_homework` h
-                 left join `edu_common_homework_stu_score` s
-                           on h.`id` = s.`homework_id`
-        where `h`.id = #{id}
+               s.`score` AS `stuScore`
+        FROM `edu_lesson_class_common_homework` h
+                 LEFT JOIN `edu_common_homework_stu_score` s
+                           ON h.`id` = s.`homework_id`
+        WHERE h.`id` = #{id}
+          AND h.`is_publish` = 1
+    </select>
+    <select id="selectStuHomeworkStatus"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery">
+        SELECT s.`status`, h.`is_complete_after_explain`, h.`is_end_after_explain`, h.`end_time`
+        FROM `edu_lesson_class_common_homework` h
+                 LEFT JOIN `edu_common_homework_stu_score` s
+                           ON h.`id` = s.`homework_id`
+                               AND s.`stu_id` = #{stuId}
+        WHERE h.`id` = #{id}
+          AND h.`is_publish` = 1
     </select>
 </mapper>
