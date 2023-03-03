@@ -122,6 +122,7 @@ public class LessonClassCommonHomeworkController {
 
     /**
      * 学生获取班级一个作业的详细信息
+     * 类型，标题，难度，满分，学生分数，开始时间，结束时间，状态
      *
      * @param homeworkId 班级id
      * @return 作业详细信息

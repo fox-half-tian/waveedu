@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
@@ -79,4 +80,12 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      * @return null-说明不是，非null-说明是
      */
     Integer isClassStuByIdAndStuId(@Param("id") Integer id, @Param("stuId") Long stuId);
+
+    /**
+     * 学生查询到的一个作业的详细信息：类型，标题，难度，满分，学生分数，开始时间，结束时间，状态
+     *
+     * @param id 作业id
+     * @return 信息
+     */
+    StuHomeworkDetailInfoQuery selectStuHomeworkDetailInfo(@Param("id") Integer id);
 }

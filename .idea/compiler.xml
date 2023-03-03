@@ -8,14 +8,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="xxl-job-core" />
-        <module name="waveedu-dispatch" />
-        <module name="waveedu-note" />
         <module name="waveedu-edu" />
+        <module name="waveedu-chat" />
         <module name="waveedu-messagesdk" />
         <module name="xxl-job-executor-sample-frameless" />
         <module name="waveedu-service" />
-        <module name="waveedu-basic" />
         <module name="waveedu-common" />
+        <module name="waveedu-dispatch" />
+        <module name="waveedu-note" />
+        <module name="waveedu-basic" />
         <module name="waveedu-generator" />
         <module name="xxl-job-executor-sample-springboot" />
         <module name="xxl-job-admin" />
@@ -25,6 +26,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="waveedu-basic" options="-parameters" />
+      <module name="waveedu-chat" options="-parameters" />
       <module name="waveedu-common" options="" />
       <module name="waveedu-dispatch" options="-parameters" />
       <module name="waveedu-edu" options="-parameters" />

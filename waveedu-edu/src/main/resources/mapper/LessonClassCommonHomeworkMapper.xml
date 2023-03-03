@@ -43,19 +43,36 @@
     </select>
     <select id="selectStuHomeworkSimpleInfoList"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery">
-        SELECT h.`id`,h.`title`,h.`difficulty`,h.`end_time`,s.`status`
-        FROM `edu_lesson_class_common_homework` h LEFT JOIN `edu_common_homework_stu_score` s
-                                                            ON h.`id` = s.`homework_id`
-                                                                AND s.`stu_id` = #{stuId}
+        SELECT h.`id`, h.`title`, h.`difficulty`, h.`end_time`, s.`status`
+        FROM `edu_lesson_class_common_homework` h
+                 LEFT JOIN `edu_common_homework_stu_score` s
+                           ON h.`id` = s.`homework_id`
+                               AND s.`stu_id` = #{stuId}
         WHERE h.`lesson_class_id` = #{classId}
           AND h.`is_publish` = 1
         ORDER BY h.`create_time` DESC
     </select>
     <select id="isClassStuByIdAndStuId" resultType="java.lang.Integer">
         SELECT 1
-        FROM `edu_lesson_class_common_homework` h,`edu_lesson_class_stu` s
+        FROM `edu_lesson_class_common_homework` h,
+             `edu_lesson_class_stu` s
         WHERE h.`id` = #{id}
           AND h.`lesson_class_id` = s.`lesson_class_id`
-          AND s.`stu_id` =  #{stuId}
+          AND s.`stu_id` = #{stuId}
+    </select>
+    <select id="selectStuHomeworkDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery">
+        select h.`type`,
+               h.`title`,
+               h.`difficulty`,
+               h.`total_score`,
+               h.`start_time`,
+               h.`end_time`,
+               s.`status`,
+               s.`score` as `stuScore`
+        from `edu_lesson_class_common_homework` h
+                 left join `edu_common_homework_stu_score` s
+                           on h.`id` = s.`homework_id`
+        where `h`.id = #{id}
     </select>
 </mapper>

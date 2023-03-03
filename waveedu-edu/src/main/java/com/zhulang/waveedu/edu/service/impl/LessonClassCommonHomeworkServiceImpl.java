@@ -15,6 +15,7 @@ import com.zhulang.waveedu.edu.po.LessonClass;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
+import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery;
@@ -385,7 +386,30 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 3.获取信息
-        return null;
+        StuHomeworkDetailInfoQuery info = lessonClassCommonHomeworkMapper.selectStuHomeworkDetailInfo(homeworkId);
+        // 4.处理状态
+        Integer status = info.getStatus();
+        // 4.1 如果是空，说明还没有提交
+        if (status == null) {
+            // 如果现在还没过截止时间，则状态为 进行中
+            // 如果当前的时间在截止时间之前
+            if (LocalDateTime.now().isBefore(info.getEndTime())) {
+                info.setStatus(0);
+            } else {
+                info.setStatus(1);
+            }
+        } else {
+            // 4.2 如果不是空，说明已经提交
+            if (status == 0) {
+                // 说明正在批阅中
+                info.setStatus(2);
+            } else {
+                // 说明已批阅
+                info.setStatus(3);
+            }
+        }
+        // 5.返回
+        return Result.ok(info);
 
     }
 
