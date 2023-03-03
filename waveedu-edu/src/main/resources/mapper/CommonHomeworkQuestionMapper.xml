@@ -98,4 +98,12 @@
           AND a.`stu_id` = #{stuId}
           AND q.`id` = a.`question_id`
     </select>
+    <select id="selectHomeworkIdAndTypeById" resultType="java.lang.Integer">
+        SELECT h.`id`   AS `homeworkId`,
+               h.`type` AS `homeworkType`
+        FROM `edu_common_homework_question` q,
+             `edu_lesson_class_common_homework` h
+        WHERE q.`id` = #{id}
+          AND q.`common_homework_id` = h.`id`
+    </select>
 </mapper>

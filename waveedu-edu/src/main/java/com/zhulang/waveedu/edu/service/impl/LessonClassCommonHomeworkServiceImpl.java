@@ -148,7 +148,8 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
                             sendMap.put("startTime", publishCommonHomeworkVO.getStartTime());
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishCommonHomeworkVO.getStartTime()).toMillis();
-                            // 异步发送到消息队列 todo 有bug，在交换机不存在情况下无法重发三次
+                            // 异步发送到消息队列
+                            // todo 有bug，在交换机不存在情况下无法重发三次
 //                            correlationData.setId(UUID.randomUUID().toString());
                             rabbitTemplate.convertAndSend(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
                                     RabbitConstants.COMMON_HOMEWORK_PUBLISH_ROUTING_KEY,

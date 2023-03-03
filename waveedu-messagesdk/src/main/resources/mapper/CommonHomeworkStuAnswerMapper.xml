@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.messagesdk.dao.CommonHomeworkStuAnswerMapper">
+
+    <select id="selectStuQuestionVerifyInfoList"
+            resultType="com.zhulang.waveedu.messagesdk.query.StuQuestionVerifyInfoQuery">
+        SELECT a.`id`     AS `answerId`,
+               a.`answer` AS `stuAnswer`,
+               q.`type`   AS `questionType`,
+               q.`answer` AS `suggestAnswer`,
+               q.`score`  AS `fullScore`
+        FROM `edu_common_homework_stu_answer` a,
+             `edu_common_homework_question` q
+        WHERE a.`homework_id` = #{homeworkId}
+          AND a.`stu_id` = #{stuId}
+          AND a.`question_id` = q.`id`
+
+    </select>
+</mapper>

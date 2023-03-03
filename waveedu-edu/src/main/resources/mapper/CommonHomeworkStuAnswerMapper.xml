@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper">
+    <delete id="deleteBatchByStuIdAndQuestionIds">
+        DELETE FROM `edu_common_homework_stu_answer`
+        WHERE `stu_id` = #{stuId}
+        AND `question_id` IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
 </mapper>

@@ -13,4 +13,8 @@ public class MessageSdkSendErrorTypeConstants {
      * 消息从交换机到队列错发送失败
      */
     public static final Integer EXCHANGE_TO_QUEUE_SEND_ERROR = 1;
+    /**
+     * 普通作业学生答案校验命令发送到交换机失败
+     */
+    public static final Integer COMMON_HOMEWORK_STU_ANSWER_VERIFY_SEND_ERROR = 2;
 }

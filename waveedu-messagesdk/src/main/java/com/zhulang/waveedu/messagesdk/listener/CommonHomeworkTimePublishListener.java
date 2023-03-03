@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 /**
- * 工作模式 todo 需要修改
+ * 工作模式 + 延迟队列
  * 普通作业定时发布的监听器
  *
  * @author 狐狸半面添
@@ -33,7 +33,7 @@ public class CommonHomeworkTimePublishListener {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @RabbitListener(queues = RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME)
-    public void listenerCommonHomeworkPublishQueue(HashMap<String, Object> map) throws Exception {
+    public void listenerCommonHomeworkPublishQueue(HashMap<String, Object> map){
         Integer id = (Integer) map.get("commonHomeworkId");
         LocalDateTime startTime = LocalDateTime.parse((String) map.get("startTime"), formatter);
 
