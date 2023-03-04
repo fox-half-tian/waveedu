@@ -24,4 +24,14 @@ public interface CommonHomeworkStuAnswerService extends IService<CommonHomeworkS
      * @return 验证状况
      */
     Result verifyAnswers(List<HomeworkAnswerVO> homeworkAnswerVO);
+
+
+    /**
+     * 获取学生的作业情况
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 情况
+     */
+    Result getStuHomeworkAnswers(Integer homeworkId, Long stuId);
 }

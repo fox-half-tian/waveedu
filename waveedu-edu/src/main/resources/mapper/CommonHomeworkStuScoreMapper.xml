@@ -2,4 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.CommonHomeworkStuScoreMapper">
 
+    <select id="selectHomeworkNoCommitStuInfoListByHomeworkId"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCommitStuInfoQuery">
+        SELECT i.`name` AS `stuName`,
+               i.`id`   AS `stuId`
+        FROM `basic_user_info` i,
+             (SELECT u.`stu_id`, s.`status`
+              FROM (`edu_lesson_class_stu` u ,`edu_lesson_class_common_homework` h)
+                       LEFT JOIN `edu_common_homework_stu_score` s
+                                 ON u.`stu_id` = s.`stu_id`
+                                     AND s.`homework_id` = h.`id`
+              WHERE h.`id` = #{homeworkId}
+                AND u.lesson_class_id = h.`lesson_class_id`) t
+        WHERE t.`status` IS NULL
+          AND t.`stu_id` = i.`id`
+    </select>
+    <select id="selectHomeworkAllStuInfoListByHomeworkId"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkAnyStatusStuInfoQuery">
+
+        SELECT i.`name`              AS `stuName`,
+               u.`stu_id`            AS `stuId`,
+               IFNULL(s.`status`, 2) AS `status`,
+               s.`score`             AS `stuScore`,
+               s.`create_time`       AS `commitTime`
+        FROM (`edu_lesson_class_stu` u ,`basic_user_info` i,`edu_lesson_class_common_homework` h)
+                 LEFT JOIN `edu_common_homework_stu_score` s
+                           ON u.`stu_id` = s.`stu_id`
+                               AND s.`homework_id` = h.`id`
+        WHERE h.`id` = #{homeworkId}
+          AND u.lesson_class_id = h.`lesson_class_id`
+          AND u.`stu_id` = i.`id`
+    </select>
+    <select id="selectHomeworkNoCheckStuInfoListByHomeworkId"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCheckStuInfoQuery">
+        SELECT s.`stu_id`      AS `stuId`,
+               i.`name`        AS `stuName`,
+               s.`create_time` AS `commitTime`
+        FROM `edu_common_homework_stu_score` s,
+             `basic_user_info` i
+        WHERE s.`homework_id` = #{homeworkId}
+          AND s.`status` = 0
+          AND s.`stu_id` = i.`id`
+    </select>
+    <select id="selectCheckedStuInfoListByHomeworkId"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkCheckedStuInfoQuery">
+        SELECT s.`stu_id`      AS `stuId`,
+               i.`name`        AS `stuName`,
+               s.`create_time` AS `commitTime`,
+               s.`score`       AS `stuScore`
+        FROM `edu_common_homework_stu_score` s,
+             `basic_user_info` i
+        WHERE s.`homework_id` = #{homeworkId}
+          AND s.`status` = 1
+          AND s.`stu_id` = i.`id`
+    </select>
 </mapper>

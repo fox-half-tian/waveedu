@@ -8,6 +8,7 @@ import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RedisLockUtils;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper;
@@ -177,8 +178,27 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
             } finally {
                 redisLockUtils.unlock(RedisConstants.LOCK_COMMON_HOMEWORK_JUDGE_STU_COMMIT_KEY + info.getHomeworkId() + userId);
             }
-        }else{
-            return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(),"正在处理提交信息，请勿频繁操作");
+        } else {
+            return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), "正在处理提交信息，请勿频繁操作");
         }
     }
+
+    @Override
+    public Result getStuHomeworkAnswers(Integer homeworkId, Long stuId) {
+        // 1.校验格式
+        if (homeworkId<1){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
+        if (RegexUtils.isSnowIdInvalid(stuId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "学生id格式错误");
+        }
+        // 2.校验权限，是否为作业创建者
+        if(!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,stuId)){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.
+        return null;
+    }
+
+
 }
