@@ -75,7 +75,7 @@ public class RedisConstants {
      * 修改普通作业的总分数时，只允许该用户的单线程操作，防止并发导致总分数改变
      * TTL为 10s
      */
-    public static final String LOCK_COMMON_HOMEWORK_SCORE_KEY = "lock:commonHomework:score:";
-    public static final Long LOCK_COMMON_HOMEWORK_SCORE_TTL = 10L;
+    public static final String LOCK_COMMON_HOMEWORK_JUDGE_STU_COMMIT_KEY = "lock:commonHomework:stuCommit:";
+    public static final Long LOCK_COMMON_HOMEWORK_JUDGE_STU_COMMIT_TTL = 10L;
 
 }

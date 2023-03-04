@@ -4,10 +4,10 @@ package com.zhulang.waveedu.edu.controller;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkStuAnswerService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -33,7 +33,8 @@ public class CommonHomeworkStuAnswerController {
      * @param homeworkAnswerVos 题目id + 学生答案
      * @return 验证状况
      */
-    public Result verifyAnswers(@RequestBody List<HomeworkAnswerVO> homeworkAnswerVos){
+    @PostMapping("/stu/verifyAnswers")
+    public Result verifyAnswers(@RequestBody List<HomeworkAnswerVO> homeworkAnswerVos) {
         return commonHomeworkStuAnswerService.verifyAnswers(homeworkAnswerVos);
     }
 }

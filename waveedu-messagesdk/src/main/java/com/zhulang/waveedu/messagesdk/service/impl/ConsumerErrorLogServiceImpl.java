@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.messagesdk.dao.ConsumerErrorLogMapper;
 import com.zhulang.waveedu.messagesdk.po.ConsumerErrorLog;
+import com.zhulang.waveedu.messagesdk.service.ConsumerErrorLogService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,6 @@ import org.springframework.stereotype.Service;
  * @since 2023-03-02
  */
 @Service
-public class ConsumerErrorLogServiceImpl extends ServiceImpl<ConsumerErrorLogMapper, ConsumerErrorLog> implements IService<ConsumerErrorLog> {
+public class ConsumerErrorLogServiceImpl extends ServiceImpl<ConsumerErrorLogMapper, ConsumerErrorLog> implements ConsumerErrorLogService {
 
 }

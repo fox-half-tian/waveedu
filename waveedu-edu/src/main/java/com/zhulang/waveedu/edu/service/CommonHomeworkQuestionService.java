@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
 
@@ -104,5 +104,5 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @param questionId 问题id
      * @return 作业类型
      */
-    HomeworkIdAndTypeQuery getHomeworkIdAndTypeById(Integer questionId);
+    HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId);
 }

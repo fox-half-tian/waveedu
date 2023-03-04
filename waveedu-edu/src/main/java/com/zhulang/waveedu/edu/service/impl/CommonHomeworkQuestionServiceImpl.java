@@ -10,7 +10,7 @@ import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -280,8 +280,8 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     }
 
     @Override
-    public HomeworkIdAndTypeQuery getHomeworkIdAndTypeById(Integer questionId) {
-        return commonHomeworkQuestionMapper.selectHomeworkIdAndTypeById(questionId);
+    public HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId) {
+        return commonHomeworkQuestionMapper.selectHomeworkIdAndTypeAndEndTimeById(questionId);
     }
 
     @Override

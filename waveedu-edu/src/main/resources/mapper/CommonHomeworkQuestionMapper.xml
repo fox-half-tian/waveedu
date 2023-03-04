@@ -98,9 +98,11 @@
           AND a.`stu_id` = #{stuId}
           AND q.`id` = a.`question_id`
     </select>
-    <select id="selectHomeworkIdAndTypeById" resultType="java.lang.Integer">
+    <select id="selectHomeworkIdAndTypeAndEndTimeById"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery">
         SELECT h.`id`   AS `homeworkId`,
-               h.`type` AS `homeworkType`
+               h.`type` AS `homeworkType`,
+               h.`end_time` AS `endTime`
         FROM `edu_common_homework_question` q,
              `edu_lesson_class_common_homework` h
         WHERE q.`id` = #{id}

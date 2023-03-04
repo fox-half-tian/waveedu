@@ -81,10 +81,14 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         // 1.校验创建者，发布状况
         Map<String, Object> map = this.getMap(new LambdaQueryWrapper<LessonClassCommonHomework>()
                 .eq(LessonClassCommonHomework::getId, publishCommonHomeworkVO.getCommonHomeworkId())
-                .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getCreatorId));
+                .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getCreatorId,LessonClassCommonHomework::getEndTime));
         // 1.1 是否为创建者
         if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 1.2 判断是否设置了截止时间
+        if (map.get("endTime")==null){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"请先设置作业截止时间");
         }
         // 1.2 如果是已经发布了，就不能发布
         if ((Integer) map.get("isPublish") == 1) {

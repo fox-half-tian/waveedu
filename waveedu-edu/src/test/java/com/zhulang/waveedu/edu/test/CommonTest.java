@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.test;
 import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.edu.po.LessonFile;
+import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,14 +19,15 @@ public class CommonTest {
     }
 
     public static void test03(){
-        List<String> info = new ArrayList<>();
-        info.add("狐狸半面添");
-        info.add("唐雨浪");
-        String s = JSON.toJSONString(info);
-        System.out.println(s);
-        System.out.println(JSON.toJSONString(s));
-        ArrayList arrayList = JSON.parseObject(s, ArrayList.class);
-        System.out.println(arrayList.get(0)+"    "+arrayList.get(1));
+        List<HomeworkAnswerVO> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            HomeworkAnswerVO homeworkAnswerVO = new HomeworkAnswerVO();
+            homeworkAnswerVO.setQuestionId(10);
+            homeworkAnswerVO.setAnswer(JSON.toJSONString("我爱你"+i));
+            list.add(homeworkAnswerVO);
+        }
+        String info = JSON.toJSONString(list);
+        System.out.println(info);
     }
     public static void test02(){
         Long a=1623220363309776897L;

@@ -107,5 +107,5 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param id 问题id
      * @return 作业类型与id
      */
-    HomeworkIdAndTypeQuery selectHomeworkIdAndTypeById(@Param("id") Integer id);
+    HomeworkIdAndTypeAndEndTimeQuery selectHomeworkIdAndTypeAndEndTimeById(@Param("id") Integer id);
 }
