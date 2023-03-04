@@ -11,11 +11,9 @@ import com.zhulang.waveedu.edu.service.CommonHomeworkStuScoreService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.service.LessonClassService;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -92,5 +90,10 @@ public class CommonHomeworkStuScoreServiceImpl extends ServiceImpl<CommonHomewor
     @Override
     public Integer getStatusByHomeworkIdAndStuId(Integer homeworkId, Long stuId) {
         return commonHomeworkStuScoreMapper.selectStatusByHomeworkIdAndStuId(homeworkId,stuId);
+    }
+
+    @Override
+    public void modifyScoreAndCommentAndStatus(Integer homeworkId, Long stuId, String comment) {
+        commonHomeworkStuScoreMapper.updateScoreAndCommentAndStatus(homeworkId,stuId,comment);
     }
 }

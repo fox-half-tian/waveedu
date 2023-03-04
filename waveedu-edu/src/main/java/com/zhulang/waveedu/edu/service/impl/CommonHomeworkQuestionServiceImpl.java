@@ -10,7 +10,7 @@ import com.zhulang.waveedu.common.util.WaveStrUtils;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
@@ -283,8 +283,8 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     }
 
     @Override
-    public HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId) {
-        return commonHomeworkQuestionMapper.selectHomeworkIdAndTypeAndEndTimeById(questionId);
+    public HomeworkIdAndTypeAndEndTimeAndIsPublishQuery getHomeworkIdAndTypeAndEndTimeAndIsPublishById(Integer questionId) {
+        return commonHomeworkQuestionMapper.selectHomeworkIdAndTypeAndEndTimeAndIsPublishById(questionId);
     }
 
     @Override
@@ -295,6 +295,16 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     @Override
     public List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId, Long stuId) {
         return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,stuId);
+    }
+
+    @Override
+    public boolean isHomeworkCreatorByQuestionIdAndUserId(Integer questionId, Long userId) {
+        return commonHomeworkQuestionMapper.isHomeworkCreatorByQuestionIdAndUserId(questionId,userId)!=null;
+    }
+
+    @Override
+    public Integer getHomeworkIdByQuestionId(Integer questionId) {
+        return commonHomeworkQuestionMapper.selectHomeworkIdByQuestionId(questionId);
     }
 
     @Override

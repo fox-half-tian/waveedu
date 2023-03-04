@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
@@ -108,7 +108,7 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @param questionId 问题id
      * @return 作业类型
      */
-    HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId);
+    HomeworkIdAndTypeAndEndTimeAndIsPublishQuery getHomeworkIdAndTypeAndEndTimeAndIsPublishById(Integer questionId);
 
     /**
      * 获取作业的所有问题详解和学生答案，无分数
@@ -127,4 +127,21 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生该题分数
      */
     List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId,Long stuId);
+
+    /**
+     * 判断该问题的创建者是否为该用户
+     *
+     * @param questionId 问题id
+     * @param userId 用户id
+     * @return true-是，false-不是
+     */
+    boolean isHomeworkCreatorByQuestionIdAndUserId(Integer questionId, Long userId);
+
+    /**
+     * 通过 questionId 获取该问题的作业id
+     *
+     * @param questionId 问题id
+     * @return 作业id
+     */
+    Integer getHomeworkIdByQuestionId(Integer questionId);
 }

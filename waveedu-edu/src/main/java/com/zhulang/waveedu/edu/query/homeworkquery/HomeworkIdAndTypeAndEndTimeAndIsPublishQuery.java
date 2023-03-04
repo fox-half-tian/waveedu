@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomeworkIdAndTypeAndEndTimeQuery {
+public class HomeworkIdAndTypeAndEndTimeAndIsPublishQuery {
     /**
      * 问题id
      */
@@ -26,4 +26,8 @@ public class HomeworkIdAndTypeAndEndTimeQuery {
      * 截止时间
      */
     private LocalDateTime endTime;
+    /**
+     * 作业状态
+     */
+    private Integer isPublish;
 }

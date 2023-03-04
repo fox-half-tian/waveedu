@@ -102,10 +102,28 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
                                                                                                   @Param("stuId") Long stuId);
 
     /**
-     * 根据问题的id查询作业类型
+     * 根据问题的id查询作业id,类型,截止时间，状态
      *
      * @param id 问题id
      * @return 作业类型与id
      */
-    HomeworkIdAndTypeAndEndTimeQuery selectHomeworkIdAndTypeAndEndTimeById(@Param("id") Integer id);
+    HomeworkIdAndTypeAndEndTimeAndIsPublishQuery selectHomeworkIdAndTypeAndEndTimeAndIsPublishById(@Param("id") Integer id);
+
+    /**
+     * 判断该问题的创建者是否为该用户
+     *
+     * @param questionId 问题id
+     * @param userId     用户id
+     * @return null-不是，非null-是
+     */
+    Integer isHomeworkCreatorByQuestionIdAndUserId(@Param("questionId") Integer questionId,
+                                                   @Param("userId") Long userId);
+
+    /**
+     * 通过 questionId 获取该问题的作业id
+     *
+     * @param questionId 问题id
+     * @return 作业id
+     */
+    Integer selectHomeworkIdByQuestionId(@Param("questionId") Integer questionId);
 }

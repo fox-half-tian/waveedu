@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.edu.po.LessonFile;
 import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,14 +20,18 @@ public class CommonTest {
     }
 
     public static void test03(){
-        List<HomeworkAnswerVO> list = new ArrayList<>();
+        MarkHomeworkVO markHomeworkVO = new MarkHomeworkVO();
+        ArrayList<MarkHomeworkVO.InnerMark> innerMarks = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            HomeworkAnswerVO homeworkAnswerVO = new HomeworkAnswerVO();
-            homeworkAnswerVO.setQuestionId(10);
-            homeworkAnswerVO.setAnswer(JSON.toJSONString("我爱你"+i));
-            list.add(homeworkAnswerVO);
+            MarkHomeworkVO.InnerMark innerMark = new MarkHomeworkVO.InnerMark();
+            innerMark.setScore(8);
+            innerMark.setQuestionId(16);
+            innerMarks.add(innerMark);
         }
-        String info = JSON.toJSONString(list);
+        markHomeworkVO.setComment("哈哈哈");
+        markHomeworkVO.setStuId(123456L);
+        markHomeworkVO.setInnerMarkList(innerMarks);
+        String info = JSON.toJSONString(markHomeworkVO);
         System.out.println(info);
     }
     public static void test02(){

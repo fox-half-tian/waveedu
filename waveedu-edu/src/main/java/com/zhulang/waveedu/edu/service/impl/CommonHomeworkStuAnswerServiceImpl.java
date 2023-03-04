@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
@@ -14,10 +16,11 @@ import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -65,9 +68,12 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
     public Result verifyAnswers(List<HomeworkAnswerVO> homeworkAnswerVos) {
         Long userId = UserHolderUtils.getUserId();
         // 1.查询作业的类型，作业的id，截止时间
-        HomeworkIdAndTypeAndEndTimeQuery info = commonHomeworkQuestionService.getHomeworkIdAndTypeAndEndTimeById(homeworkAnswerVos.get(0).getQuestionId());
+        HomeworkIdAndTypeAndEndTimeAndIsPublishQuery info = commonHomeworkQuestionService.getHomeworkIdAndTypeAndEndTimeAndIsPublishById(homeworkAnswerVos.get(0).getQuestionId());
         if (info == null) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业或问题信息不存在");
+        }
+        if (info.getIsPublish() != 1) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 校验是否为该班级的学生
         if (!lessonClassCommonHomeworkService.isClassStuByIdAndStuId(info.getHomeworkId(), userId)) {
@@ -211,9 +217,40 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
         } else {
             // 说明已批阅，则返回题目信息和学生的答案与学生的分数，学生的总分
             resultMap.put("status", 2);
-            resultMap.put("stuTotalScore",commonHomeworkStuScoreService.getScoreByHomeworkIdAndStuId(homeworkId,stuId));
+            resultMap.put("stuTotalScore", commonHomeworkStuScoreService.getScoreByHomeworkIdAndStuId(homeworkId, stuId));
             resultMap.put("answers", commonHomeworkQuestionService.getQuestionDetailAndSelfAnswerWithScore(homeworkId, stuId));
         }
         return Result.ok(resultMap);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result markHomework(Long stuId, String comment, List<MarkHomeworkVO.InnerMark> innerMarkList) {
+        // 1.校验权限，是否为作业创建者
+        if (!commonHomeworkQuestionService.isHomeworkCreatorByQuestionIdAndUserId(innerMarkList.get(0).getQuestionId(), UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 校验是否处于审阅状态
+        Integer homeworkId = commonHomeworkQuestionService.getHomeworkIdByQuestionId(innerMarkList.get(0).getQuestionId());
+        Integer status = commonHomeworkStuScoreService.getStatusByHomeworkIdAndStuId(homeworkId, stuId);
+        if (status == null) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "学生未提交作业，无法评分");
+        }
+
+        // 2.进行分数赋值
+        for (MarkHomeworkVO.InnerMark innerMark : innerMarkList) {
+            commonHomeworkStuAnswerMapper.update(null, new LambdaUpdateWrapper<CommonHomeworkStuAnswer>()
+                    .eq(CommonHomeworkStuAnswer::getStuId, stuId)
+                    .eq(CommonHomeworkStuAnswer::getQuestionId, innerMark.getQuestionId())
+                            .gt(CommonHomeworkStuAnswer::getScore,innerMark.getScore())
+                    .set(CommonHomeworkStuAnswer::getScore, innerMark.getScore()));
+        }
+        // 3.设置评语与总分，状态
+        if (StrUtil.isBlank(comment)) {
+            comment = "";
+        }
+        commonHomeworkStuScoreService.modifyScoreAndCommentAndStatus(homeworkId, stuId, comment);
+        // 返回
+        return Result.ok();
     }
 }

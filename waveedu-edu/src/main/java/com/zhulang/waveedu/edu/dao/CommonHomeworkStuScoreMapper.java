@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.homeworkquery.*;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -78,4 +77,15 @@ public interface CommonHomeworkStuScoreMapper extends BaseMapper<CommonHomeworkS
      * @return 对作业的状态：null-未提交，0-批阅中，1-已提交
      */
     Integer selectStatusByHomeworkIdAndStuId(@Param("homeworkId") Integer homeworkId, @Param("stuId") Long stuId);
+
+    /**
+     * 修改学生的分数,评语,状态
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @param comment 教师评论
+     */
+    void updateScoreAndCommentAndStatus(@Param("homeworkId") Integer homeworkId,
+                                        @Param("stuId")Long stuId,
+                                        @Param("comment") String comment);
 }

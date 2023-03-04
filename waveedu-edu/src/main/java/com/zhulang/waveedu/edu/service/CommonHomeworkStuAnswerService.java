@@ -4,6 +4,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
 
 import java.util.List;
 
@@ -34,4 +35,14 @@ public interface CommonHomeworkStuAnswerService extends IService<CommonHomeworkS
      * @return 情况
      */
     Result getStuHomeworkAnswers(Integer homeworkId, Long stuId);
+
+    /**
+     * 创建者给学生的探究类作业批阅分数
+     *
+     * @param stuId 学生id
+     * @param comment 教师评价
+     * @param innerMarkList 问题id + 分数
+     * @return 是否成功
+     */
+    Result markHomework(Long stuId, String comment, List<MarkHomeworkVO.InnerMark> innerMarkList);
 }

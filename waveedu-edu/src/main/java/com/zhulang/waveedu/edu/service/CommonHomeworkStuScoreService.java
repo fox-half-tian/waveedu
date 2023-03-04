@@ -3,9 +3,6 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.tomcat.jni.Local;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -53,4 +50,13 @@ public interface CommonHomeworkStuScoreService extends IService<CommonHomeworkSt
      * @return 对作业的状态：null-未提交，0-批阅中，1-已提交
      */
     Integer getStatusByHomeworkIdAndStuId(Integer homeworkId, Long stuId);
+
+    /**
+     * 修改学生的分数，评语，状态
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @param comment 教师评论
+     */
+    void modifyScoreAndCommentAndStatus(Integer homeworkId, Long stuId, String comment);
 }
