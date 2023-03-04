@@ -4,8 +4,12 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -105,4 +109,22 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 作业类型
      */
     HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId);
+
+    /**
+     * 获取作业的所有问题详解和学生答案，无分数
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案
+     */
+    List<QuestionDetailAndSelfAnswerWithoutScoreQuery> getQuestionDetailAndSelfAnswerWithoutScore(Integer homeworkId, Long stuId);
+
+    /**
+     * 获取作业的所有问题详解和学生答案，有分数
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生该题分数
+     */
+    List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId,Long stuId);
 }

@@ -11,6 +11,8 @@ import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkQuestionMapper;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +28,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -282,6 +285,16 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
     @Override
     public HomeworkIdAndTypeAndEndTimeQuery getHomeworkIdAndTypeAndEndTimeById(Integer questionId) {
         return commonHomeworkQuestionMapper.selectHomeworkIdAndTypeAndEndTimeById(questionId);
+    }
+
+    @Override
+    public List<QuestionDetailAndSelfAnswerWithoutScoreQuery> getQuestionDetailAndSelfAnswerWithoutScore(Integer homeworkId, Long stuId) {
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,stuId);
+    }
+
+    @Override
+    public List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId, Long stuId) {
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,stuId);
     }
 
     @Override

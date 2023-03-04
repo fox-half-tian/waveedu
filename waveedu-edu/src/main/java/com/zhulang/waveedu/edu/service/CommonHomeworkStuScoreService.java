@@ -36,4 +36,21 @@ public interface CommonHomeworkStuScoreService extends IService<CommonHomeworkSt
     Result getHomeworkStuConditionList(Integer homeworkId, Integer status);
 
 
+    /**
+     * 根据作业id和学生id获取该学生本次作业的总分数
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 学生总分数
+     */
+    Integer getScoreByHomeworkIdAndStuId(Integer homeworkId, Long stuId);
+
+    /**
+     * 根据 作业Id 和 学生id 得到该学生对于作业的状态
+     *
+     * @param homeworkId 作业id
+     * @param stuId      学生id
+     * @return 对作业的状态：null-未提交，0-批阅中，1-已提交
+     */
+    Integer getStatusByHomeworkIdAndStuId(Integer homeworkId, Long stuId);
 }

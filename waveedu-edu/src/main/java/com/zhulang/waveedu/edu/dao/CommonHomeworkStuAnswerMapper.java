@@ -21,8 +21,10 @@ public interface CommonHomeworkStuAnswerMapper extends BatchBaseMapper<CommonHom
     /**
      * 批量删除所有该学生的对应问题id的信息
      *
-     * @param stuId 学生id
+     * @param stuId       学生id
      * @param questionIds 问题id列表
      */
-    void deleteBatchByStuIdAndQuestionIds(@Param("stuId") Long stuId,@Param("ids") List<Integer> questionIds);
+    void deleteBatchByStuIdAndQuestionIds(@Param("stuId") Long stuId, @Param("ids") List<Integer> questionIds);
+
+
 }

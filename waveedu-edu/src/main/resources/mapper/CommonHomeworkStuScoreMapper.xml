@@ -78,4 +78,16 @@
         ORDER BY s.`id`
         LIMIT #{queryLimit}
     </select>
+    <select id="selectScoreByHomeworkIdAndStuId" resultType="java.lang.Integer">
+        SELECT `score`
+        FROM `edu_common_homework_stu_score`
+        WHERE `homework_id` = #{homeworkId}
+          AND `stu_id` = #{stuId}
+    </select>
+    <select id="selectStatusByHomeworkIdAndStuId" resultType="java.lang.Integer">
+        SELECT `status`
+        FROM `edu_common_homework_stu_score`
+        WHERE `homework_id` = #{homeworkId}
+          AND `stu_id` = #{stuId}
+    </select>
 </mapper>

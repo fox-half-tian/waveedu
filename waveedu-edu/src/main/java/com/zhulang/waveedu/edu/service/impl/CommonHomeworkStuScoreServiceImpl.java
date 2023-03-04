@@ -83,4 +83,14 @@ public class CommonHomeworkStuScoreServiceImpl extends ServiceImpl<CommonHomewor
                 return Result.error();
         }
     }
+
+    @Override
+    public Integer getScoreByHomeworkIdAndStuId(Integer homeworkId, Long stuId) {
+        return commonHomeworkStuScoreMapper.selectScoreByHomeworkIdAndStuId(homeworkId,stuId);
+    }
+
+    @Override
+    public Integer getStatusByHomeworkIdAndStuId(Integer homeworkId, Long stuId) {
+        return commonHomeworkStuScoreMapper.selectStatusByHomeworkIdAndStuId(homeworkId,stuId);
+    }
 }

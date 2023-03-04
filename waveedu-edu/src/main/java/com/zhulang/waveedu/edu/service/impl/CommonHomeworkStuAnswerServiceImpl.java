@@ -186,19 +186,34 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
     @Override
     public Result getStuHomeworkAnswers(Integer homeworkId, Long stuId) {
         // 1.校验格式
-        if (homeworkId<1){
+        if (homeworkId < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
         }
-        if (RegexUtils.isSnowIdInvalid(stuId)){
+        if (RegexUtils.isSnowIdInvalid(stuId)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "学生id格式错误");
         }
         // 2.校验权限，是否为作业创建者
-        if(!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,stuId)){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        if (!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId, UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 3.获取
-        return null;
+        // 3.判断学生是否提交了答案
+        // status：0-批阅中，1-已批阅，2-未提交
+        Integer status = commonHomeworkStuScoreService.getStatusByHomeworkIdAndStuId(homeworkId, stuId);
+        HashMap<String, Object> resultMap = new HashMap<>();
+        if (status == null) {
+            // 说明未提交，则什么都不返回
+            resultMap.put("status", 2);
+            return Result.ok(resultMap);
+        } else if (status == 0) {
+            // 说明在批阅中，则返回题目信息和学生的答案
+            resultMap.put("status", 1);
+            resultMap.put("answers", commonHomeworkQuestionService.getQuestionDetailAndSelfAnswerWithoutScore(homeworkId, stuId));
+        } else {
+            // 说明已批阅，则返回题目信息和学生的答案与学生的分数，学生的总分
+            resultMap.put("status", 2);
+            resultMap.put("stuTotalScore",commonHomeworkStuScoreService.getScoreByHomeworkIdAndStuId(homeworkId,stuId));
+            resultMap.put("answers", commonHomeworkQuestionService.getQuestionDetailAndSelfAnswerWithScore(homeworkId, stuId));
+        }
+        return Result.ok(resultMap);
     }
-
-
 }

@@ -68,8 +68,8 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param stuId      学生id
      * @return 问题id, 问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案
      */
-    QuestionDetailAndSelfAnswerWithoutScoreQuery selectQuestionDetailAndSelfAnswerWithoutScore(@Param("homeworkId") Integer homeworkId,
-                                                                                               @Param("stuId") Long stuId);
+    List<QuestionDetailAndSelfAnswerWithoutScoreQuery> selectQuestionDetailAndSelfAnswerWithoutScore(@Param("homeworkId") Integer homeworkId,
+                                                                                                     @Param("stuId") Long stuId);
 
     /**
      * 查询问题简单信息和个人答案，没有自己的答案分数
@@ -78,8 +78,8 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param stuId      学生id
      * @return 问题id, 问题类型，问题描述，问题满分，学生答案
      */
-    QuestionSimpleAndSelfAnswerWithoutScoreQuery selectQuestionSimpleAndSelfAnswerWithoutScore(@Param("homeworkId") Integer homeworkId,
-                                                                                               @Param("stuId") Long stuId);
+    List<QuestionSimpleAndSelfAnswerWithoutScoreQuery> selectQuestionSimpleAndSelfAnswerWithoutScore(@Param("homeworkId") Integer homeworkId,
+                                                                                                     @Param("stuId") Long stuId);
 
     /**
      * 查询问题详解和个人答案，有自己的答案分数
@@ -88,8 +88,8 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param stuId      学生id
      * @return 问题id, 问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生分数
      */
-    QuestionDetailAndSelfAnswerWithScoreQuery selectQuestionDetailAndSelfAnswerWithScore(@Param("homeworkId") Integer homeworkId,
-                                                                                         @Param("stuId") Long stuId);
+    List<QuestionDetailAndSelfAnswerWithScoreQuery> selectQuestionDetailAndSelfAnswerWithScore(@Param("homeworkId") Integer homeworkId,
+                                                                                               @Param("stuId") Long stuId);
 
     /**
      * 查询问题简单信息和个人答案，有自己的答案分数
@@ -98,8 +98,8 @@ public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQ
      * @param stuId      学生id
      * @return 问题id, 问题类型，问题描述，问题满分，学生答案，学生分数
      */
-    QuestionSimpleAndSelfAnswerWithoutScoreQuery selectQuestionSimpleAndSelfAnswerWithScore(@Param("homeworkId") Integer homeworkId,
-                                                                                            @Param("stuId") Long stuId);
+    List<QuestionSimpleAndSelfAnswerWithoutScoreQuery> selectQuestionSimpleAndSelfAnswerWithScore(@Param("homeworkId") Integer homeworkId,
+                                                                                                  @Param("stuId") Long stuId);
 
     /**
      * 根据问题的id查询作业类型
