@@ -4,14 +4,18 @@ import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.edu.constant.EduConstants;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuScoreMapper;
 import com.zhulang.waveedu.edu.service.CommonHomeworkStuScoreService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
+import com.zhulang.waveedu.edu.service.LessonClassService;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -27,18 +31,24 @@ public class CommonHomeworkStuScoreServiceImpl extends ServiceImpl<CommonHomewor
     private CommonHomeworkStuScoreMapper commonHomeworkStuScoreMapper;
     @Resource
     private LessonClassCommonHomeworkService lessonClassCommonHomeworkService;
+    @Resource
+    private LessonClassService lessonClassService;
 
     @Override
-    public Result getHomeworksCheckTaskList(Long classId, Integer status) {
+    public Result getHomeworksNoCheckTaskList(Long classId, Integer scoreId) {
         // 1.校验格式
         if (RegexUtils.isSnowIdInvalid(classId)) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
         }
-        if (status != 0 && status != 1) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "状态格式错误");
+        if (scoreId!=null &&scoreId<1){
+            scoreId = null;
         }
-        // 2.根据
-        return null;
+        // 2.校验身份
+        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取信息
+        return Result.ok(commonHomeworkStuScoreMapper.selectHomeworksNoCheckTaskInfoList(classId, scoreId, EduConstants.DEFAULT_LESSON_CLASS_HOMEWORK_CHECK_QUERY_LIMIT));
     }
 
     @Override
@@ -47,16 +57,16 @@ public class CommonHomeworkStuScoreServiceImpl extends ServiceImpl<CommonHomewor
         if (homeworkId < 1) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
         }
-        if (status<0||status>3){
+        if (status < 0 || status > 3) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "状态格式错误");
         }
         // 2.校验身份
         Long userId = UserHolderUtils.getUserId();
-        if (!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,userId)){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        if (!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId, userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 3.根据status获取信息
-        switch (status){
+        switch (status) {
             case 0:
                 // 未提交
                 return Result.ok(commonHomeworkStuScoreMapper.selectHomeworkNoCommitStuInfoListByHomeworkId(homeworkId));

@@ -56,4 +56,26 @@
           AND s.`status` = 1
           AND s.`stu_id` = i.`id`
     </select>
+    <select id="selectHomeworksNoCheckTaskInfoList"
+            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCheckTaskInfoQuery">
+        SELECT s.`stu_id`      AS `stuId`,
+               s.`homework_id` AS `homeworkId`,
+               s.`id`          AS `scoreId`,
+               h.`title`       AS `homeworkTitle`,
+               i.`name`        AS `stuName`,
+               i.`create_time` AS `commitTime`
+        FROM `edu_lesson_class_common_homework` h,
+             `edu_common_homework_stu_score` s,
+             `basic_user_info` i
+        WHERE h.`lesson_class_id` = #{classId}
+          AND h.`id` = s.`homework_id`
+          AND h.`type` = 0
+          AND s.`status` = 0
+          AND s.`stu_id` = i.`id`
+            <if test="scoreId!=null">
+                AND s.`id` > #{scoreId}
+            </if>
+        ORDER BY s.`id`
+        LIMIT #{queryLimit}
+    </select>
 </mapper>

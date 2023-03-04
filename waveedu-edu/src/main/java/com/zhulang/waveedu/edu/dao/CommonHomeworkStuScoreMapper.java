@@ -2,12 +2,10 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkCheckedStuInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCheckStuInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCommitStuInfoQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkAnyStatusStuInfoQuery;
+import com.zhulang.waveedu.edu.query.homeworkquery.*;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -50,4 +48,16 @@ public interface CommonHomeworkStuScoreMapper extends BaseMapper<CommonHomeworkS
      * @return id + name + 提交时间
      */
     List<HomeworkCheckedStuInfoQuery> selectCheckedStuInfoListByHomeworkId(@Param("homeworkId") Integer homeworkId);
+
+    /**
+     * 获取本班级所有未批阅的作业的信息
+     *
+     * @param classId 班级id
+     * @param scoreId 更新时间
+     * @param queryLimit 查询限制数量
+     * @return 信息列表
+     */
+    List<HomeworkNoCheckTaskInfoQuery> selectHomeworksNoCheckTaskInfoList(@Param("classId") Long classId,
+                                                                          @Param("scoreId") Integer scoreId,
+                                                                          @Param("queryLimit")Integer queryLimit);
 }

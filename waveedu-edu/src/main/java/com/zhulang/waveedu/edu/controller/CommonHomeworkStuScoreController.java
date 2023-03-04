@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -26,28 +27,29 @@ public class CommonHomeworkStuScoreController {
     private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
 
     /**
-     * 教师获取批阅作业任务列表
+     * 教师获取该班级所有未批阅作业任务列表
      *
      * @param classId 班级id
-     * @param status 状态，0-未批阅，1-已批阅
-     * @return 任务信息列表
+     * @param scoreId 分数表id,如果传，则会返回比该id更大的信息
+     * @return 任务信息列表，实际按照了学生的提交时间从远到近排序
      */
-    @GetMapping("/get/homeworksCheckTaskList")
-    public Result getHomeworksCheckTaskList(@RequestParam("classId") Long classId,
-                                            @RequestParam("status") Integer status){
-        return commonHomeworkStuScoreService.getHomeworksCheckTaskList(classId,status);
+    @GetMapping("/get/homeworksNoCheckTaskList")
+    public Result getHomeworksNoCheckTaskList(@RequestParam("classId") Long classId,
+                                              @RequestParam(value = "scoreId",required = false) Integer scoreId) {
+        return commonHomeworkStuScoreService.getHomeworksNoCheckTaskList(classId,scoreId);
     }
+
 
     /**
      * 获取该作业所有学生的完成情况
      *
      * @param homeworkId 作业id
-     * @param status 0-未提交，1-批阅中，2-已批阅,3-所有
+     * @param status     0-未提交，1-批阅中，2-已批阅,3-所有
      * @return 情况列表
      */
     @GetMapping("/get/homeworkStuConditionList")
-    public Result getHomeworkStuConditionList(@RequestParam("homeworkId")Integer homeworkId,
-                                              @RequestParam(value = "status")Integer status){
-        return commonHomeworkStuScoreService.getHomeworkStuConditionList(homeworkId,status);
+    public Result getHomeworkStuConditionList(@RequestParam("homeworkId") Integer homeworkId,
+                                              @RequestParam(value = "status") Integer status) {
+        return commonHomeworkStuScoreService.getHomeworkStuConditionList(homeworkId, status);
     }
 }

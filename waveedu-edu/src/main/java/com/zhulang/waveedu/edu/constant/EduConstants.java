@@ -32,6 +32,11 @@ public class EduConstants {
     public static final Integer DEFAULT_LESSON_CLASS_FILE_LIST_QUERY_LIMIT = 25;
 
     /**
+     * 默认的班级作业检查任务最大查询数量
+     */
+    public static final Integer DEFAULT_LESSON_CLASS_HOMEWORK_CHECK_QUERY_LIMIT = 25;
+
+    /**
      * 默认的创建的课程班级信息列表最大查询条数
      */
     public static final Integer DEFAULT_CREATE_LESSON_CLASS_LIST_QUERY_LIMIT = 12;

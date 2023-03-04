@@ -3,12 +3,9 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery;
-import org.apache.ibatis.annotations.Param;
+import org.apache.tomcat.jni.Local;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.PrimitiveIterator;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -21,13 +18,13 @@ import java.util.PrimitiveIterator;
 public interface CommonHomeworkStuScoreService extends IService<CommonHomeworkStuScore> {
 
     /**
-     * 教师获取批阅作业任务列表
+     * 教师获取未批阅作业任务列表
      *
      * @param classId 班级id
-     * @param status 状态，0-未批阅，1-已批阅
+     * @param scoreId 分数表id
      * @return 任务信息列表
      */
-    Result getHomeworksCheckTaskList(Long classId, Integer status);
+    Result getHomeworksNoCheckTaskList(Long classId, Integer scoreId);
 
     /**
      * 获取该作业所有学生的完成情况
@@ -37,4 +34,6 @@ public interface CommonHomeworkStuScoreService extends IService<CommonHomeworkSt
      * @return 情况列表
      */
     Result getHomeworkStuConditionList(Integer homeworkId, Integer status);
+
+
 }

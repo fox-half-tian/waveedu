@@ -196,7 +196,7 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
         if(!lessonClassCommonHomeworkService.existsByIdAndUserId(homeworkId,stuId)){
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
         }
-        // 3.
+        // 3.获取
         return null;
     }
 
