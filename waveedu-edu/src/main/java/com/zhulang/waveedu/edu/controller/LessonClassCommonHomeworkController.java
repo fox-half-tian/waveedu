@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
@@ -130,6 +132,21 @@ public class LessonClassCommonHomeworkController {
     @GetMapping("/get/stu/homeworkDetailInfo")
     public Result getStuHomeworkDetailInfo(@RequestParam("homeworkId") Integer homeworkId){
         return lessonClassCommonHomeworkService.getStuHomeworkDetailInfo(homeworkId);
+    }
+
+    /**
+     * 删除一份作业
+     *
+     * @param object 作业id
+     * @return 删除状况
+     */
+    @DeleteMapping("/remove")
+    public Result removeHomework(@RequestBody JSONObject object){
+        try {
+            return lessonClassCommonHomeworkService.removeHomework(Integer.parseInt(object.getString("homeworkId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"作业id格式错误");
+        }
     }
 
 

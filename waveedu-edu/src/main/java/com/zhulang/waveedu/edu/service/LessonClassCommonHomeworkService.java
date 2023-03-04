@@ -126,4 +126,12 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 作业状态信息
      */
     StuHomeworkStatusQuery getStuHomeworkStatus(Integer homeworkId, Long stuId);
+
+    /**
+     * 删除一份作业
+     *
+     * @param homeworkId 作业id
+     * @return 删除状况
+     */
+    Result removeHomework(Integer homeworkId);
 }

@@ -10,11 +10,8 @@ import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
-import com.zhulang.waveedu.edu.po.LessonClass;
-import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
+import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
-import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.zhulang.waveedu.edu.query.homeworkquery.*;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.FailureCallback;
 import org.springframework.util.concurrent.SuccessCallback;
 
@@ -58,6 +56,8 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     private LessonClassStuService lessonClassStuService;
     @Resource
     private CommonHomeworkStuScoreService commonHomeworkStuScoreService;
+    @Resource
+    private CommonHomeworkStuAnswerService commonHomeworkStuAnswerService;
 
     @Override
     public Result saveHomework(SaveCommonHomeworkVO saveCommonHomeworkVO) {
@@ -422,5 +422,32 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
     @Override
     public StuHomeworkStatusQuery getStuHomeworkStatus(Integer homeworkId, Long stuId) {
         return lessonClassCommonHomeworkMapper.selectStuHomeworkStatus(homeworkId,stuId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result removeHomework(Integer homeworkId) {
+       // 1.校验格式
+        if (homeworkId<1){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"作业id格式错误");
+        }
+        // 2.校验身份
+        if (!this.existsByIdAndUserId(homeworkId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.删除
+        // 3.1 删除 edu_lesson_class_common_homework 表数据
+        lessonClassCommonHomeworkMapper.deleteById(homeworkId);
+        // 3.2 删除 edu_common_homework_question 表数据
+        commonHomeworkQuestionService.remove(new LambdaQueryWrapper<CommonHomeworkQuestion>()
+                .eq(CommonHomeworkQuestion::getCommonHomeworkId,homeworkId));
+        // 3.3 删除 edu_common_homework_stu_answer 表数据
+        commonHomeworkStuAnswerService.remove(new LambdaQueryWrapper<CommonHomeworkStuAnswer>()
+                .eq(CommonHomeworkStuAnswer::getHomeworkId,homeworkId));
+        // 3.4 删除 edu_common_homework_stu_score 表数据
+        commonHomeworkStuScoreService.remove(new LambdaQueryWrapper<CommonHomeworkStuScore>()
+                .eq(CommonHomeworkStuScore::getHomeworkId,homeworkId));
+        // 4.返回
+        return Result.ok();
     }
 }
