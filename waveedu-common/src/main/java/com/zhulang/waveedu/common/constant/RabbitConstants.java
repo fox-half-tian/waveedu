@@ -6,6 +6,19 @@ package com.zhulang.waveedu.common.constant;
  */
 public class RabbitConstants {
     /**
+     * 错误交换机
+     */
+    public static final String ERROR_EXCHANGE = "error.exchange";
+    /**
+     * 错误队列
+     */
+    public static final String ERROR_QUEUE = "error.queue";
+    /**
+     * 错误路由
+     */
+    public static final String ERROR_ROUTING_KEY = "error.key";
+
+    /**
      * 普通作业发布延迟队列
      */
     public static final String COMMON_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME = "common.homework.publish.delayed.queue";

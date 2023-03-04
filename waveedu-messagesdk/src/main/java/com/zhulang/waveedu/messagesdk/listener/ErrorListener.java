@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Map;
 
+import static com.zhulang.waveedu.common.constant.RabbitConstants.*;
+
 /**
  * @author 狐狸半面添
  * @create 2023-03-01 22:14
@@ -25,9 +27,9 @@ public class ErrorListener {
     private ConsumerErrorLogService consumerErrorLogService;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "error.queue", durable = "true"),
-            exchange = @Exchange(name = "error.exchange", type = ExchangeTypes.TOPIC, durable = "true"),
-            key = "error.key"
+            value = @Queue(name = ERROR_QUEUE, durable = "true"),
+            exchange = @Exchange(name = ERROR_EXCHANGE, type = ExchangeTypes.TOPIC, durable = "true"),
+            key = ERROR_ROUTING_KEY
     ))
     public void listenerErrorQueue(Map<String,Object> message) {
         String content = JSON.toJSONString(message);

@@ -40,7 +40,7 @@ public class RabbitConfig implements ApplicationContextAware {
      */
     @Bean
     public RepublishMessageRecoverer republishMessageRecoverer(RabbitTemplate rabbitTemplate) {
-        return new RepublishMessageRecoverer(rabbitTemplate, "error.exchange", "error.key");
+        return new RepublishMessageRecoverer(rabbitTemplate, ERROR_EXCHANGE, ERROR_ROUTING_KEY);
     }
 
     @Override
