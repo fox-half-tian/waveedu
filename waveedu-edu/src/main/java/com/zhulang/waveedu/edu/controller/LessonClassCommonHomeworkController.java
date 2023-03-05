@@ -112,7 +112,7 @@ public class LessonClassCommonHomeworkController {
     }
 
     /**
-     * 学生获取班级作业的简单信息列表，班级的学生可以调用这个接口 todo 待测试
+     * 学生获取班级作业的简单信息列表，班级的学生可以调用这个接口
      *
      * @param classId   班级id
      * @return 作业信息：作业id，作业标题，作业状态，截止时间，按照时间从近到远进行了排序
@@ -148,8 +148,4 @@ public class LessonClassCommonHomeworkController {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"作业id格式错误");
         }
     }
-
-
-
-
 }
