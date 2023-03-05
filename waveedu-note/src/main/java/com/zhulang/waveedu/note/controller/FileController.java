@@ -2,6 +2,7 @@ package com.zhulang.waveedu.note.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.note.service.FileService;
 import com.zhulang.waveedu.note.vo.SaveDirVO;
@@ -32,7 +33,7 @@ public class FileController {
      * @return 文件Id
      */
     @PostMapping("/saveFile")
-    public Result saveFile(@Validated @RequestBody SaveFileVO saveFileVO){
+    public Result saveFile(@Validated @RequestBody SaveFileVO saveFileVO) {
         return fileService.saveFile(saveFileVO);
     }
 
@@ -43,26 +44,36 @@ public class FileController {
      * @return 目录id
      */
     @PostMapping("/saveDir")
-    public Result saveDir(@Validated @RequestBody SaveDirVO saveDirVO){
+    public Result saveDir(@Validated @RequestBody SaveDirVO saveDirVO) {
         return fileService.saveDir(saveDirVO);
     }
 
     /**
      * 修改文件名（目录名）
      *
-     * @param fileId 文件id
+     * @param fileId   文件id
      * @param fileName 文件名
      * @return 修改状况
      */
     @PutMapping("/modifyName")
-    public Result modifyName(@RequestParam("fileId")Integer fileId,
-                             @RequestParam("fileName")String fileName){
-        return fileService.modifyName(fileId,fileName);
+    public Result modifyName(@RequestParam("fileId") Integer fileId,
+                             @RequestParam("fileName") String fileName) {
+        return fileService.modifyName(fileId, fileName);
     }
 
+    /**
+     * 删除文件或目录
+     *
+     * @param object 文件id
+     * @return 删除状况
+     */
     @DeleteMapping("/remove")
-    public Result remove(@RequestBody JSONObject object){
-        return fileService.remove(Integer.parseInt(object.getString("fileId")));
+    public Result remove(@RequestBody JSONObject object) {
+        try {
+            return fileService.remove(Integer.parseInt(object.getString("fileId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
+        }
     }
 
 
