@@ -49,7 +49,14 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                 .eq(File::getId, saveFileVO.getParentId())
                 .eq(File::getUserId, userId)
                 .eq(File::getIsDir, 1)) == 0) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "父级目录不存在");
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "父级文件夹不存在");
+        }
+        // 2.判断是否重名
+        if (fileMapper.selectCount(new LambdaQueryWrapper<File>()
+                .eq(File::getUserId,userId)
+                .eq(File::getParentId,saveFileVO.getParentId())
+                .eq(File::getName,saveFileVO.getName()))!=0){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件和某个已有的文件重名，请指定其它名称");
         }
         // 属性转换与赋值
         File file = BeanUtil.copyProperties(saveFileVO, File.class);
@@ -80,7 +87,13 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                 .eq(File::getId, saveDirVO.getParentId())
                 .eq(File::getUserId, userId)
                 .eq(File::getIsDir, 1)) == 0) {
-            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "父级目录不存在");
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "父级文件夹不存在");
+        }
+        if (fileMapper.selectCount(new LambdaQueryWrapper<File>()
+                .eq(File::getUserId,userId)
+                .eq(File::getParentId,saveDirVO.getParentId())
+                .eq(File::getName,saveDirVO.getName()))!=0){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件夹和某个已有的文件重名，请指定其它名称");
         }
         // 2.属性转换与赋值
         File dir = BeanUtil.copyProperties(saveDirVO, File.class);
@@ -104,12 +117,17 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         if (fileName.length() > 64) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件名最多64字");
         }
+
         // 2.修改文件名
-        int resultCount = fileMapper.update(null, new LambdaUpdateWrapper<File>()
-                .eq(File::getId, fileId)
-                .eq(File::getUserId, UserHolderUtils.getUserId())
-                .set(File::getName, fileName));
-        return resultCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
+        try {
+            int resultCount = fileMapper.update(null, new LambdaUpdateWrapper<File>()
+                    .eq(File::getId, fileId)
+                    .eq(File::getUserId, UserHolderUtils.getUserId())
+                    .set(File::getName, fileName));
+            return resultCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件名和某个已有的文件重名，请指定其它名称");
+        }
     }
 
     @Override
