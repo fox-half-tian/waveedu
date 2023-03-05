@@ -42,4 +42,16 @@ public class RabbitConstants {
      * 普通作业学生答案校验交换机到延迟队列的路由
      */
     public static final String COMMON_HOMEWORK_STU_ANSWER_VERIFY_ROUTING_KEY = "verify";
+    /**
+     * 笔记目录删除工作队列
+     */
+    public static final String NOTE_DIR_DEL_QUEUE_NAME=  "note.dir.del.queue";
+    /**
+     * 笔记目录删除交换机
+     */
+    public static final String NOTE_DIR_DEL_EXCHANGE_NAME =  "note.dir.del.exchange";
+    /**
+     * 笔记目录删除交换机到工作队列的路由
+     */
+    public static final String NOTE_DIR_DEL_QUEUE_ROUTING_KEY = "del";
 }

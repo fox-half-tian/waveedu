@@ -47,4 +47,19 @@ public interface FileService extends IService<File> {
      * @return 修改状况
      */
     Result modifyName(Integer fileId, String fileName);
+
+    /**
+     * 删除文件或目录
+     *
+     * @param fileId 文件id
+     * @return 删除状况
+     */
+    Result remove(Integer fileId);
+
+    /**
+     * 删除不是目录的文件信息
+     *
+     * @param fileId 文件id
+     */
+    void removeNoDirFile(Integer fileId);
 }

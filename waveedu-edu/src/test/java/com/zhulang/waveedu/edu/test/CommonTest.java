@@ -16,7 +16,14 @@ import java.util.List;
  */
 public class CommonTest {
     public static void main(String[] args) {
-        test03();
+        test04();
+    }
+
+    public static void test04(){
+        List<String> list = new ArrayList<>();
+        for (String s : list) {
+            System.out.println("s");
+        }
     }
 
     public static void test03(){

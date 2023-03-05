@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.note.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.note.service.FileService;
 import com.zhulang.waveedu.note.vo.SaveDirVO;
@@ -57,6 +58,11 @@ public class FileController {
     public Result modifyName(@RequestParam("fileId")Integer fileId,
                              @RequestParam("fileName")String fileName){
         return fileService.modifyName(fileId,fileName);
+    }
+
+    @DeleteMapping("/remove")
+    public Result remove(@RequestBody JSONObject object){
+        return fileService.remove(Integer.parseInt(object.getString("fileId")));
     }
 
 

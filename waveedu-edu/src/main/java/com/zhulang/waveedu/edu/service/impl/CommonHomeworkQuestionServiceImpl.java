@@ -238,7 +238,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
                 resultMap.put("status", 1);
                 // 根据是否开启截止后提交判断获取的信息
                 Integer isEndAfterExplain = statusInfo.getIsEndAfterExplain();
-//                resultMap.put("isEndAfterExplain", isEndAfterExplain);
+                resultMap.put("isOpen", isEndAfterExplain);
                 if (isEndAfterExplain == 0) {
                     // 未开启
                     resultMap.put("questions", commonHomeworkQuestionMapper.selectHomeworkQuestionSimpleInfoList(homeworkId));
@@ -254,11 +254,13 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
                 resultMap.put("status", 2);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
+                    resultMap.put("isOpen",1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看 作业解析
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案
                     resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,userId));
 
                 }else{
+                    resultMap.put("isOpen",0);
                     // 获取问题情况以及自己的答案
                     // 获取： 问题id,问题类型，问题描述，问题满分，学生答案
                     resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithoutScore(homeworkId,userId));
@@ -268,11 +270,13 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
                 resultMap.put("status", 3);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
+                    resultMap.put("isOpen",1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生该题分数
                     resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,userId));
 
                 }else{
+                    resultMap.put("isOpen",0);
                     // 获取问题情况以及自己的答案
                     // 获取：问题id,问题类型，问题描述，问题满分，学生答案，学生该题分数
                     resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithScore(homeworkId,userId));

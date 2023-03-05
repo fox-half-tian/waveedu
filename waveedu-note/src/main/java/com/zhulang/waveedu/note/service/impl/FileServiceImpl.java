@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.note.po.File;
@@ -15,12 +16,13 @@ import com.zhulang.waveedu.note.service.FileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.note.vo.SaveDirVO;
 import com.zhulang.waveedu.note.vo.SaveFileVO;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 /**
  * <p>
@@ -36,6 +38,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     private FileMapper fileMapper;
     @Resource
     private FileContentService fileContentService;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public Result saveFile(SaveFileVO saveFileVO) {
@@ -106,5 +110,39 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                 .eq(File::getUserId, UserHolderUtils.getUserId())
                 .set(File::getName, fileName));
         return resultCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
+    }
+
+    @Override
+    public Result remove(Integer fileId) {
+        // 1.判断该文件是目录还是文件
+        Integer isDir = fileMapper.selectIsDirByIdAndUserId(fileId, UserHolderUtils.getUserId());
+        if (isDir == null) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
+        }
+        // 2.如果是文件，直接删除
+        if (isDir == 0) {
+            ((FileService) AopContext.currentProxy()).removeNoDirFile(fileId);
+            return Result.ok();
+        }
+        // 3.如果是目录，就将目录以及目录中的内容删除
+        // 目录在这里删除，目录中的内容交给 rabbitmq 的工作队列去完成
+
+        fileMapper.deleteById(fileId);
+        HashMap<String, Object> map = new HashMap<>(2);
+        map.put("dirId",fileId);
+        rabbitTemplate.convertAndSend(RabbitConstants.NOTE_DIR_DEL_EXCHANGE_NAME,
+                RabbitConstants.NOTE_DIR_DEL_QUEUE_ROUTING_KEY,
+                map);
+        return Result.ok();
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void removeNoDirFile(Integer fileId) {
+        // 1.删除 note_file 表信息
+        fileMapper.deleteById(fileId);
+        // 2.删除 note_file_content 表信息
+        fileContentService.removeById(fileId);
     }
 }

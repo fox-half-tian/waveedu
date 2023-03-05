@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.messagesdk.dao.FileMapper">
+
+    <select id="selectIdAndIsDirByParentId"
+            resultType="com.zhulang.waveedu.messagesdk.query.FileIdAndIsDirQuery">
+        SELECT `id`, `is_dir`
+        FROM `note_file`
+        WHERE `parent_id` = #{parentId}
+    </select>
+</mapper>
