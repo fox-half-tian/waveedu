@@ -40,4 +40,11 @@
         WHERE `id` = #{childId}
           AND `is_dir` = #{isDir}
     </select>
+    <select id="existsByIdAndUserIdAndIsDir" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `note_file`
+        WHERE `id` = #{id}
+          AND `user_id` = #{userId}
+          AND `is_dir` = 1
+    </select>
 </mapper>

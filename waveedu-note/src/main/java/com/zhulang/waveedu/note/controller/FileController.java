@@ -120,4 +120,16 @@ public class FileController {
         return fileService.getFileAtDirUnderDirList(childId);
     }
 
+    /**
+     * 将当前文件或目录移动到某个目录下
+     *
+     * @param fromFileId 需要移动的文件或目录
+     * @param toDirId 移动到的目录
+     * @return 移动状况
+     */
+    @PutMapping("/modifyFileLocation")
+    public Result modifyFileLocation(@RequestParam("fromFileId")Integer fromFileId,
+                                     @RequestParam("toDirId")Integer toDirId){
+        return fileService.modifyFileLocation(fromFileId,toDirId);
+    }
 }

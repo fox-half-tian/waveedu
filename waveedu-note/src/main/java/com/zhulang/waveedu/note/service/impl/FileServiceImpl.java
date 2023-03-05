@@ -230,4 +230,24 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         // 4.返回
         return Result.ok(list);
     }
+
+    @Override
+    public Result modifyFileLocation(Integer fromFileId, Integer toDirId) {
+        // 1.格式校验
+        if (fromFileId<1||toDirId<0){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
+        }
+        Long userId = UserHolderUtils.getUserId();
+        // 2.判断需要移动到的目录是否存在
+        if (toDirId!=0 && fileMapper.existsByIdAndUserIdAndIsDir(toDirId,userId)==null){
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"操作失败，移动到的目录不存在");
+        }
+        // 3.移动
+        int updateCount = fileMapper.update(null, new LambdaUpdateWrapper<File>()
+                .eq(File::getId, fromFileId)
+                .eq(File::getUserId, userId)
+                .set(File::getParentId, toDirId));
+        // 4.返回
+        return updateCount!=0?Result.ok():Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"操作失败，文件不存在");
+    }
 }

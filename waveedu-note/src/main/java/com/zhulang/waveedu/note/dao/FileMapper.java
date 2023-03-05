@@ -69,4 +69,13 @@ public interface FileMapper extends BaseMapper<File> {
      * @return 父目录id
      */
     Integer selectParentIdByIdAndIsDir(@Param("childId") Integer childId, @Param("isDir") Integer isDir);
+
+    /**
+     * 通过目录id和用户id查询是否存在并且为目录
+     *
+     * @param id 目录id
+     * @param userId 用户id
+     * @return null-不存在
+     */
+    Integer existsByIdAndUserIdAndIsDir(@Param("id") Integer id,@Param("userId") Long userId);
 }

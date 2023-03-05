@@ -103,4 +103,13 @@ public interface FileService extends IService<File> {
      * @return 列表信息
      */
     Result getFileAtDirUnderDirList(Integer childId);
+
+    /**
+     * 将当前文件或目录移动到某个目录下
+     *
+     * @param fromFileId 需要移动的文件或目录
+     * @param toDirId 移动到的目录
+     * @return 移动状况
+     */
+    Result modifyFileLocation(Integer fromFileId, Integer toDirId);
 }
