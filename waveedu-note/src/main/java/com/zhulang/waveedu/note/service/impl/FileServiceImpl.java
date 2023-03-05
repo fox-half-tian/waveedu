@@ -1,7 +1,9 @@
 package com.zhulang.waveedu.note.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
@@ -84,5 +86,25 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         fileMapper.insert(dir);
         // 4.返回
         return Result.ok(dir.getId());
+    }
+
+    @Override
+    public Result modifyName(Integer fileId, String fileName) {
+        // 1.校验格式
+        if (fileId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件Id格式错误");
+        }
+        if (StrUtil.isBlank(fileName)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效文件名");
+        }
+        if (fileName.length() > 64) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件名最多64字");
+        }
+        // 2.修改文件名
+        int resultCount = fileMapper.update(null, new LambdaUpdateWrapper<File>()
+                .eq(File::getId, fileId)
+                .eq(File::getUserId, UserHolderUtils.getUserId())
+                .set(File::getName, fileName));
+        return resultCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
     }
 }

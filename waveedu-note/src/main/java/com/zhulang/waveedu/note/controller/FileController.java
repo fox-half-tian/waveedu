@@ -6,11 +6,7 @@ import com.zhulang.waveedu.note.service.FileService;
 import com.zhulang.waveedu.note.vo.SaveDirVO;
 import com.zhulang.waveedu.note.vo.SaveFileVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -48,6 +44,19 @@ public class FileController {
     @PostMapping("/saveDir")
     public Result saveDir(@Validated @RequestBody SaveDirVO saveDirVO){
         return fileService.saveDir(saveDirVO);
+    }
+
+    /**
+     * 修改文件名（目录名）
+     *
+     * @param fileId 文件id
+     * @param fileName 文件名
+     * @return 修改状况
+     */
+    @PutMapping("/modifyName")
+    public Result modifyName(@RequestParam("fileId")Integer fileId,
+                             @RequestParam("fileName")String fileName){
+        return fileService.modifyName(fileId,fileName);
     }
 
 

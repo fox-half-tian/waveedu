@@ -38,4 +38,13 @@ public interface FileService extends IService<File> {
      * @return 目录id
      */
     Result saveDir(SaveDirVO saveDirVO);
+
+    /**
+     * 修改文件名（目录名）
+     *
+     * @param fileId 文件id
+     * @param fileName 文件名
+     * @return 修改状况
+     */
+    Result modifyName(Integer fileId, String fileName);
 }
