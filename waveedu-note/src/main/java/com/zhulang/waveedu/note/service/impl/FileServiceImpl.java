@@ -11,6 +11,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.note.po.File;
 import com.zhulang.waveedu.note.dao.FileMapper;
 import com.zhulang.waveedu.note.po.FileContent;
+import com.zhulang.waveedu.note.query.SimpleFileInfoQuery;
 import com.zhulang.waveedu.note.service.FileContentService;
 import com.zhulang.waveedu.note.service.FileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>
@@ -53,10 +55,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         }
         // 2.判断是否重名
         if (fileMapper.selectCount(new LambdaQueryWrapper<File>()
-                .eq(File::getUserId,userId)
-                .eq(File::getParentId,saveFileVO.getParentId())
-                .eq(File::getName,saveFileVO.getName()))!=0){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件和某个已有的文件重名，请指定其它名称");
+                .eq(File::getUserId, userId)
+                .eq(File::getParentId, saveFileVO.getParentId())
+                .eq(File::getName, saveFileVO.getName())) != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "指定的文件和某个已有的文件重名，请指定其它名称");
         }
         // 属性转换与赋值
         File file = BeanUtil.copyProperties(saveFileVO, File.class);
@@ -76,6 +78,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         // 内容表信息
         FileContent fileContent = new FileContent();
         fileContent.setId(file.getId());
+        fileContent.setContent("");
         fileContentService.save(fileContent);
     }
 
@@ -90,10 +93,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "父级文件夹不存在");
         }
         if (fileMapper.selectCount(new LambdaQueryWrapper<File>()
-                .eq(File::getUserId,userId)
-                .eq(File::getParentId,saveDirVO.getParentId())
-                .eq(File::getName,saveDirVO.getName()))!=0){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件夹和某个已有的文件重名，请指定其它名称");
+                .eq(File::getUserId, userId)
+                .eq(File::getParentId, saveDirVO.getParentId())
+                .eq(File::getName, saveDirVO.getName())) != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "指定的文件夹和某个已有的文件重名，请指定其它名称");
         }
         // 2.属性转换与赋值
         File dir = BeanUtil.copyProperties(saveDirVO, File.class);
@@ -126,7 +129,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                     .set(File::getName, fileName));
             return resultCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "文件不存在");
         } catch (Exception e) {
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"指定的文件名和某个已有的文件重名，请指定其它名称");
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "指定的文件名和某个已有的文件重名，请指定其它名称");
         }
     }
 
@@ -147,7 +150,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
         fileMapper.deleteById(fileId);
         HashMap<String, Object> map = new HashMap<>(2);
-        map.put("dirId",fileId);
+        map.put("dirId", fileId);
         rabbitTemplate.convertAndSend(RabbitConstants.NOTE_DIR_DEL_EXCHANGE_NAME,
                 RabbitConstants.NOTE_DIR_DEL_QUEUE_ROUTING_KEY,
                 map);
@@ -162,5 +165,22 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         fileMapper.deleteById(fileId);
         // 2.删除 note_file_content 表信息
         fileContentService.removeById(fileId);
+    }
+
+    @Override
+    public Result getListByParentId(Integer parentId) {
+        // 1.校验格式
+        if (parentId < 0) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件夹id格式错误");
+        }
+        // 2.获取列表信息
+        List<SimpleFileInfoQuery> list = fileMapper.selectSimpleFileInfoList(parentId, UserHolderUtils.getUserId());
+        // 3.返回
+        return Result.ok(list);
+    }
+
+    @Override
+    public boolean existsByIdAndUserId(Integer id, Long userId) {
+        return fileMapper.existsByIdAndUserId(id, userId) != null;
     }
 }

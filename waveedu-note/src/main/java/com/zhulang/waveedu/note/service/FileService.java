@@ -62,4 +62,21 @@ public interface FileService extends IService<File> {
      * @param fileId 文件id
      */
     void removeNoDirFile(Integer fileId);
+
+    /**
+     * 获取该id文件夹下的文件列表信息
+     *
+     * @param parentId 父id
+     * @return 列表信息：文件名 + 是否为目录 + 类型 + 文件id
+     */
+    Result getListByParentId(Integer parentId);
+
+    /**
+     * 通过文件id和用户id查询是否存在
+     *
+     * @param id 文件id
+     * @param userId 用户id
+     * @return true-存在，false-不存在
+     */
+    boolean existsByIdAndUserId(Integer id, Long userId);
 }

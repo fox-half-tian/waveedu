@@ -2,7 +2,10 @@ package com.zhulang.waveedu.note.dao;
 
 import com.zhulang.waveedu.note.po.File;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.note.query.SimpleFileInfoQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,22 @@ public interface FileMapper extends BaseMapper<File> {
      * @return 0-不是目录，1-是目录
      */
     Integer selectIsDirByIdAndUserId(@Param("id") Integer id,@Param("userId")  Long userId);
+
+    /**
+     * 获取该id文件夹下的文件列表信息
+     *
+     * @param parentId 父id
+     * @param userId 用户id
+     * @return 列表信息：文件名 + 是否为目录 + 类型 + 文件Id
+     */
+    List<SimpleFileInfoQuery> selectSimpleFileInfoList(@Param("parentId") Integer parentId, @Param("userId") Long userId);
+
+    /**
+     * 通过文件id和用户id查询是否存在
+     *
+     * @param id 文件id
+     * @param userId 用户id
+     * @return true-存在，false-不存在
+     */
+    Integer existsByIdAndUserId(@Param("id") Integer id,@Param("userId") Long userId);
 }

@@ -3,11 +3,9 @@ package com.zhulang.waveedu.note.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.note.service.FileContentService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.zhulang.waveedu.note.vo.SaveFileContentVO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -35,4 +33,16 @@ public class FileContentController {
     public Result getContent(@RequestParam("fileId")Integer fileId){
         return fileContentService.getContent(fileId);
     }
+
+    /**
+     * 保存文件内容
+     *
+     * @param saveFileContentVO 文件id + 内容
+     * @return 保存状况
+     */
+    @PostMapping("/saveContent")
+    public Result saveContent(@Validated @RequestBody SaveFileContentVO saveFileContentVO){
+        return fileContentService.saveContent(saveFileContentVO);
+    }
+
 }

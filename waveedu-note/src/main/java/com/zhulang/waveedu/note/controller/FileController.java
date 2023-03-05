@@ -76,5 +76,17 @@ public class FileController {
         }
     }
 
+    /**
+     * 获取该id文件夹下的文件列表信息
+     *
+     * @param parentId 父id
+     * @return 列表信息：文件名 + 是否为目录 + 类型 + id
+     */
+    @GetMapping("/getListByParentId")
+    public Result getListByParentId(@RequestParam("parentId")Integer parentId){
+        return fileService.getListByParentId(parentId);
+    }
+
+
 
 }

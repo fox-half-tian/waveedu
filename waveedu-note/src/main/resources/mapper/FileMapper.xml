@@ -8,4 +8,17 @@
         WHERE `id` = #{id}
           AND `user_id` = #{userId}
     </select>
+    <select id="selectSimpleFileInfoList" resultType="com.zhulang.waveedu.note.query.SimpleFileInfoQuery">
+        SELECT `id`, `name`, `is_dir`, `type`
+        FROM `note_file`
+        WHERE `user_id` = #{userId}
+          AND `parent_id` = #{parentId}
+        ORDER BY `is_dir` DESC, `name`
+    </select>
+    <select id="existsByIdAndUserId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `note_file`
+        WHERE `id` = #{id}
+          AND `user_id` = #{userId}
+    </select>
 </mapper>
