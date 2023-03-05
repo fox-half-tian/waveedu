@@ -27,7 +27,7 @@ public class FileContent implements Serializable {
     /**
      * 主键id(自增)
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id")
     private Integer id;
 
     /**
