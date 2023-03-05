@@ -79,4 +79,20 @@ public interface FileService extends IService<File> {
      * @return true-存在，false-不存在
      */
     boolean existsByIdAndUserId(Integer id, Long userId);
+
+    /**
+     * 获取该文件id所在目录下的文件列表
+     *
+     * @param childId 文件id
+     * @return 列表信息
+     */
+    Result getFileAtDirUnderList(Integer childId);
+
+    /**
+     * 获取该id文件夹下的所有目录信息
+     *
+     * @param parentId 父id
+     * @return 列表信息：目录名 + id
+     */
+    Result getDirListByParentId(Integer parentId);
 }

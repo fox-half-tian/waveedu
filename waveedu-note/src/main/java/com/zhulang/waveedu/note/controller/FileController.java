@@ -87,6 +87,26 @@ public class FileController {
         return fileService.getListByParentId(parentId);
     }
 
+    /**
+     * 获取该文件id所在目录下的文件列表
+     *
+     * @param childId 文件id
+     * @return 列表信息
+     */
+    @GetMapping("/getFileAtDirUnderList")
+    public Result getFileAtDirUnderList(@RequestParam("childId")Integer childId){
+        return fileService.getFileAtDirUnderList(childId);
+    }
 
+    /**
+     * 获取该id文件夹下的所有目录信息
+     *
+     * @param parentId 父id
+     * @return 列表信息：目录名 + id
+     */
+    @GetMapping("/getDirListByParentId")
+    public Result getDirListByParentId(@RequestParam("parentId")Integer parentId){
+        return fileService.getDirListByParentId(parentId);
+    }
 
 }

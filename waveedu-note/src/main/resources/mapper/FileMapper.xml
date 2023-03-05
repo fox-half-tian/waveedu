@@ -21,4 +21,17 @@
         WHERE `id` = #{id}
           AND `user_id` = #{userId}
     </select>
+    <select id="selectParentIdById" resultType="java.lang.Integer">
+        SELECT `parent_id`
+        FROM `note_file`
+        WHERE `id` = #{childId}
+    </select>
+    <select id="selectSimpleDirInfoList" resultType="com.zhulang.waveedu.note.query.SimpleDirInfoQuery">
+        SELECT `id`, `name`
+        FROM `note_file`
+        WHERE `user_id` = #{userId}
+          AND `parent_id` = #{parentId}
+          AND `is_dir` = 1
+        ORDER BY `name`
+    </select>
 </mapper>

@@ -11,6 +11,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.note.po.File;
 import com.zhulang.waveedu.note.dao.FileMapper;
 import com.zhulang.waveedu.note.po.FileContent;
+import com.zhulang.waveedu.note.query.SimpleDirInfoQuery;
 import com.zhulang.waveedu.note.query.SimpleFileInfoQuery;
 import com.zhulang.waveedu.note.service.FileContentService;
 import com.zhulang.waveedu.note.service.FileService;
@@ -182,5 +183,34 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     @Override
     public boolean existsByIdAndUserId(Integer id, Long userId) {
         return fileMapper.existsByIdAndUserId(id, userId) != null;
+    }
+
+    @Override
+    public Result getFileAtDirUnderList(Integer childId) {
+        // 1.校验格式
+        if (childId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件夹id格式错误");
+        }
+        // 2.查询当前文件所在父目录
+        Integer parentId = fileMapper.selectParentIdById(childId);
+        if (parentId==null){
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"文件不存在");
+        }
+        // 3.获取列表信息
+        List<SimpleFileInfoQuery> list = fileMapper.selectSimpleFileInfoList(parentId, UserHolderUtils.getUserId());
+        // 4.返回
+        return Result.ok(list);
+    }
+
+    @Override
+    public Result getDirListByParentId(Integer parentId) {
+        // 1.校验格式
+        if (parentId<0){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
+        }
+        // 2.获取目录信息
+        List<SimpleDirInfoQuery> list = fileMapper.selectSimpleDirInfoList(parentId, UserHolderUtils.getUserId());
+        // 3.返回
+        return Result.ok(list);
     }
 }
