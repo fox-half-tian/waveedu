@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkStuAnswerService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
@@ -64,5 +65,15 @@ public class CommonHomeworkStuAnswerController {
         );
     }
 
+    /**
+     * 将文件信息进行解密
+     *
+     * @param object 加密信息
+     * @return 文件名 + 文件路径
+     */
+    @PostMapping("/saveFile")
+    public Result saveFile(@RequestBody JSONObject object){
+        return commonHomeworkStuAnswerService.saveFile(object.getString("fileInfo"));
+    }
 
 }

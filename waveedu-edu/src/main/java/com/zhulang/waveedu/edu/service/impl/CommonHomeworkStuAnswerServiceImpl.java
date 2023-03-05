@@ -2,6 +2,8 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -9,12 +11,15 @@ import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisLockUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.edu.dto.SimpleFileInfo;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
+import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.service.*;
@@ -242,7 +247,7 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
             commonHomeworkStuAnswerMapper.update(null, new LambdaUpdateWrapper<CommonHomeworkStuAnswer>()
                     .eq(CommonHomeworkStuAnswer::getStuId, stuId)
                     .eq(CommonHomeworkStuAnswer::getQuestionId, innerMark.getQuestionId())
-                            .gt(CommonHomeworkStuAnswer::getScore,innerMark.getScore())
+                    .gt(CommonHomeworkStuAnswer::getScore, innerMark.getScore())
                     .set(CommonHomeworkStuAnswer::getScore, innerMark.getScore()));
         }
         // 3.设置评语与总分，状态
@@ -252,5 +257,18 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
         commonHomeworkStuScoreService.modifyScoreAndCommentAndStatus(homeworkId, stuId, comment);
         // 返回
         return Result.ok();
+    }
+
+    @Override
+    public Result saveFile(String fileInfo) {
+        try {
+            String filePath = JSON.parseObject(CipherUtils.decrypt(fileInfo)).getString("filePath");
+            if (filePath == null) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
+            }
+            return Result.ok(filePath);
+        } catch (Exception e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "错误的文件信息");
+        }
     }
 }

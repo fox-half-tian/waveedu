@@ -45,4 +45,12 @@ public interface CommonHomeworkStuAnswerService extends IService<CommonHomeworkS
      * @return 是否成功
      */
     Result markHomework(Long stuId, String comment, List<MarkHomeworkVO.InnerMark> innerMarkList);
+
+    /**
+     * 将文件信息进行解密
+     *
+     * @param fileInfo 加密信息
+     * @return 文件名 + 文件路径
+     */
+    Result saveFile(String fileInfo);
 }
