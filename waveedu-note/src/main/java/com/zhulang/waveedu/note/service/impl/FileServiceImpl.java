@@ -213,4 +213,21 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         // 3.返回
         return Result.ok(list);
     }
+
+    @Override
+    public Result getFileAtDirUnderDirList(Integer childId) {
+        // 1.校验格式
+        if (childId < 1) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件夹id格式错误");
+        }
+        // 2.查询当前目录所在父目录
+        Integer parentId = fileMapper.selectParentIdByIdAndIsDir(childId,1);
+        if (parentId==null){
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"文件夹不存在");
+        }
+        // 3.获取列表信息
+        List<SimpleDirInfoQuery> list = fileMapper.selectSimpleDirInfoList(parentId, UserHolderUtils.getUserId());
+        // 4.返回
+        return Result.ok(list);
+    }
 }

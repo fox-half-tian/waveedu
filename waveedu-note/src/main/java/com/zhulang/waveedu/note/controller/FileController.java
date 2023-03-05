@@ -109,4 +109,15 @@ public class FileController {
         return fileService.getDirListByParentId(parentId);
     }
 
+    /**
+     * 获取该文件id所在目录下的目录列表
+     *
+     * @param childId 文件id
+     * @return 列表信息
+     */
+    @GetMapping("/getFileAtDirUnderDirList")
+    public Result getFileAtDirUnderDirList(@RequestParam("childId")Integer childId){
+        return fileService.getFileAtDirUnderDirList(childId);
+    }
+
 }

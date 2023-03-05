@@ -21,17 +21,17 @@ public interface FileMapper extends BaseMapper<File> {
     /**
      * 根据 id 和 用户Id 获取文件是否为目录
      *
-     * @param id 文件id
+     * @param id     文件id
      * @param userId 用户id
      * @return 0-不是目录，1-是目录
      */
-    Integer selectIsDirByIdAndUserId(@Param("id") Integer id,@Param("userId")  Long userId);
+    Integer selectIsDirByIdAndUserId(@Param("id") Integer id, @Param("userId") Long userId);
 
     /**
      * 获取该id文件夹下的文件列表信息
      *
      * @param parentId 父id
-     * @param userId 用户id
+     * @param userId   用户id
      * @return 列表信息：文件名 + 是否为目录 + 类型 + 文件Id
      */
     List<SimpleFileInfoQuery> selectSimpleFileInfoList(@Param("parentId") Integer parentId, @Param("userId") Long userId);
@@ -39,11 +39,11 @@ public interface FileMapper extends BaseMapper<File> {
     /**
      * 通过文件id和用户id查询是否存在
      *
-     * @param id 文件id
+     * @param id     文件id
      * @param userId 用户id
      * @return true-存在，false-不存在
      */
-    Integer existsByIdAndUserId(@Param("id") Integer id,@Param("userId") Long userId);
+    Integer existsByIdAndUserId(@Param("id") Integer id, @Param("userId") Long userId);
 
     /**
      * 查询子文件所在的父目录id
@@ -57,8 +57,16 @@ public interface FileMapper extends BaseMapper<File> {
      * 获取该id文件夹下的目录列表信息
      *
      * @param parentId 父id
-     * @param userId 当前用户
+     * @param userId   当前用户
      * @return 信息列表：目录名 + 目录id
      */
-    List<SimpleDirInfoQuery> selectSimpleDirInfoList(@Param("parentId") Integer parentId,@Param("userId") Long userId);
+    List<SimpleDirInfoQuery> selectSimpleDirInfoList(@Param("parentId") Integer parentId, @Param("userId") Long userId);
+
+    /**
+     * 查询子目录所在的父目录id
+     *
+     * @param childId 子目录id
+     * @return 父目录id
+     */
+    Integer selectParentIdByIdAndIsDir(@Param("childId") Integer childId, @Param("isDir") Integer isDir);
 }

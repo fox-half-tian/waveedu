@@ -95,4 +95,12 @@ public interface FileService extends IService<File> {
      * @return 列表信息：目录名 + id
      */
     Result getDirListByParentId(Integer parentId);
+
+    /**
+     * 获取该文件id所在目录下的目录列表
+     *
+     * @param childId 文件id
+     * @return 列表信息
+     */
+    Result getFileAtDirUnderDirList(Integer childId);
 }

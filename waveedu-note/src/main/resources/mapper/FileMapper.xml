@@ -34,4 +34,10 @@
           AND `is_dir` = 1
         ORDER BY `name`
     </select>
+    <select id="selectParentIdByIdAndIsDir" resultType="java.lang.Integer">
+        SELECT `parent_id`
+        FROM `note_file`
+        WHERE `id` = #{childId}
+          AND `is_dir` = #{isDir}
+    </select>
 </mapper>
