@@ -34,11 +34,6 @@ public class FileContent implements Serializable {
     private Integer id;
 
     /**
-     * 开始内容
-     */
-    private String beginContent;
-
-    /**
      * 笔记内容
      */
     private String content;

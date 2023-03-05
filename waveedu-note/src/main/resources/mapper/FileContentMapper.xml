@@ -2,4 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.note.dao.FileContentMapper">
 
+    <select id="selectFileContentById" resultType="com.zhulang.waveedu.note.query.FileContentQuery">
+        SELECT c.`content`, c.`create_time`, c.`update_time`, f.`type`, f.`name`
+        FROM `note_file_content` c,
+             `note_file` f
+        WHERE c.`id` = #{id}
+          AND f.`id` = #{id}
+          AND f.`user_id` = #{userId}
+          AND f.`is_dir` = 0
+    </select>
 </mapper>
