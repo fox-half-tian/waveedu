@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+
 /**
  * oss服务端签名后直传
  *
@@ -26,25 +27,37 @@ public class OssServiceController {
      * @return 签名信息
      */
     @GetMapping("/headImage")
-    public Result headImage(){
+    public Result headImage() {
         return ossClientUtils.policy(OssConstants.HEAD_IMAGE_DIR);
     }
+
     /**
      * 获取课程的签名
      *
      * @return 签名信息
      */
     @GetMapping("/lessonCover")
-    public Result lessonCover(){
+    public Result lessonCover() {
         return ossClientUtils.policy(OssConstants.LESSON_COVER_DIR);
     }
+
     /**
      * 获取课程班级的签名
      *
      * @return 签名信息
      */
     @GetMapping("/lessonClassCover")
-    public Result lessonClassCover(){
+    public Result lessonClassCover() {
         return ossClientUtils.policy(OssConstants.LESSON_CLASS_COVER_DIR);
+    }
+
+    /**
+     * 获取笔记的签名
+     *
+     * @return 签名信息
+     */
+    @GetMapping("/noteImage")
+    public Result noteImage() {
+        return ossClientUtils.policy(OssConstants.NOTE_IMAGE_DIR);
     }
 }

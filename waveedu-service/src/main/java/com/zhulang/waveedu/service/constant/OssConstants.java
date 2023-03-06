@@ -19,4 +19,9 @@ public class OssConstants {
      * 存储课程的班级的封面的目录
      */
     public static final String LESSON_CLASS_COVER_DIR = "lesson-class-cover";
+
+    /**
+     * 存储笔记的目录
+     */
+    public static final String NOTE_IMAGE_DIR = "note-image";
 }
