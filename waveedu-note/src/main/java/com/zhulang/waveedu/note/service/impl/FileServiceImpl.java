@@ -112,15 +112,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     @Override
     public Result modifyName(Integer fileId, String fileName) {
         // 1.校验格式
-        if (fileId < 1) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件Id格式错误");
-        }
-        if (StrUtil.isBlank(fileName)) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效文件名");
-        }
-        if (fileName.length() > 64) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件名最多64字");
-        }
+//        if (fileId < 1) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件Id格式错误");
+//        }
+//        if (StrUtil.isBlank(fileName)) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效文件名");
+//        }
+//        if (fileName.length() > 64) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件名最多64字");
+//        }
 
         // 2.修改文件名
         try {
@@ -234,9 +234,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     @Override
     public Result modifyFileLocation(Integer fromFileId, Integer toDirId) {
         // 1.格式校验
-        if (fromFileId<1||toDirId<0){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
-        }
+//        if (fromFileId<1||toDirId<0){
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
+//        }
         Long userId = UserHolderUtils.getUserId();
         // 2.判断需要移动到的目录是否存在
         if (toDirId!=0 && fileMapper.existsByIdAndUserIdAndIsDir(toDirId,userId)==null){

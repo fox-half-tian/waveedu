@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.note.service.FileService;
+import com.zhulang.waveedu.note.vo.ModifyFileLocationVO;
 import com.zhulang.waveedu.note.vo.SaveDirVO;
 import com.zhulang.waveedu.note.vo.SaveFileVO;
+import com.zhulang.waveedu.note.vo.SimpleFileInfoVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,29 +53,23 @@ public class FileController {
     /**
      * 修改文件名（目录名）
      *
-     * @param fileId   文件id
-     * @param fileName 文件名
+     * @param simpleFileInfoVO 文件Id + 文件
      * @return 修改状况
      */
     @PutMapping("/modifyName")
-    public Result modifyName(@RequestParam("fileId") Integer fileId,
-                             @RequestParam("fileName") String fileName) {
-        return fileService.modifyName(fileId, fileName);
+    public Result modifyName(@Validated @RequestBody SimpleFileInfoVO simpleFileInfoVO) {
+        return fileService.modifyName(simpleFileInfoVO.getFileId(), simpleFileInfoVO.getFileName());
     }
 
     /**
      * 删除文件或目录
      *
-     * @param object 文件id
+     * @param fileId 文件id
      * @return 删除状况
      */
     @DeleteMapping("/remove")
-    public Result remove(@RequestBody JSONObject object) {
-        try {
-            return fileService.remove(Integer.parseInt(object.getString("fileId")));
-        } catch (NumberFormatException e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "文件id格式错误");
-        }
+    public Result remove(@RequestParam("fileId") Integer  fileId) {
+            return fileService.remove(fileId);
     }
 
     /**
@@ -123,13 +119,11 @@ public class FileController {
     /**
      * 将当前文件或目录移动到某个目录下
      *
-     * @param fromFileId 需要移动的文件或目录
-     * @param toDirId 移动到的目录
+     * @param modifyFileLocationVO 需要移动的文件或目录 toDirId 移动到的目录
      * @return 移动状况
      */
     @PutMapping("/modifyFileLocation")
-    public Result modifyFileLocation(@RequestParam("fromFileId")Integer fromFileId,
-                                     @RequestParam("toDirId")Integer toDirId){
-        return fileService.modifyFileLocation(fromFileId,toDirId);
+    public Result modifyFileLocation(@RequestBody @Validated ModifyFileLocationVO modifyFileLocationVO){
+        return fileService.modifyFileLocation(modifyFileLocationVO.getFromFileId(),modifyFileLocationVO.getToDirId());
     }
 }

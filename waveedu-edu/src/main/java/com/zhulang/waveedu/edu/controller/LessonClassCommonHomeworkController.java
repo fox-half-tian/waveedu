@@ -64,12 +64,16 @@ public class LessonClassCommonHomeworkController {
     /**
      * 取消预发布，状态变为未发布，只允许创建者操作
      *
-     * @param homeworkId 作业Id
+     * @param object 作业Id
      * @return 修改状况
      */
     @PutMapping("/modify/cancelPreparePublish")
-    public Result modifyCancelPreparePublish(@RequestParam("homeworkId") Integer homeworkId) {
-        return lessonClassCommonHomeworkService.modifyCancelPreparePublish(homeworkId);
+    public Result modifyCancelPreparePublish(@RequestBody JSONObject object) {
+        try {
+            return lessonClassCommonHomeworkService.modifyCancelPreparePublish(Integer.parseInt(object.getString("homeworkId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
     }
 
     /**
@@ -114,7 +118,7 @@ public class LessonClassCommonHomeworkController {
     /**
      * 学生获取班级作业的简单信息列表，班级的学生可以调用这个接口
      *
-     * @param classId   班级id
+     * @param classId 班级id
      * @return 作业信息：作业id，作业标题，作业状态，截止时间，按照时间从近到远进行了排序
      */
     @GetMapping("/get/stu/homeworkSimpleListInfo")
@@ -130,22 +134,18 @@ public class LessonClassCommonHomeworkController {
      * @return 作业详细信息
      */
     @GetMapping("/get/stu/homeworkDetailInfo")
-    public Result getStuHomeworkDetailInfo(@RequestParam("homeworkId") Integer homeworkId){
+    public Result getStuHomeworkDetailInfo(@RequestParam("homeworkId") Integer homeworkId) {
         return lessonClassCommonHomeworkService.getStuHomeworkDetailInfo(homeworkId);
     }
 
     /**
      * 删除一份作业
      *
-     * @param object 作业id
+     * @param homeworkId 作业id
      * @return 删除状况
      */
     @DeleteMapping("/remove")
-    public Result removeHomework(@RequestBody JSONObject object){
-        try {
-            return lessonClassCommonHomeworkService.removeHomework(Integer.parseInt(object.getString("homeworkId")));
-        } catch (NumberFormatException e) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"作业id格式错误");
-        }
+    public Result removeHomework(@RequestParam("homeworkId") Integer homeworkId) {
+        return lessonClassCommonHomeworkService.removeHomework(homeworkId);
     }
 }
