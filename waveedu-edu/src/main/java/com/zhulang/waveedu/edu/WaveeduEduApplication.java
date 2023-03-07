@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu;
 
+import com.zhulang.waveedu.common.util.RedisCacheUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

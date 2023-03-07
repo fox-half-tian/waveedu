@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.chat.service;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -40,8 +41,11 @@ public class WebSocketServer {
     private static ConcurrentHashMap<String, WebSocketServer> websocketMap = new ConcurrentHashMap<>();
     //接收用户的sid，指定需要推送的用户
     //private String sid;
-    @Resource
-    private RedisCacheUtils redisCacheUtils;
+
+    // @Resource和@Autowired注入的对象的时机是在容器启动的时候，而websocket是在有连接的时候才创建实例对象，此时已经过了容器初始化时间了，就不会自动注入。
+    // 因此，需要在每次websocket实例化的时候手动注入一下，从spring容器中拿到RedisCacheUtils实例对象。
+    private RedisCacheUtils redisCacheUtils = SpringUtil.getBean(RedisCacheUtils.class);
+
     private String classId;
 
     private String userId;
@@ -50,7 +54,7 @@ public class WebSocketServer {
      * 连接成功后调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("class_id") String classId)  {
+    public void onOpen(Session session, @PathParam("class_id") String classId) {
         this.classId = classId;
         this.session = session;
         String token = session.getRequestParameterMap().get("token").get(0);
@@ -64,7 +68,7 @@ public class WebSocketServer {
         this.userId = userId;
         //webSocketSet.add(this);     //加入set中
         Map<String, String> classMsg = redisCacheUtils.getCacheMap(RedisConstants.CHAT_CLASS_INFO + classId);
-        if(classMsg==null){
+        if (classMsg == null) {
             System.out.println("------------------");
         }
         JSONObject sessionJson = JSONObject.parseObject(JSONObject.toJSONString(session));
@@ -100,7 +104,7 @@ public class WebSocketServer {
         if (StringUtils.isNotBlank(message)) {
             Map<String, String> classMsg = redisCacheUtils.getCacheMap(RedisConstants.CHAT_CLASS_INFO + classId);
             for (String sessionJson : classMsg.keySet()) {
-                Session session1= JSON.parseObject(sessionJson,Session.class);
+                Session session1 = JSON.parseObject(sessionJson, Session.class);
                 session1.getBasicRemote().sendText(message);
             }
         }
