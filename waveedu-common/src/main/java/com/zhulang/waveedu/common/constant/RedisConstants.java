@@ -78,4 +78,10 @@ public class RedisConstants {
     public static final String LOCK_COMMON_HOMEWORK_JUDGE_STU_COMMIT_KEY = "lock:commonHomework:stuCommit:";
     public static final Long LOCK_COMMON_HOMEWORK_JUDGE_STU_COMMIT_TTL = 10L;
 
+
+    /**
+     * 班级群聊的所有班级的key
+     */
+    public static final String CHAT_CLASS_INFO="chat:class:info:";
+
 }

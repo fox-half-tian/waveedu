@@ -91,13 +91,18 @@ public class JwtUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        create();
-//        parse("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyNWMzZjg3YzFhMzU0ODgzOGNkYzg3OWY4YjgxNDRiNyIsInN1YiI6IjIwMjEyODgwIiwiaXNzIjoiZm94IiwiaWF0IjoxNjczOTY0ODM5LCJleHAiOjE2NzM5NzIwMzl9.BAafCCPDy3VroLFV4AiVn3cFPnp_G4tU26tELofVEvY");
+        create("20200001");
+        create("20200002");
+        create("20200003");
+        //parse("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNzc1YWVkODlmZWY0YTY5YWQ3NTAyMGY1OWMzYjYxZSIsInN1YiI6IjIwMjEyODgwIiwiaXNzIjoid2F2ZUVkdSIsImlhdCI6MTY3ODEyOTk4MywiZXhwIjoxNjc4MTM3MTgzfQ.ugErFs24RsZEh_FYpg9YrB-n0k46kaNvRVZPRYL2-ng");
     }
 
     public static void create() {
-        String id = "20212880";
         String jwt = createJWT("20212880");
+        System.out.println(jwt);
+    }
+    public static void create(String username) {
+        String jwt = createJWT(username);
         System.out.println(jwt);
     }
 
