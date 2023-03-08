@@ -7,6 +7,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
 import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.homeworkvo.PublishPlusCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,18 @@ public class LessonClassCommonHomeworkController {
     public Result publish(@Validated @RequestBody PublishCommonHomeworkVO publishCommonHomeworkVO) {
         return lessonClassCommonHomeworkService.publish(publishCommonHomeworkVO);
     }
+
+    /**
+     * 发布作业（增强）
+     *
+     * @param publishPlusCommonHomeworkVO 作业信息
+     * @return 发布状况
+     */
+    @PostMapping("/publishPlus")
+    public Result publishPlus(@Validated @RequestBody PublishPlusCommonHomeworkVO publishPlusCommonHomeworkVO) {
+        return lessonClassCommonHomeworkService.publishPlus(publishPlusCommonHomeworkVO);
+    }
+
 
     /**
      * 修改普通作业信息，只允许创建者进行操作
