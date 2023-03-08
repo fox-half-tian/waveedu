@@ -3,12 +3,14 @@ package com.zhulang.waveedu.edu.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
+import com.zhulang.waveedu.edu.vo.homeworkvo.BatchSaveCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * <p>
@@ -33,6 +35,17 @@ public class CommonHomeworkQuestionController {
     @PostMapping("/saveQuestion")
     public Result saveQuestion(@Validated @RequestBody SaveCommonHomeworkQuestionVO saveCommonHomeworkQuestionVO) {
         return commonHomeworkQuestionService.saveQuestion(saveCommonHomeworkQuestionVO);
+    }
+
+    /**
+     * 添加多个题目
+     *
+     * @param batchSaveCommonHomeworkQuestionVO 题目内容
+     * @return 是否添加成功
+     */
+    @PostMapping("/batchSaveQuestion")
+    public Result batchSaveQuestion(@Validated @RequestBody BatchSaveCommonHomeworkQuestionVO batchSaveCommonHomeworkQuestionVO) {
+        return commonHomeworkQuestionService.batchSaveQuestion(batchSaveCommonHomeworkQuestionVO);
     }
 
     /**

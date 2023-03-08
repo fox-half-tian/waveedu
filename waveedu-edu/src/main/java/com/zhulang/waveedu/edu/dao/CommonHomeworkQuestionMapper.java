@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.dao;
 
+import com.zhulang.waveedu.common.component.BatchBaseMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.homeworkquery.*;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author 狐狸半面添
  * @since 2023-02-28
  */
-public interface CommonHomeworkQuestionMapper extends BaseMapper<CommonHomeworkQuestion> {
+public interface CommonHomeworkQuestionMapper extends BatchBaseMapper<CommonHomeworkQuestion> {
 
     /**
      * 根据题目查看作业的发布状况以及创建者

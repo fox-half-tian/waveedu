@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
+import com.zhulang.waveedu.edu.vo.homeworkvo.BatchSaveCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
 import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -144,4 +146,19 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 作业id
      */
     Integer getHomeworkIdByQuestionId(Integer questionId);
+
+    /**
+     * 添加一个题目
+     *
+     * @param batchSaveCommonHomeworkQuestionVO 题目内容
+     * @return 是否添加成功
+     */
+    Result batchSaveQuestion(BatchSaveCommonHomeworkQuestionVO batchSaveCommonHomeworkQuestionVO);
+
+    /**
+     * 保存问题并修改总分数
+     *
+     * @param questions 问题信息
+     */
+    void batchSaveQuestionAndModifyTotalScore(List<CommonHomeworkQuestion> questions);
 }
