@@ -127,4 +127,12 @@ public interface CommonHomeworkQuestionMapper extends BatchBaseMapper<CommonHome
      * @return 作业id
      */
     Integer selectHomeworkIdByQuestionId(@Param("questionId") Integer questionId);
+
+    /**
+     * 查询是否属于同一份作业
+     *
+     * @param questionIds 问题ids
+     * @return 1-为同一份作业
+     */
+    Integer selectHomeworkIdByQuestionIds(@Param("ids") List<Integer> questionIds);
 }

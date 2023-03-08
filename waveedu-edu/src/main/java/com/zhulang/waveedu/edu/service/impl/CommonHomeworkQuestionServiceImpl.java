@@ -255,32 +255,32 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
                 resultMap.put("status", 2);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
-                    resultMap.put("isOpen",1);
+                    resultMap.put("isOpen", 1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看 作业解析
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId, userId));
 
-                }else{
-                    resultMap.put("isOpen",0);
+                } else {
+                    resultMap.put("isOpen", 0);
                     // 获取问题情况以及自己的答案
                     // 获取： 问题id,问题类型，问题描述，问题满分，学生答案
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithoutScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithoutScore(homeworkId, userId));
                 }
             } else {
                 // 如果已批阅
                 resultMap.put("status", 3);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
-                    resultMap.put("isOpen",1);
+                    resultMap.put("isOpen", 1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生该题分数
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId, userId));
 
-                }else{
-                    resultMap.put("isOpen",0);
+                } else {
+                    resultMap.put("isOpen", 0);
                     // 获取问题情况以及自己的答案
                     // 获取：问题id,问题类型，问题描述，问题满分，学生答案，学生该题分数
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithScore(homeworkId, userId));
                 }
             }
         }
@@ -294,17 +294,17 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
 
     @Override
     public List<QuestionDetailAndSelfAnswerWithoutScoreQuery> getQuestionDetailAndSelfAnswerWithoutScore(Integer homeworkId, Long stuId) {
-        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,stuId);
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId, stuId);
     }
 
     @Override
     public List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId, Long stuId) {
-        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,stuId);
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId, stuId);
     }
 
     @Override
     public boolean isHomeworkCreatorByQuestionIdAndUserId(Integer questionId, Long userId) {
-        return commonHomeworkQuestionMapper.isHomeworkCreatorByQuestionIdAndUserId(questionId,userId)!=null;
+        return commonHomeworkQuestionMapper.isHomeworkCreatorByQuestionIdAndUserId(questionId, userId) != null;
     }
 
     @Override
@@ -335,7 +335,7 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         int homeworkType = (Integer) map.get("type");
         List<BatchSaveCommonHomeworkQuestionVO.InnerQuestion> innerQuestionList = batchSaveCommonHomeworkQuestionVO.getInnerQuestionList();
         ArrayList<CommonHomeworkQuestion> questions = new ArrayList<>(innerQuestionList.size());
-        for (BatchSaveCommonHomeworkQuestionVO.InnerQuestion innerQuestion:innerQuestionList) {
+        for (BatchSaveCommonHomeworkQuestionVO.InnerQuestion innerQuestion : innerQuestionList) {
 
             // 获取题目类型
             int questionType = innerQuestion.getType();
@@ -381,6 +381,54 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
         commonHomeworkQuestionMapper.insertBatchSomeColumn(questions);
         // 修改作业表的总分数
         lessonClassCommonHomeworkService.modifyTotalScore(questions.get(0).getCommonHomeworkId());
+    }
+
+    @Override
+    public Result batchDelQuestion(List<Integer> questionIds) {
+        // 1.判断 questionId 格式
+//        if (questionId < 1) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目id格式错误");
+//        }
+
+        // 1.判断是否属于同一道作业
+        Integer count = commonHomeworkQuestionMapper.selectHomeworkIdByQuestionIds(questionIds);
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "未查询到问题信息");
+        }
+        if (count != 1) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "问题不属于同一作业");
+        }
+
+        // 2.查看问题是否发布
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndCommonHomeworkIdById(questionIds.get(0));
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未查询到题目或作业信息");
+        }
+
+        if ((Integer) map.get("isPublish") != 0) {
+            return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "作业已发布，无法修改题目");
+        }
+
+        // 3.查看是否为创建者
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.删除题目
+//        ((CommonHomeworkQuestionService) AopContext.currentProxy()).removeQuestionAndModifyTotalScore(questionId, Integer.parseInt(map.get("homeworkId").toString()));
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).batchRemoveQuestionAndModifyTotalScore(questionIds, Integer.parseInt(map.get("homeworkId").toString()));
+
+        // 5.返回
+        return Result.ok();
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchRemoveQuestionAndModifyTotalScore(List<Integer> questionIds, Integer homeworkId) {
+        // 问题删除
+        commonHomeworkQuestionMapper.deleteBatchIds(questionIds);
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(homeworkId);
     }
 
     @Override

@@ -100,9 +100,9 @@
     </select>
     <select id="selectHomeworkIdAndTypeAndEndTimeAndIsPublishById"
             resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery">
-        SELECT h.`id`   AS `homeworkId`,
-               h.`type` AS `homeworkType`,
-               h.`end_time` AS `endTime`,
+        SELECT h.`id`         AS `homeworkId`,
+               h.`type`       AS `homeworkType`,
+               h.`end_time`   AS `endTime`,
                h.`is_publish` AS `isPublish`
         FROM `edu_common_homework_question` q,
              `edu_lesson_class_common_homework` h
@@ -111,7 +111,8 @@
     </select>
     <select id="isHomeworkCreatorByQuestionIdAndUserId" resultType="java.lang.Integer">
         SELECT 1
-        FROM `edu_common_homework_question` q,`edu_lesson_class_common_homework` h
+        FROM `edu_common_homework_question` q,
+             `edu_lesson_class_common_homework` h
         WHERE q.`id` = #{questionId}
           AND q.`common_homework_id` = h.`id`
           AND h.`creator_id` = #{userId}
@@ -120,5 +121,13 @@
         SELECT `common_homework_id`
         FROM `edu_common_homework_question`
         WHERE `id` = #{questionId}
+    </select>
+    <select id="selectHomeworkIdByQuestionIds" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT common_homework_id)
+        FROM `edu_common_homework_question`
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
     </select>
 </mapper>

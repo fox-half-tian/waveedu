@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -58,6 +59,18 @@ public class CommonHomeworkQuestionController {
     @DeleteMapping("/delQuestion")
     public Result delQuestion(@RequestParam("questionId") Integer questionId) {
         return commonHomeworkQuestionService.delQuestion(questionId);
+    }
+
+    /**
+     * 删除多个题目
+     * 只有未发布的作业才可以删除题目
+     *
+     * @param questionIds 多个题目Ids
+     * @return 是否删除
+     */
+    @DeleteMapping("/batchDelQuestion")
+    public Result delQuestion(@RequestParam("questionIds") List<Integer> questionIds) {
+        return commonHomeworkQuestionService.batchDelQuestion(questionIds);
     }
 
     /**

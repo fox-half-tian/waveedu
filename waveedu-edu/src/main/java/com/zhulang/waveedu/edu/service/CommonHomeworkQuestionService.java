@@ -89,6 +89,14 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
     void removeQuestionAndModifyTotalScore(Integer questionId, Integer homeworkId);
 
     /**
+     * 批量删除问题并修改总分数
+     *
+     * @param questionIds 问题ids
+     * @param homeworkId 问题所在的作业id
+     */
+    void batchRemoveQuestionAndModifyTotalScore(List<Integer> questionIds, Integer homeworkId);
+
+    /**
      * 修改问题并修改总分数
      *
      * @param question   问题信息
@@ -161,4 +169,13 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @param questions 问题信息
      */
     void batchSaveQuestionAndModifyTotalScore(List<CommonHomeworkQuestion> questions);
+
+    /**
+     * 删除多个题目
+     * 只有未发布的作业才可以删除题目
+     *
+     * @param questionIds 多个题目Ids
+     * @return 是否删除
+     */
+    Result batchDelQuestion(List<Integer> questionIds);
 }
