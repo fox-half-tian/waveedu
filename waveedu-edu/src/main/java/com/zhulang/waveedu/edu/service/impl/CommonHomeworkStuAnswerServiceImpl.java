@@ -3,7 +3,6 @@ package com.zhulang.waveedu.edu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
@@ -15,11 +14,9 @@ import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisLockUtils;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.edu.dto.SimpleFileInfo;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
-import com.zhulang.waveedu.edu.po.LessonClassFile;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.service.*;
@@ -116,6 +113,8 @@ public class CommonHomeworkStuAnswerServiceImpl extends ServiceImpl<CommonHomewo
                 commonHomeworkStuScore.setHomeworkId(info.getHomeworkId());
                 commonHomeworkStuScore.setStuId(userId);
                 commonHomeworkStuScoreService.save(commonHomeworkStuScore);
+                // 提交人数 + 1
+                lessonClassCommonHomeworkService.modifySubmitNumOfAddOne(info.getHomeworkId());
 
                 // 5.如果作业类型是探究型，则直接返回
                 if (info.getHomeworkType() == 0) {

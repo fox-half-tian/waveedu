@@ -22,7 +22,6 @@ import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.FailureCallback;
@@ -484,6 +483,9 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
             if (publishPlusCommonHomeworkVO.getStartTime() == null) {
                 return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "未设置发布时间");
             }
+            if(publishPlusCommonHomeworkVO.getStartTime().isAfter(publishPlusCommonHomeworkVO.getEndTime())){
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"发布时间必须在截止时间之前");
+            }
             // 3.2 创建一个消息回调对象，需要指定一个唯一的id，因为每一个消息发送成功或失败都需要回调，用于区分是哪一个消息
             CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
             // 3.3 注册回调函数
@@ -634,5 +636,10 @@ public class LessonClassCommonHomeworkServiceImpl extends ServiceImpl<LessonClas
         // 5.返回
         return Result.ok();
 
+    }
+
+    @Override
+    public void modifySubmitNumOfAddOne(Integer homeworkId) {
+        lessonClassCommonHomeworkMapper.updateCommitNumOfAddOne(homeworkId);
     }
 }

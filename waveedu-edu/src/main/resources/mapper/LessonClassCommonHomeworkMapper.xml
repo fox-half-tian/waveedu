@@ -8,6 +8,11 @@
                              WHERE `common_homework_id` = #{id})
         WHERE `id` = #{id}
     </update>
+    <update id="updateCommitNumOfAddOne">
+        UPDATE `edu_lesson_class_common_homework`
+        SET commit_num = commit_num + 1
+        WHERE id = #{id}
+    </update>
 
     <select id="selectCreatorIdById" resultType="java.lang.Long">
         SELECT `creator_id`

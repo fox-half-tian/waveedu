@@ -143,4 +143,10 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 发布状况
      */
     Result publishPlus(PublishPlusCommonHomeworkVO publishPlusCommonHomeworkVO);
+
+    /**
+     * 提交人数 + 1
+     * @param homeworkId 作业id
+     */
+    void modifySubmitNumOfAddOne(Integer homeworkId);
 }
