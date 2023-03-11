@@ -34,6 +34,15 @@ public class RedisConstants {
     public static final Long LOGIN_USER_INFO_REFRESH_TTL = 60 * 90L;
 
     /**
+     * 用户登录后保存在redis的信息
+     * 有效期：两小时
+     * 如果离过期还有90分钟就刷新一次有效期
+     */
+    public static final String LOGIN_ADMIN_INFO_KEY = "login:admin:info:";
+    public static final Long LOGIN_ADMIN_INFO_TTL = 60 * 60 * 2L;
+    public static final Long LOGIN_ADMIN_INFO_REFRESH_TTL = 60 * 90L;
+
+    /**
      * 保存用户通过密码登录的验证次数
      * 有效期：2分钟
      * 2分钟内验证次数达到8次依旧错误，将会冻结手机号以密码方式登录

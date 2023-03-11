@@ -36,6 +36,7 @@
       <module name="waveedu-judge" options="-parameters" />
       <module name="waveedu-messagesdk" options="-parameters" />
       <module name="waveedu-note" options="-parameters" />
+      <module name="waveedu-program" options="-parameters" />
       <module name="waveedu-service" options="-parameters" />
       <module name="waveedu-share" options="-parameters" />
     </option>

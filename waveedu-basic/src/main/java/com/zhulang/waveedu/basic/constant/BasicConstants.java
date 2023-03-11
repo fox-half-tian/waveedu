@@ -31,4 +31,5 @@ public class BasicConstants {
      * 注销冻结天数，7天后将无法通过登录修改状态（真正注销）
      */
     public static final int LOGOFF_FROZEN_DAY = 7;
+
 }
