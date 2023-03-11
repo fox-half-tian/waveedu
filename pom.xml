@@ -24,6 +24,7 @@
         <module>waveedu-messagesdk</module>
         <module>waveedu-note</module>
         <module>waveedu-chat</module>
+        <module>waveedu-judge</module>
     </modules>
 
 </project>
