@@ -175,7 +175,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             admin.setNickName(nickName);
             redisUser.setName(nickName);
         }
-        if (adminModifyInfoVO.getIcon()!=null){
+        if (adminModifyInfoVO.getIcon() != null) {
             admin.setIcon(adminModifyInfoVO.getIcon());
             redisUser.setIcon(adminModifyInfoVO.getIcon());
         }
@@ -189,23 +189,48 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Override
     public Result switchStatus(Long adminId) {
-        if (RegexUtils.isSnowIdInvalid(adminId)){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"管理员Id格式错误");
+        if (RegexUtils.isSnowIdInvalid(adminId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "管理员Id格式错误");
         }
         // 1.获取当前状态
         Integer status = adminMapper.getStatusByAdminId(adminId);
-        if (status==null){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"该管理员信息不存在");
+        if (status == null) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "该管理员信息不存在");
         }
-        if (status==0){
+        if (status == 0) {
             // 修改为启用状态
-            adminMapper.updateStatusByAdmin(adminId,1);
+            adminMapper.updateStatusByAdmin(adminId, 1);
             return Result.ok("on");
-        }else{
+        } else {
             // 修改为禁用状态
-            adminMapper.updateStatusByAdmin(adminId,0);
+            adminMapper.updateStatusByAdmin(adminId, 0);
+            // 缓存中删除信息
+            redisCacheUtils.deleteObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + adminId);
             return Result.ok("off");
         }
+    }
+
+    @Override
+    public Result getAllCommonAdminInfoList() {
+        return Result.ok(adminMapper.selectAllCommonAdminInfoList());
+    }
+
+    @Override
+    public Result removeAdminAccount(Long adminId) {
+        // 1.校验Id
+        if (adminId.longValue() == UserHolderUtils.getUserId()) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "不允许删除超级管理员");
+        }
+        // 2.数据库中删除
+        int updateCount = adminMapper.deleteById(adminId);
+        if (updateCount == 0) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "管理员不存在");
+        }
+        // 3.缓存中删除信息
+        redisCacheUtils.deleteObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + adminId);
+        // 4.返回
+        return Result.ok();
+
     }
 
     /**

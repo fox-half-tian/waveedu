@@ -3,7 +3,11 @@ package com.zhulang.waveedu.basic.dao;
 import com.zhulang.waveedu.basic.po.Admin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.basic.query.AdminIdAndPasswordAndStatusQuery;
+import com.zhulang.waveedu.basic.query.CommonAdminInfoQuery;
+import com.zhulang.waveedu.common.entity.Result;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +42,11 @@ public interface AdminMapper extends BaseMapper<Admin> {
      * @param newStatus 新状态
      */
     void updateStatusByAdmin(@Param("adminId") Long adminId,@Param("newStatus") Integer newStatus);
+
+    /**
+     * 查询所有的普通管理员
+     *
+     * @return 列表信息
+     */
+    List<CommonAdminInfoQuery> selectAllCommonAdminInfoList();
 }

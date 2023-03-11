@@ -1,33 +1,23 @@
-package com.zhulang.waveedu.basic.po;
+package com.zhulang.waveedu.basic.query;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 管理员表
- * </p>
- *
  * @author 狐狸半面添
- * @since 2023-03-11
+ * @create 2023-03-11 19:23
  */
-@TableName("basic_admin")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Admin implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class CommonAdminInfoQuery {
     /**
      * 主键（雪花算法生成）
      */
-    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -51,30 +41,17 @@ public class Admin implements Serializable {
     private String icon;
 
     /**
-     * 权限：0-超级管理员，1-普通管理员
-     */
-    private Integer role;
-
-    /**
      * 状态：0-禁用，1-启用
      */
     private Integer status;
 
     /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDeleted;
-
-    /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

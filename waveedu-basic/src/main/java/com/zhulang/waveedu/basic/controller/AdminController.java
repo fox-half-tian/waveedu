@@ -84,4 +84,27 @@ public class AdminController {
         return adminService.switchStatus(Long.parseLong(object.getString("adminId")));
     }
 
+    /**
+     * 获取所有普通管理员信息列表
+     * 只允许超级管理员操作
+     *
+     * @return 管理员信息
+     */
+    @GetMapping("/get/allCommonAdminInfoList")
+    public Result getAllCommonAdminInfoList(){
+        return adminService.getAllCommonAdminInfoList();
+    }
+
+    /**
+     * 删除管理员账号
+     * 只允许超级管理员操作
+     *
+     * @param adminId 管理员id
+     * @return 删除状况
+     */
+    @DeleteMapping("/remove/adminAccount")
+    public Result removeAdminAccount(@RequestParam("adminId")Long adminId){
+        return adminService.removeAdminAccount(adminId);
+    }
+
 }

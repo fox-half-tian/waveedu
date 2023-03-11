@@ -20,4 +20,18 @@
         WHERE `id` = #{adminId}
           AND `is_deleted` = 0
     </select>
+    <select id="selectAllCommonAdminInfoList"
+            resultType="com.zhulang.waveedu.basic.query.CommonAdminInfoQuery">
+        SELECT `id`,
+               `username`,
+               `password`,
+               `nick_name`,
+               `icon`,
+               `status`,
+               `create_time`,
+               `update_time`
+        FROM `basic_admin`
+        WHERE `role` = 1
+          AND `is_deleted` = 0
+    </select>
 </mapper>

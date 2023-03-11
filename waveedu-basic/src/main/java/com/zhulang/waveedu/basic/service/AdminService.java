@@ -55,4 +55,21 @@ public interface AdminService extends IService<Admin> {
      * @return 修改后的状态
      */
     Result switchStatus(Long adminId);
+
+    /**
+     * 获取所有普通管理员信息列表
+     * 只允许超级管理员操作
+     *
+     * @return 管理员信息
+     */
+    Result getAllCommonAdminInfoList();
+
+    /**
+     * 删除管理员账号
+     * 只允许超级管理员操作
+     *
+     * @param adminId 管理员id
+     * @return 删除状况
+     */
+    Result removeAdminAccount(Long adminId);
 }
