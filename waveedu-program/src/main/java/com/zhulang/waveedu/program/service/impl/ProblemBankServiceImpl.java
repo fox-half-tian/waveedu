@@ -49,8 +49,6 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         problemBank.setAuthorType(authorType);
         // 设置标题
         problemBank.setTitle(title);
-        // 设置版本
-        problemBank.setCaseVersion(System.currentTimeMillis());
 
         // 3.保存信息到数据库
         problemBankMapper.insert(problemBank);

@@ -86,7 +86,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D:\\SoftwareEngineering\\java\\project\\waveedu\\waveedu-program\\src\\main\\resources\\mapper")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("program_problem_bank") // 设置需要生成的表名
+                    builder.addInclude("program_problem_bank_case") // 设置需要生成的表名
                             .addTablePrefix("program_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

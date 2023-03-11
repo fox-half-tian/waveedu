@@ -96,11 +96,6 @@ public class ProblemBank implements Serializable {
     private String hint;
 
     /**
-     * 测试案例版本
-     */
-    private Long caseVersion;
-
-    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
