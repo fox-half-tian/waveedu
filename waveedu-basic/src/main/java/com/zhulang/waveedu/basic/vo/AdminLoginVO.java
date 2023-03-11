@@ -19,9 +19,9 @@ public class AdminLoginVO {
      * 用户名
      */
     @NotNull(message = "用户名不允许为空")
-    @Length(min = 12, max = 12,message = "用户名格式错误")
+    @Length(min = 16, max = 16,message = "用户名格式错误")
     private String username;
     @NotNull(message = "密码不允许为空")
-    @Length(min = 12, max = 12,message = "密码格式错误")
+    @Length(min = 24, max = 24,message = "密码格式错误")
     private String password;
 }

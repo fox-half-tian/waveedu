@@ -3,7 +3,6 @@ package com.zhulang.waveedu.basic.dao;
 import com.zhulang.waveedu.basic.po.Admin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.basic.query.AdminIdAndPasswordAndStatusQuery;
-import com.zhulang.waveedu.basic.query.UserIdAndPasswordAndStatusQuery;
 import org.apache.ibatis.annotations.Param;
 
 /**

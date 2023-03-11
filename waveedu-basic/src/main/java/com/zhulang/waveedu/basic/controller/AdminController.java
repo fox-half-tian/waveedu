@@ -3,6 +3,7 @@ package com.zhulang.waveedu.basic.controller;
 
 import com.zhulang.waveedu.basic.service.AdminService;
 import com.zhulang.waveedu.basic.vo.AdminLoginVO;
+import com.zhulang.waveedu.basic.vo.AdminModifyInfoVO;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class AdminController {
      * 管理员登录
      *
      * @param adminLoginVO 账号 + 密码
-     * @return 登录状况，成功则返回token
+     * @return 登录状况，成功则返回token与身份
      */
     @PostMapping("/login")
     public Result login(@Validated @RequestBody AdminLoginVO adminLoginVO){
@@ -39,6 +40,7 @@ public class AdminController {
 
     /**
      * 保存/添加管理员信息
+     * 只允许超级管理员操作
      *
      * @return 管理员id
      */
@@ -57,5 +59,15 @@ public class AdminController {
         return adminService.getSelfSimpleInfo();
     }
 
+    /**
+     * 修改自身信息
+     *
+     * @param adminModifyInfoVO 信息：头像，昵称
+     * @return 修改状况
+     */
+    @PutMapping("/modify/selfInfo")
+    public Result modifySelfInfo(@Validated @RequestBody AdminModifyInfoVO adminModifyInfoVO){
+        return adminService.modifySelfInfo(adminModifyInfoVO);
+    }
 
 }

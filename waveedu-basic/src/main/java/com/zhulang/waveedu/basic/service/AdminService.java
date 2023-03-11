@@ -2,6 +2,7 @@ package com.zhulang.waveedu.basic.service;
 
 import com.zhulang.waveedu.basic.po.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.basic.vo.AdminModifyInfoVO;
 import com.zhulang.waveedu.common.entity.Result;
 
 /**
@@ -37,4 +38,12 @@ public interface AdminService extends IService<Admin> {
      * @return 昵称 + 头像
      */
     Result getSelfSimpleInfo();
+
+    /**
+     * 修改自身信息
+     *
+     * @param adminModifyInfoVO 信息：头像，昵称
+     * @return 修改状况
+     */
+    Result modifySelfInfo(AdminModifyInfoVO adminModifyInfoVO);
 }

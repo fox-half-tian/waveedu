@@ -2,13 +2,16 @@ package com.zhulang.waveedu.basic.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.basic.constant.BasicConstants;
 import com.zhulang.waveedu.basic.po.Admin;
 import com.zhulang.waveedu.basic.dao.AdminMapper;
 import com.zhulang.waveedu.basic.query.AdminIdAndPasswordAndStatusQuery;
 import com.zhulang.waveedu.basic.service.AdminService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhulang.waveedu.basic.vo.AdminModifyInfoVO;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -105,14 +108,18 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             }
             // 10.查询用户信息
             LambdaQueryWrapper<Admin> userInfoWrapper = new LambdaQueryWrapper<>();
-            userInfoWrapper.select(Admin::getId, Admin::getNickName, Admin::getIcon)
+            userInfoWrapper.select(Admin::getId, Admin::getNickName, Admin::getIcon, Admin::getRole)
                     .eq(Admin::getId, adminQuery.getId());
             Admin admin = this.getOne(userInfoWrapper);
             // 11.移除缓存中的次数统计
             redisCacheUtils.deleteObject(usernameKey);
 
             // 12.缓存用户信息，携带 token 返回成功，以后请求时前端需要携带 token，放在请求头中
-            return Result.ok(saveRedisInfo(admin));
+            String token = saveRedisInfo(admin);
+            HashMap<String, Object> resultMap = new HashMap<>(2);
+            resultMap.put("token", token);
+            resultMap.put("role", admin.getRole());
+            return Result.ok(resultMap);
         } finally {
             // 13.最后释放锁
             if (lock) {
@@ -127,9 +134,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         // 1.设置信息
         Admin admin = new Admin();
         // 1.1 用户名
-        admin.setUsername(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 12));
+        admin.setUsername(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 16));
         // 1.2 密码
-        admin.setPassword(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 12));
+        admin.setPassword(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 24));
         // 1.3 昵称
         admin.setNickName("逐浪管理员" + RandomUtil.randomString(5));
         // 1.4 头像
@@ -151,6 +158,35 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         resultMap.put("nickName", redisUser.getName());
         resultMap.put("icon", redisUser.getIcon());
         return Result.ok(resultMap);
+    }
+
+    @Override
+    public Result modifySelfInfo(AdminModifyInfoVO adminModifyInfoVO) {
+        // 判断昵称格式
+        String nickName = adminModifyInfoVO.getNickName();
+        if (nickName != null) {
+            nickName = nickName.trim();
+            if (StrUtil.isBlank(nickName)) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效昵称");
+            }
+        }
+        // 设置数据库信息与缓存信息
+        RedisUser redisUser = UserHolderUtils.getRedisUser();
+        Admin admin = new Admin();
+        if (nickName != null) {
+            admin.setNickName(nickName);
+            redisUser.setName(nickName);
+        }
+        if (adminModifyInfoVO.getIcon()!=null){
+            admin.setIcon(adminModifyInfoVO.getIcon());
+            redisUser.setIcon(adminModifyInfoVO.getIcon());
+        }
+        // 修改数据库信息与缓存信息
+        admin.setId(redisUser.getId());
+        adminMapper.updateById(admin);
+        redisCacheUtils.setCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_ADMIN_INFO_TTL);
+        // 返回
+        return Result.ok();
     }
 
     /**
