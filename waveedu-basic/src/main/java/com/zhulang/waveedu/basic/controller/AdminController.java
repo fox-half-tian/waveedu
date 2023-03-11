@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.basic.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.zhulang.waveedu.basic.service.AdminService;
 import com.zhulang.waveedu.basic.vo.AdminLoginVO;
 import com.zhulang.waveedu.basic.vo.AdminModifyInfoVO;
@@ -68,6 +70,18 @@ public class AdminController {
     @PutMapping("/modify/selfInfo")
     public Result modifySelfInfo(@Validated @RequestBody AdminModifyInfoVO adminModifyInfoVO){
         return adminService.modifySelfInfo(adminModifyInfoVO);
+    }
+
+    /**
+     * 启用或禁用普通管理员账号
+     * 只允许超级管理员进行操作
+     *
+     * @param object 管理员id
+     * @return 修改后的状态
+     */
+    @PutMapping("/switch/status")
+    public Result switchStatus(@RequestBody JSONObject object){
+        return adminService.switchStatus(Long.parseLong(object.getString("adminId")));
     }
 
 }

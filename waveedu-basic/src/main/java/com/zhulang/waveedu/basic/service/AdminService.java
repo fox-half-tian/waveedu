@@ -46,4 +46,13 @@ public interface AdminService extends IService<Admin> {
      * @return 修改状况
      */
     Result modifySelfInfo(AdminModifyInfoVO adminModifyInfoVO);
+
+    /**
+     * 启用或禁用管理员
+     * 只允许超级管理员进行操作
+     *
+     * @param adminId 管理员id
+     * @return 修改后的状态
+     */
+    Result switchStatus(Long adminId);
 }

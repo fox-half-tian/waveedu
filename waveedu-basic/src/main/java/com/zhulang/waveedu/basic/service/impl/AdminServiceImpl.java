@@ -17,10 +17,8 @@ import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.common.util.CipherUtils;
-import com.zhulang.waveedu.common.util.RedisCacheUtils;
-import com.zhulang.waveedu.common.util.RedisLockUtils;
-import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.common.util.*;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -187,6 +185,27 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         redisCacheUtils.setCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + redisUser.getId(), redisUser, RedisConstants.LOGIN_ADMIN_INFO_TTL);
         // 返回
         return Result.ok();
+    }
+
+    @Override
+    public Result switchStatus(Long adminId) {
+        if (RegexUtils.isSnowIdInvalid(adminId)){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"管理员Id格式错误");
+        }
+        // 1.获取当前状态
+        Integer status = adminMapper.getStatusByAdminId(adminId);
+        if (status==null){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"该管理员信息不存在");
+        }
+        if (status==0){
+            // 修改为启用状态
+            adminMapper.updateStatusByAdmin(adminId,1);
+            return Result.ok("on");
+        }else{
+            // 修改为禁用状态
+            adminMapper.updateStatusByAdmin(adminId,0);
+            return Result.ok("off");
+        }
     }
 
     /**

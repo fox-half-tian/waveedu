@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.basic.dao.AdminMapper">
+    <update id="updateStatusByAdmin">
+        UPDATE `basic_admin`
+        SET `status` = #{newStatus}
+        WHERE `id` = #{adminId}
+    </update>
 
     <select id="selectIdAndPasswordAndStatusByUsername"
             resultType="com.zhulang.waveedu.basic.query.AdminIdAndPasswordAndStatusQuery">
-        SELECT `id`,`password`,`status`
+        SELECT `id`, `password`, `status`
         FROM `basic_admin`
         WHERE `username` = #{username}
+          AND `is_deleted` = 0
+    </select>
+    <select id="getStatusByAdminId" resultType="java.lang.Integer">
+        SELECT `status`
+        FROM `basic_admin`
+        WHERE `id` = #{adminId}
+          AND `is_deleted` = 0
     </select>
 </mapper>
