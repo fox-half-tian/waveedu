@@ -23,4 +23,13 @@ public interface ProblemBankCaseService extends IService<ProblemBankCase> {
      * @return 案例id
      */
     Result saveCase(SaveProblemCaseVO saveProblemCaseVO, Integer authorType);
+
+    /**
+     * 删除测试案例
+     *
+     * @param caseId 案例id
+     * @param authorType 作者身份
+     * @return 删除状况
+     */
+    Result removeCase(Integer caseId, int authorType);
 }

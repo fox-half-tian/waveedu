@@ -7,12 +7,9 @@ import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.zhulang.waveedu.program.service.ProblemBankService;
 import com.zhulang.waveedu.program.vo.SaveProblemCaseVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -45,7 +42,7 @@ public class ProblemBankCaseController {
     }
 
     /**
-     * 管理员添加测试案例
+     * 用户添加测试案例
      *
      * @param saveProblemCaseVO 案例信息
      * @return 案例id
@@ -53,5 +50,27 @@ public class ProblemBankCaseController {
     @PostMapping("/user/saveCase")
     public Result userSaveCase(@RequestBody @Validated SaveProblemCaseVO saveProblemCaseVO){
         return problemBankCaseService.saveCase(saveProblemCaseVO, USER);
+    }
+
+    /**
+     * 管理员移除测试案例
+     *
+     * @param caseId 案例id
+     * @return 删除状况
+     */
+    @DeleteMapping("/admin/removeCase")
+    public Result adminSaveCase(@RequestParam("caseId")Integer caseId){
+        return problemBankCaseService.removeCase(caseId, ADMIN);
+    }
+
+    /**
+     * 用户删除测试案例
+     *
+     * @param caseId 案例id
+     * @return 删除状况
+     */
+    @DeleteMapping("/user/removeCase")
+    public Result userSaveCase(@RequestParam("caseId") Integer caseId){
+        return problemBankCaseService.removeCase(caseId, USER);
     }
 }
