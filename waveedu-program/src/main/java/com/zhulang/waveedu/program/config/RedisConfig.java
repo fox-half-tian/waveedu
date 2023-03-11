@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.share.config;
+package com.zhulang.waveedu.program.config;
 
 import com.zhulang.waveedu.common.util.FastJsonRedisSerializer;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;

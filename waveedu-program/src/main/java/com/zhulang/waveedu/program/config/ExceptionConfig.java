@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.share.config;
+package com.zhulang.waveedu.program.config;
 
 import com.zhulang.waveedu.common.exception.WaveEduExceptionHandler;
 import org.springframework.context.annotation.Bean;

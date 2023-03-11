@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.share.config;
+package com.zhulang.waveedu.program.config;
 
 import com.zhulang.waveedu.common.filter.AuthenticationTokenFilter;
 import com.zhulang.waveedu.common.handler.AccessDeniedHandlerImpl;

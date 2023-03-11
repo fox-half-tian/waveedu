@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.share.config;
+package com.zhulang.waveedu.program.config;
 
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;

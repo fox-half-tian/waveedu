@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.share;
+package com.zhulang.waveedu.program;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
