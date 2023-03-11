@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.program.constant.AuthorTypeConstants;
 import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.zhulang.waveedu.program.service.ProblemBankService;
+import com.zhulang.waveedu.program.vo.ModifyCaseVO;
 import com.zhulang.waveedu.program.vo.SaveProblemCaseVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class ProblemBankCaseController {
      * @return 删除状况
      */
     @DeleteMapping("/admin/removeCase")
-    public Result adminSaveCase(@RequestParam("caseId")Integer caseId){
+    public Result adminRemoveCase(@RequestParam("caseId")Integer caseId){
         return problemBankCaseService.removeCase(caseId, ADMIN);
     }
 
@@ -70,7 +71,29 @@ public class ProblemBankCaseController {
      * @return 删除状况
      */
     @DeleteMapping("/user/removeCase")
-    public Result userSaveCase(@RequestParam("caseId") Integer caseId){
+    public Result userRemoveCase(@RequestParam("caseId") Integer caseId){
         return problemBankCaseService.removeCase(caseId, USER);
+    }
+
+    /**
+     * 管理员修改测试案例
+     *
+     * @param modifyCaseVO 案例信息
+     * @return 修改状况
+     */
+    @PutMapping("/admin/modifyCase")
+    public Result adminModifyCase(@RequestBody @Validated ModifyCaseVO modifyCaseVO){
+        return problemBankCaseService.modifyCase(modifyCaseVO, ADMIN);
+    }
+
+    /**
+     * 用户修改测试案例
+     *
+     * @param modifyCaseVO 案例信息
+     * @return 修改状况
+     */
+    @PutMapping("/user/modifyCase")
+    public Result userModifyCase(@RequestBody @Validated ModifyCaseVO modifyCaseVO){
+        return problemBankCaseService.modifyCase(modifyCaseVO, USER);
     }
 }

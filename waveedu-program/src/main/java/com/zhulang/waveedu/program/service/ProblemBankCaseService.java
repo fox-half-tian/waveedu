@@ -3,6 +3,7 @@ package com.zhulang.waveedu.program.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.program.po.ProblemBankCase;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.program.vo.ModifyCaseVO;
 import com.zhulang.waveedu.program.vo.SaveProblemCaseVO;
 
 /**
@@ -32,4 +33,13 @@ public interface ProblemBankCaseService extends IService<ProblemBankCase> {
      * @return 删除状况
      */
     Result removeCase(Integer caseId, int authorType);
+
+    /**
+     * 修改测试案例
+     *
+     * @param modifyCaseVO 案例信息
+     * @param authorType 作者身份
+     * @return 修改状况
+     */
+    Result modifyCase(ModifyCaseVO modifyCaseVO, int authorType);
 }

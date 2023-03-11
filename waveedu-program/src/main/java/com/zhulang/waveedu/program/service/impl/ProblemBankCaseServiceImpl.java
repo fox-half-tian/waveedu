@@ -13,6 +13,7 @@ import com.zhulang.waveedu.program.query.ProblemIdAndAuthorIdAndAuthorTypeQuery;
 import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.program.service.ProblemBankService;
+import com.zhulang.waveedu.program.vo.ModifyCaseVO;
 import com.zhulang.waveedu.program.vo.SaveProblemCaseVO;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,30 @@ public class ProblemBankCaseServiceImpl extends ServiceImpl<ProblemBankCaseMappe
         }
         // 4.移除案例
         problemBankCaseMapper.deleteById(caseId);
+        // 5.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result modifyCase(ModifyCaseVO modifyCaseVO, int authorType) {
+        // 1.查询实例对应的问题id，作者id，作者身份
+        ProblemIdAndAuthorIdAndAuthorTypeQuery queryInfo = problemBankCaseMapper.selectProblemIdAndAuthorIdAndAuthorType(modifyCaseVO.getId());
+        // 2.为空说明问题或案例不存在
+        if (queryInfo == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "问题或案例信息不存在");
+        }
+        // 3.根据身份进行处理
+        // 3.1 如果当前是用户进行接口调用，并且这个案例对应问题的作者身份是用户，则需要判断作者id是否为本人
+        if (queryInfo.getAuthorType() == USER && authorType == USER) {
+            if (queryInfo.getAuthorId().longValue() != UserHolderUtils.getUserId()) {
+                return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+            }
+        }else if(queryInfo.getAuthorType() != authorType){
+            // 3.2 如果当前身份与问题的作者身份不一致
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.修改信息
+        problemBankCaseMapper.updateById(BeanUtil.copyProperties(modifyCaseVO,ProblemBankCase.class));
         // 5.返回
         return Result.ok();
     }
