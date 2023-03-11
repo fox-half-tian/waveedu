@@ -9,6 +9,11 @@ public class BasicConstants {
      * 默认的用户头像
      */
     public final static String DEFAULT_USER_ICON = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/head-image/waveedudefault.png";
+
+    /**
+     * 默认的管理员头像
+     */
+    public final static String DEFAULT_ADMIN_ICON = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/head-image/waveedudefault.png";
     /**
      * 登录时最大验证密码的次数
      */

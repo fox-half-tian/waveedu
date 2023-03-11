@@ -5,12 +5,9 @@ import com.zhulang.waveedu.basic.service.AdminService;
 import com.zhulang.waveedu.basic.vo.AdminLoginVO;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -40,8 +37,25 @@ public class AdminController {
     }
 
 
+    /**
+     * 保存/添加管理员信息
+     *
+     * @return 管理员id
+     */
     @PostMapping("/saveAdmin")
-    public void saveAdmin(){
-//        adminService.saveAdmin();
+    public Result saveAdmin(){
+        return adminService.saveAdmin();
     }
+
+    /**
+     * 获取自身的简单信息：昵称+头像
+     *
+     * @return 昵称 + 头像
+     */
+    @GetMapping("/get/selfSimpleInfo")
+    public Result getSelfSimpleInfo(){
+        return adminService.getSelfSimpleInfo();
+    }
+
+
 }

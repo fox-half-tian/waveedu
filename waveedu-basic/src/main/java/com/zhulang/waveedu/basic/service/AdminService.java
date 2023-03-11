@@ -22,4 +22,19 @@ public interface AdminService extends IService<Admin> {
      * @return 登录状况，成功则返回token
      */
     Result login(String username, String password);
+
+    /**
+     * 保存/添加管理员信息
+     * 只允许超级管理员操作
+     *
+     * @return 管理员id
+     */
+    Result saveAdmin();
+
+    /**
+     * 获取自身的简单信息：昵称+头像
+     *
+     * @return 昵称 + 头像
+     */
+    Result getSelfSimpleInfo();
 }

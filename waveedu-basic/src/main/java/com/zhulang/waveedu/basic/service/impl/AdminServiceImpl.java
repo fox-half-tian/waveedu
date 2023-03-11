@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.basic.service.impl;
 
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.basic.constant.BasicConstants;
 import com.zhulang.waveedu.basic.po.Admin;
@@ -16,9 +17,11 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
 import com.zhulang.waveedu.common.util.RedisLockUtils;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 /**
  * <p>
@@ -117,6 +120,37 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             }
         }
 
+    }
+
+    @Override
+    public Result saveAdmin() {
+        // 1.设置信息
+        Admin admin = new Admin();
+        // 1.1 用户名
+        admin.setUsername(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 12));
+        // 1.2 密码
+        admin.setPassword(RandomUtil.randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 12));
+        // 1.3 昵称
+        admin.setNickName("逐浪管理员" + RandomUtil.randomString(5));
+        // 1.4 头像
+        admin.setIcon(BasicConstants.DEFAULT_ADMIN_ICON);
+        // 1.5 权限，普通管理员
+        admin.setRole(1);
+        // 1.6 默认禁用
+        admin.setStatus(0);
+        // 2.插入信息
+        adminMapper.insert(admin);
+        // 3.返回id
+        return Result.ok(admin.getId());
+    }
+
+    @Override
+    public Result getSelfSimpleInfo() {
+        RedisUser redisUser = UserHolderUtils.getRedisUser();
+        HashMap<String, String> resultMap = new HashMap<>(2);
+        resultMap.put("nickName", redisUser.getName());
+        resultMap.put("icon", redisUser.getIcon());
+        return Result.ok(resultMap);
     }
 
     /**
