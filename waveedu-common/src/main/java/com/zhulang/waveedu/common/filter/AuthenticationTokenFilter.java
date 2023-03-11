@@ -52,7 +52,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
         String[] info = WaveStrUtils.strSplitToArr(decrypt, "-");
-        if (info.length != 2) {
+        if (info.length != 3) {
             WebUtils.renderString(response, Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
             return;
         }
