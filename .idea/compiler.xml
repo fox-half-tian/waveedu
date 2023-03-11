@@ -15,8 +15,10 @@
         <module name="waveedu-judge" />
         <module name="waveedu-service" />
         <module name="waveedu-common" />
+        <module name="waveedu-program" />
         <module name="waveedu-dispatch" />
         <module name="waveedu-note" />
+        <module name="waveedu-share" />
         <module name="waveedu-basic" />
         <module name="waveedu-generator" />
         <module name="xxl-job-executor-sample-springboot" />
@@ -35,6 +37,7 @@
       <module name="waveedu-messagesdk" options="-parameters" />
       <module name="waveedu-note" options="-parameters" />
       <module name="waveedu-service" options="-parameters" />
+      <module name="waveedu-share" options="-parameters" />
     </option>
   </component>
 </project>

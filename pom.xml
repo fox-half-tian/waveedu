@@ -26,6 +26,7 @@
         <module>waveedu-chat</module>
         <module>waveedu-judge</module>
         <module>waveedu-share</module>
+        <module>waveedu-program</module>
     </modules>
 
 </project>
