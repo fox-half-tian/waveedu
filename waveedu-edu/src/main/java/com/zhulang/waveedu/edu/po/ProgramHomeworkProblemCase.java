@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.program.po;
+package com.zhulang.waveedu.edu.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 编程问题题库测试实例表
+ * 编程作业问题测试实例表
  * </p>
  *
  * @author 狐狸半面添
- * @since 2023-03-12
+ * @since 2023-03-13
  */
-@TableName("program_problem_bank_case")
+@TableName("edu_program_homework_problem_case")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProblemBankCase implements Serializable {
+public class ProgramHomeworkProblemCase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,6 @@ public class ProblemBankCase implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
-
     /**
      * 修改时间
      */

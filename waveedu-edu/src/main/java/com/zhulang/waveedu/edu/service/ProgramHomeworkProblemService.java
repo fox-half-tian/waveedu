@@ -31,4 +31,14 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @return 修改状况
      */
     Result modifyProblem(ModifyProblemVO modifyProblemVO);
+
+    /**
+     * 校验身份与发布状况
+     *
+     * @param problemId 问题id
+     * @param creatorId 创建者id
+     * @return null-校验成功，未发布。
+     */
+
+    Result verifyIdentityHomeworkStatus(Integer problemId,Long creatorId);
 }

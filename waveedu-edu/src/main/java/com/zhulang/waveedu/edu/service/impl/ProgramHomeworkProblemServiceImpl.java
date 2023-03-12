@@ -56,14 +56,10 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
 
     @Override
     public Result modifyProblem(ModifyProblemVO modifyProblemVO) {
-        Long userId = UserHolderUtils.getUserId();
         // 1.校验身份与发布状况
-        Integer status = programHomeworkProblemMapper.selectIsPublishByProblemIdAndCreatorId(modifyProblemVO.getId(), userId);
-        if (status == null) {
-            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "未找到题目或作业信息");
-        }
-        if (status != 0) {
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许修改未发布的作业题目信息");
+        Result result = verifyIdentityHomeworkStatus(modifyProblemVO.getId(), UserHolderUtils.getUserId());
+        if (result!=null){
+            return result;
         }
         // 2.校验标题
         if (modifyProblemVO.getTitle() != null && StrUtil.isBlank(modifyProblemVO.getTitle())) {
@@ -76,5 +72,17 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
 
         // 5.返回
         return Result.ok();
+    }
+
+    @Override
+    public Result verifyIdentityHomeworkStatus(Integer problemId,Long creatorId){
+        Integer status = programHomeworkProblemMapper.selectIsPublishByProblemIdAndCreatorId(problemId, creatorId);
+        if (status == null) {
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "未找到题目或作业信息");
+        }
+        if (status != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许修改未发布的作业题目信息");
+        }
+        return null;
     }
 }
