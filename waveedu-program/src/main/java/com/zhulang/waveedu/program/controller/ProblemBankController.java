@@ -114,4 +114,26 @@ public class ProblemBankController {
     public Result adminGetProblemList(){
         return problemBankService.getProblemList(ADMIN);
     }
+
+    /**
+     * 管理员获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    @GetMapping("/admin/getProblemDetailInfo")
+    public Result adminGetProblemDetailInfo(@RequestParam("problemId")Integer problemId){
+        return problemBankService.getProblemDetailInfo(problemId,ADMIN);
+    }
+
+    /**
+     * 用户获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    @GetMapping("/user/getProblemDetailInfo")
+    public Result userGetProblemDetailInfo(@RequestParam("problemId")Integer problemId){
+        return problemBankService.getProblemDetailInfo(problemId,USER);
+    }
 }

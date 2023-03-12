@@ -10,4 +10,12 @@
         WHERE c.`id` = #{caseId}
           AND c.`problem_id` = b.`id`
     </select>
+    <select id="selectProblemCaseInfoByProblemId"
+            resultType="com.zhulang.waveedu.program.query.ProblemCaseInfoQuery">
+        SELECT `id` AS `caseId`,
+               `input`,
+               `output`
+        FROM `program_problem_bank_case`
+        WHERE `problem_id` = #{problemId}
+    </select>
 </mapper>

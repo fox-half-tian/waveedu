@@ -24,4 +24,13 @@
           AND b.`author_id` = a.`id`
         ORDER BY `id` DESC
     </select>
+    <select id="selectProblemDetailInfo" resultType="com.zhulang.waveedu.program.query.ProblemDetailInfoQuery">
+        SELECT id, title, is_public, time_limit, memory_limit, stack_limit, `description`, input, output, examples, difficulty, hint, create_time, update_time
+        FROM `program_problem_bank`
+        WHERE `id` = #{problemId}
+          AND author_type = #{authorType}
+        <if test="authorType=='0'">
+            AND `author_id` = #{authorId}
+        </if>
+    </select>
 </mapper>

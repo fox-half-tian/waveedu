@@ -9,6 +9,7 @@ import com.zhulang.waveedu.program.constant.AuthorTypeConstants;
 import com.zhulang.waveedu.program.po.ProblemBank;
 import com.zhulang.waveedu.program.po.ProblemBankCase;
 import com.zhulang.waveedu.program.dao.ProblemBankCaseMapper;
+import com.zhulang.waveedu.program.query.ProblemCaseInfoQuery;
 import com.zhulang.waveedu.program.query.ProblemIdAndAuthorIdAndAuthorTypeQuery;
 import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,6 +19,8 @@ import com.zhulang.waveedu.program.vo.SaveProblemCaseVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
+import java.util.List;
 
 import static com.zhulang.waveedu.program.constant.AuthorTypeConstants.USER;
 
@@ -104,5 +107,10 @@ public class ProblemBankCaseServiceImpl extends ServiceImpl<ProblemBankCaseMappe
         problemBankCaseMapper.updateById(BeanUtil.copyProperties(modifyCaseVO,ProblemBankCase.class));
         // 5.返回
         return Result.ok();
+    }
+
+    @Override
+    public List<ProblemCaseInfoQuery> getProblemCaseInfoByProblemId(Integer problemId) {
+        return problemBankCaseMapper.selectProblemCaseInfoByProblemId(problemId);
     }
 }

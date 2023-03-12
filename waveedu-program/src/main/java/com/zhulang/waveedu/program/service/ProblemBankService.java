@@ -49,4 +49,13 @@ public interface ProblemBankService extends IService<ProblemBank> {
      * @return 列表信息
      */
     Result getProblemList(int authorType);
+
+    /**
+     * 获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @param authorType 作者类型：0-普通用户，1-管理员
+     * @return 详细信息
+     */
+    Result getProblemDetailInfo(Integer problemId, int authorType);
 }

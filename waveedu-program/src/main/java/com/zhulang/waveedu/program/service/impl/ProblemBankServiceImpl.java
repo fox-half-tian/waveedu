@@ -10,14 +10,20 @@ import com.zhulang.waveedu.program.constant.AuthorTypeConstants;
 import com.zhulang.waveedu.program.dao.ProblemBankMapper;
 import com.zhulang.waveedu.program.po.ProblemBank;
 import com.zhulang.waveedu.program.po.ProblemBankCase;
+import com.zhulang.waveedu.program.query.ProblemCaseInfoQuery;
+import com.zhulang.waveedu.program.query.ProblemDetailInfoQuery;
 import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.zhulang.waveedu.program.service.ProblemBankService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.program.vo.ModifyProblemVO;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.zhulang.waveedu.program.constant.AuthorTypeConstants.ADMIN;
 import static com.zhulang.waveedu.program.constant.AuthorTypeConstants.USER;
@@ -90,22 +96,43 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
                 .eq(ProblemBank::getId, problemId)
                 .eq(ProblemBank::getAuthorType, authorType)
                 .eq(authorType == USER, ProblemBank::getAuthorId, UserHolderUtils.getUserId()));
-        if (deleteCount==0){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"权限不足或题目不存在");
+        if (deleteCount == 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "权限不足或题目不存在");
         }
         // 3.删除实例表数据
         problemBankCaseService.remove(new LambdaQueryWrapper<ProblemBankCase>()
-                .eq(ProblemBankCase::getProblemId,problemId));
+                .eq(ProblemBankCase::getProblemId, problemId));
         // 4.返回
         return Result.ok();
     }
 
     @Override
     public Result getProblemList(int authorType) {
-        if (authorType==USER){
+        if (authorType == USER) {
             return Result.ok(problemBankMapper.selectUserSimpleProblemList(UserHolderUtils.getUserId()));
-        }else{
+        } else {
             return Result.ok(problemBankMapper.selectAdminSimpleProblemList());
         }
+    }
+
+    @Override
+    public Result getProblemDetailInfo(Integer problemId, int authorType) {
+        // 1.校验格式
+        if (problemId < 1000) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "问题id格式错误");
+        }
+        // 2.获取问题信息
+        ProblemDetailInfoQuery questionInfo = problemBankMapper.selectProblemDetailInfo(problemId, authorType, UserHolderUtils.getUserId());
+        if (questionInfo==null){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"权限不足或问题不存在");
+        }
+        // 3.获取示例测试
+        List<ProblemCaseInfoQuery> caseList = problemBankCaseService.getProblemCaseInfoByProblemId(problemId);
+
+        // 4.将测试案例加入到问题信息中
+        questionInfo.setProblemCaseInfoQueryList(caseList);
+
+        // 5.返回
+        return Result.ok(questionInfo);
     }
 }
