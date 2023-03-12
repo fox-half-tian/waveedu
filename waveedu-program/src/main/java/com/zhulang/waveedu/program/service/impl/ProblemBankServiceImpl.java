@@ -9,10 +9,13 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.program.constant.AuthorTypeConstants;
 import com.zhulang.waveedu.program.dao.ProblemBankMapper;
 import com.zhulang.waveedu.program.po.ProblemBank;
+import com.zhulang.waveedu.program.po.ProblemBankCase;
+import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.zhulang.waveedu.program.service.ProblemBankService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.program.vo.ModifyProblemVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -31,6 +34,8 @@ import static com.zhulang.waveedu.program.constant.AuthorTypeConstants.USER;
 public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, ProblemBank> implements ProblemBankService {
     @Resource
     private ProblemBankMapper problemBankMapper;
+    @Resource
+    private ProblemBankCaseService problemBankCaseService;
 
     @Override
     public Result saveProblem(String title, Integer authorType) {
@@ -59,8 +64,8 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
     @Override
     public Result modifyProblem(ModifyProblemVO modifyProblemVO, Integer authorType) {
         // 0.校验格式
-        if (modifyProblemVO.getTitle()!=null&&StrUtil.isBlank(modifyProblemVO.getTitle())){
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"无效标题");
+        if (modifyProblemVO.getTitle() != null && StrUtil.isBlank(modifyProblemVO.getTitle())) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效标题");
         }
         // 1.对象转换
         ProblemBank problemBank = BeanUtil.copyProperties(modifyProblemVO, ProblemBank.class);
@@ -71,5 +76,27 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
                 .eq(authorType == USER, ProblemBank::getAuthorId, UserHolderUtils.getUserId()));
         // 3.返回
         return updateCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未找到问题信息");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result removeProblem(Integer problemId, int authorType) {
+        // 1.校验格式
+        if (problemId < 1000) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "问题id格式错误");
+        }
+        // 2.删除题库表数据
+        int deleteCount = problemBankMapper.delete(new LambdaQueryWrapper<ProblemBank>()
+                .eq(ProblemBank::getId, problemId)
+                .eq(ProblemBank::getAuthorType, authorType)
+                .eq(authorType == USER, ProblemBank::getAuthorId, UserHolderUtils.getUserId()));
+        if (deleteCount==0){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"权限不足或题目不存在");
+        }
+        // 3.删除实例表数据
+        problemBankCaseService.remove(new LambdaQueryWrapper<ProblemBankCase>()
+                .eq(ProblemBankCase::getProblemId,problemId));
+        // 4.返回
+        return Result.ok();
     }
 }

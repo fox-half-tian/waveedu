@@ -72,4 +72,26 @@ public class ProblemBankController {
     public Result userModifyProblem(@RequestBody @Validated ModifyProblemVO modifyProblemVO){
         return problemBankService.modifyProblem(modifyProblemVO,USER);
     }
+
+    /**
+     * 管理员删除题目
+     *
+     * @param problemId 题目id
+     * @return 修改状况
+     */
+    @DeleteMapping("/admin/removeProblem")
+    public Result adminRemoveProblem(@RequestParam("problemId")Integer problemId){
+        return problemBankService.removeProblem(problemId,ADMIN);
+    }
+
+    /**
+     * 用户删除题目
+     *
+     * @param problemId 题目id
+     * @return 修改状况
+     */
+    @DeleteMapping("/user/removeProblem")
+    public Result userRemoveProblem(@RequestParam("problemId")Integer problemId){
+        return problemBankService.removeProblem(problemId,USER);
+    }
 }
