@@ -21,7 +21,7 @@ public class SaveProblemVO {
      * 作业id
      */
     @NotNull(message = "作业id不允许为空")
-    private Long homeworkId;
+    private Integer homeworkId;
 
     /**
      * 作业标题

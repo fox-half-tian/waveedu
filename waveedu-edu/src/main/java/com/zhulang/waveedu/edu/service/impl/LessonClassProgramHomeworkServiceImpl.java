@@ -66,7 +66,12 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     }
 
     @Override
-    public Integer getIsPublishByHomeworkIdAndCreatorId(Long homeworkId, Long creatorId) {
+    public Integer getIsPublishByHomeworkIdAndCreatorId(Integer homeworkId, Long creatorId) {
         return lessonClassProgramHomeworkMapper.selectIsPublishByHomeworkIdAndCreatorId(homeworkId,creatorId);
+    }
+
+    @Override
+    public void updateNumById(Integer homeworkId) {
+        lessonClassProgramHomeworkMapper.updateNumById(homeworkId);
     }
 }

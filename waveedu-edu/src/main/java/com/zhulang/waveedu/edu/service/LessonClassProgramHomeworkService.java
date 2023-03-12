@@ -39,5 +39,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @param creatorId 创建者id
      * @return 0-未发布，1-已发布，2-发布中
      */
-    Integer getIsPublishByHomeworkIdAndCreatorId(Long homeworkId, Long creatorId);
+    Integer getIsPublishByHomeworkIdAndCreatorId(Integer homeworkId, Long creatorId);
+
+    /**
+     * 设置正确的题目数量
+     *
+     * @param homeworkId 作业id
+     */
+    void updateNumById(Integer homeworkId);
 }

@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProblemVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProblemVO;
 
 /**
@@ -22,4 +23,12 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @return 题目id
      */
     Result saveProblem(SaveProblemVO saveProblemVO);
+
+    /**
+     * 修改问题
+     *
+     * @param modifyProblemVO 问题信息
+     * @return 修改状况
+     */
+    Result modifyProblem(ModifyProblemVO modifyProblemVO);
 }

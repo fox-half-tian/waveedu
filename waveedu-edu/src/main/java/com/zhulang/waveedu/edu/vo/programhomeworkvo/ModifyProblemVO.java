@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.program.vo;
+package com.zhulang.waveedu.edu.vo.programhomeworkvo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,12 +29,6 @@ public class ModifyProblemVO {
      */
     @Length(min = 1,max = 255,message = "标题字数1-255之间")
     private String title;
-
-    /**
-     * 是否公开
-     */
-    @Range(min = 0,max = 1,message = "公开设置格式错误")
-    private Integer isPublic;
 
     /**
      * 时间限制(ms)，默认为c/c++限制,其它语言为2倍
