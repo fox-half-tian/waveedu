@@ -99,4 +99,13 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         // 4.返回
         return Result.ok();
     }
+
+    @Override
+    public Result getProblemList(int authorType) {
+        if (authorType==USER){
+            return Result.ok(problemBankMapper.selectUserSimpleProblemList(UserHolderUtils.getUserId()));
+        }else{
+            return Result.ok(problemBankMapper.selectAdminSimpleProblemList());
+        }
+    }
 }

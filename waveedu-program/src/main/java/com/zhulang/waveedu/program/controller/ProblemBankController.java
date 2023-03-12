@@ -94,4 +94,24 @@ public class ProblemBankController {
     public Result userRemoveProblem(@RequestParam("problemId")Integer problemId){
         return problemBankService.removeProblem(problemId,USER);
     }
+
+    /**
+     * 用户获取题目列表
+     *
+     * @return 题目信息列表
+     */
+    @GetMapping("/user/getProblemList")
+    public Result userGetProblemList(){
+        return problemBankService.getProblemList(USER);
+    }
+
+    /**
+     * 管理员获取题目列表
+     *
+     * @return 题目信息列表
+     */
+    @GetMapping("/admin/getProblemList")
+    public Result adminGetProblemList(){
+        return problemBankService.getProblemList(ADMIN);
+    }
 }

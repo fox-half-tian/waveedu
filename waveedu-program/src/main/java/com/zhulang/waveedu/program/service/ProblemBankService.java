@@ -41,4 +41,12 @@ public interface ProblemBankService extends IService<ProblemBank> {
      * @return 删除状况
      */
     Result removeProblem(Integer problemId, int authorType);
+
+    /**
+     * 获取题目列表
+     *
+     * @param authorType 作者类型：0-普通用户，1-管理员
+     * @return 列表信息
+     */
+    Result getProblemList(int authorType);
 }
