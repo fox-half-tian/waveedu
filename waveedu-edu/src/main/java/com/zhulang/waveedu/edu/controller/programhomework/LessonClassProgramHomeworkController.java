@@ -49,4 +49,15 @@ public class LessonClassProgramHomeworkController {
         return lessonClassProgramHomeworkService.modifyInfo(modifyProgramHomeworkVO);
     }
 
+    /**
+     * 删除作业
+     *
+     * @param homeworkId 作业Id
+     * @return 删除状态
+     */
+    @DeleteMapping("/remove")
+    public Result removeHomework(@RequestParam("homeworkId")Integer homeworkId){
+        return lessonClassProgramHomeworkService.removeHomework(homeworkId);
+    }
+
 }

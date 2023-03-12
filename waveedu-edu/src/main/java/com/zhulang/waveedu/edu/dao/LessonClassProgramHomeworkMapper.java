@@ -29,4 +29,13 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @param homeworkId 作业id
      */
     void updateNumById(@Param("homeworkId") Integer homeworkId);
+
+    /**
+     * 是否存在作业的创建者
+     *
+     * @param homeworkId 作业id
+     * @param creatorId 创建者id
+     * @return null-不存在
+     */
+    Integer existsByHomeworkIdAndCreatorId(@Param("homeworkId") Integer homeworkId, @Param("creatorId") Long creatorId);
 }

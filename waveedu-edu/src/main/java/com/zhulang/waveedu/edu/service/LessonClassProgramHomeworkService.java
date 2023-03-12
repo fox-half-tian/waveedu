@@ -47,4 +47,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @param homeworkId 作业id
      */
     void updateNumById(Integer homeworkId);
+
+    /**
+     * 删除作业
+     *
+     * @param homeworkId 作业Id
+     * @return 删除状态
+     */
+    Result removeHomework(Integer homeworkId);
 }
