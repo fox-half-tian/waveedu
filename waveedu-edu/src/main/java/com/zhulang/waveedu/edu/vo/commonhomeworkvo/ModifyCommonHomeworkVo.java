@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.vo.homeworkvo;
+package com.zhulang.waveedu.edu.vo.commonhomeworkvo;
 
 import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;

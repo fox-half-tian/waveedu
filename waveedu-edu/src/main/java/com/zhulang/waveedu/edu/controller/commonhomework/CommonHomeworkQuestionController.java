@@ -1,16 +1,15 @@
-package com.zhulang.waveedu.edu.controller;
+package com.zhulang.waveedu.edu.controller.commonhomework;
 
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
-import com.zhulang.waveedu.edu.vo.homeworkvo.BatchSaveCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.BatchSaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.SaveCommonHomeworkQuestionVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 
 /**

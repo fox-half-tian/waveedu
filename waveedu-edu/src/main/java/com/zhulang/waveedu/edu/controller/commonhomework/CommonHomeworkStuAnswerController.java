@@ -1,11 +1,11 @@
-package com.zhulang.waveedu.edu.controller;
+package com.zhulang.waveedu.edu.controller.commonhomework;
 
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.CommonHomeworkStuAnswerService;
-import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.HomeworkAnswerVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.MarkHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

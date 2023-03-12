@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.controller;
+package com.zhulang.waveedu.edu.controller.lesson;
 
 
 import com.alibaba.fastjson.JSONObject;
