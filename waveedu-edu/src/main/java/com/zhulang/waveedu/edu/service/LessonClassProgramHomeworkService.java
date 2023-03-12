@@ -31,4 +31,13 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 修改状况
      */
     Result modifyInfo(ModifyProgramHomeworkVO modifyProgramHomeworkVO);
+
+    /**
+     * 作业状态
+     *
+     * @param homeworkId 作业id
+     * @param creatorId 创建者id
+     * @return 0-未发布，1-已发布，2-发布中
+     */
+    Integer getIsPublishByHomeworkIdAndCreatorId(Long homeworkId, Long creatorId);
 }

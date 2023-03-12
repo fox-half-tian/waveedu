@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper">
 
+    <select id="selectIsPublishByHomeworkIdAndCreatorId" resultType="java.lang.Integer">
+        SELECT `is_publish`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{homeworkId}
+          AND `creator_id` = #{creatorId}
+    </select>
 </mapper>

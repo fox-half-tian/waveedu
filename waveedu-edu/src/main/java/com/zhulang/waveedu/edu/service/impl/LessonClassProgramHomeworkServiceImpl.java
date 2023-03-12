@@ -64,4 +64,9 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         // 3.返回
         return Result.ok();
     }
+
+    @Override
+    public Integer getIsPublishByHomeworkIdAndCreatorId(Long homeworkId, Long creatorId) {
+        return lessonClassProgramHomeworkMapper.selectIsPublishByHomeworkIdAndCreatorId(homeworkId,creatorId);
+    }
 }
