@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyCaseVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveCaseVO;
 
 /**
@@ -39,4 +40,12 @@ public interface ProgramHomeworkProblemCaseService extends IService<ProgramHomew
      * @return null-校验成功，未发布。
      */
     Result verifyIdentityHomeworkStatus(Integer caseId,Long creatorId);
+
+    /**
+     * 修改测试案例
+     *
+     * @param modifyCaseVO 信息
+     * @return 修改状况
+     */
+    Result modifyCase(ModifyCaseVO modifyCaseVO);
 }

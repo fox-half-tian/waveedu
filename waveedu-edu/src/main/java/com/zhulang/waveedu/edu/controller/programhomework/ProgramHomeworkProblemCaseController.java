@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.controller.programhomework;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyCaseVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveCaseVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,17 @@ public class ProgramHomeworkProblemCaseController {
     @DeleteMapping("/remove")
     public Result removeCase(@RequestParam("caseId")Integer caseId){
         return programHomeworkProblemCaseService.removeCase(caseId);
+    }
+
+    /**
+     * 修改测试案例
+     *
+     * @param modifyCaseVO 信息
+     * @return 修改状况
+     */
+    @PutMapping("/modify")
+    public Result modifyCase(@RequestBody @Validated ModifyCaseVO modifyCaseVO){
+        return programHomeworkProblemCaseService.modifyCase(modifyCaseVO);
     }
 
 }

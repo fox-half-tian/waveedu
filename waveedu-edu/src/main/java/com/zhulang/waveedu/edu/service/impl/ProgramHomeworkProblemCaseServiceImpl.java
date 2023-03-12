@@ -9,6 +9,7 @@ import com.zhulang.waveedu.edu.dao.ProgramHomeworkProblemCaseMapper;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyCaseVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveCaseVO;
 import org.springframework.stereotype.Service;
 
@@ -68,5 +69,20 @@ public class ProgramHomeworkProblemCaseServiceImpl extends ServiceImpl<ProgramHo
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许修改未发布的作业题目信息");
         }
         return null;
+    }
+
+    @Override
+    public Result modifyCase(ModifyCaseVO modifyCaseVO) {
+        // 1.验证身份和发布状态
+        Result result = verifyIdentityHomeworkStatus(modifyCaseVO.getId(), UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+        // 2.属性拷贝
+        ProgramHomeworkProblemCase problemCase = BeanUtil.copyProperties(modifyCaseVO, ProgramHomeworkProblemCase.class);
+        // 3.信息修改
+        programHomeworkProblemCaseMapper.updateById(problemCase);
+        // 4.返回
+        return Result.ok();
     }
 }
