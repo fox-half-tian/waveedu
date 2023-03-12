@@ -22,4 +22,21 @@ public interface ProgramHomeworkProblemCaseService extends IService<ProgramHomew
      * @return 案例id
      */
     Result saveCase(SaveCaseVO saveCaseVO);
+
+    /**
+     * 删除测试案例
+     *
+     * @param caseId 案例Id
+     * @return 删除状况
+     */
+    Result removeCase(Integer caseId);
+
+    /**
+     * 校验身份与发布状况
+     *
+     * @param caseId 案例id
+     * @param creatorId 创建者id
+     * @return null-校验成功，未发布。
+     */
+    Result verifyIdentityHomeworkStatus(Integer caseId,Long creatorId);
 }

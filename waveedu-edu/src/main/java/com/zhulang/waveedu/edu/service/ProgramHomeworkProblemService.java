@@ -39,6 +39,5 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @param creatorId 创建者id
      * @return null-校验成功，未发布。
      */
-
     Result verifyIdentityHomeworkStatus(Integer problemId,Long creatorId);
 }

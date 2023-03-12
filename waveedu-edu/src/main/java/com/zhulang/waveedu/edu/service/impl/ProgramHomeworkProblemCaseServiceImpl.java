@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
@@ -33,7 +34,7 @@ public class ProgramHomeworkProblemCaseServiceImpl extends ServiceImpl<ProgramHo
     public Result saveCase(SaveCaseVO saveCaseVO) {
         // 1.校验身份与作业状况
         Result result = programHomeworkProblemService.verifyIdentityHomeworkStatus(saveCaseVO.getProblemId(), UserHolderUtils.getUserId());
-        if (result!=null){
+        if (result != null) {
             return result;
         }
         // 2.属性拷贝
@@ -42,5 +43,30 @@ public class ProgramHomeworkProblemCaseServiceImpl extends ServiceImpl<ProgramHo
         programHomeworkProblemCaseMapper.insert(problemCase);
         // 4.返回id
         return Result.ok(problemCase.getId());
+    }
+
+    @Override
+    public Result removeCase(Integer caseId) {
+        // 1.验证身份和发布状态
+        Result result = verifyIdentityHomeworkStatus(caseId, UserHolderUtils.getUserId());
+        if (result != null) {
+            return result;
+        }
+        // 2.移除案例
+        programHomeworkProblemCaseMapper.deleteById(caseId);
+        // 3.返回
+        return Result.ok();
+    }
+
+    @Override
+    public Result verifyIdentityHomeworkStatus(Integer caseId, Long creatorId) {
+        Integer status = programHomeworkProblemCaseMapper.selectIsPublishByProblemIdAndCreatorId(caseId, creatorId);
+        if (status == null) {
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "未找到题目或作业信息");
+        }
+        if (status != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许修改未发布的作业题目信息");
+        }
+        return null;
     }
 }
