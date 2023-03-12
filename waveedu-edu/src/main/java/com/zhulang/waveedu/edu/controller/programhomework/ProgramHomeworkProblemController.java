@@ -45,4 +45,15 @@ public class ProgramHomeworkProblemController {
     public Result modifyProblem(@RequestBody @Validated ModifyProblemVO modifyProblemVO){
         return programHomeworkProblemService.modifyProblem(modifyProblemVO);
     }
+
+    /**
+     * 删除题目
+     *
+     * @param problemId 题目id
+     * @return 删除状况
+     */
+    @DeleteMapping("/remove")
+    public Result removeProblem(@RequestParam("problemId")Integer problemId){
+        return programHomeworkProblemService.removeProblem(problemId);
+    }
 }

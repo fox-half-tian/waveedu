@@ -40,4 +40,12 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @return null-校验成功，未发布。
      */
     Result verifyIdentityHomeworkStatus(Integer problemId,Long creatorId);
+
+    /**
+     * 删除题目
+     *
+     * @param problemId 题目id
+     * @return 删除状况
+     */
+    Result removeProblem(Integer problemId);
 }
