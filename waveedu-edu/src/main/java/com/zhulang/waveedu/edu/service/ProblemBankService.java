@@ -27,4 +27,12 @@ public interface ProblemBankService extends IService<ProblemBank> {
      * @return 题库列表
      */
     Result getPublicProblemInfoList();
+
+    /**
+     * 获取自己或公开题库中某个问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 详细信息
+     */
+    Result getSelfOrPublicProblemDetailInfo(Integer problemId);
 }

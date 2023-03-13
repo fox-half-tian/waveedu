@@ -24,4 +24,24 @@
                            ON b.`author_id` = i.`id`
         WHERE b.`is_public` = 1
     </select>
+    <select id="selectSelfOrPublicProblemDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemDetailInfoQuery">
+        SELECT id,
+               title,
+               is_public,
+               time_limit,
+               memory_limit,
+               stack_limit,
+               `description`,
+               input,
+               output,
+               examples,
+               difficulty,
+               hint,
+               create_time,
+               update_time
+        FROM `program_problem_bank`
+        WHERE `id` = #{problemId}
+          AND `is_public` = 1
+    </select>
 </mapper>

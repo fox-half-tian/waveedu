@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.ProblemBankService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -41,6 +42,18 @@ public class ProblemBankController {
     @GetMapping("/get/publicProblemInfoList")
     public Result getPublicProblemInfoList(){
         return problemBankService.getPublicProblemInfoList();
+    }
+
+
+    /**
+     * 获取自己题库或公开题库中某个问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 详细信息
+     */
+    @GetMapping("/get/selfOrPublicProblemDetailInfo")
+    public Result getSelfOrPublicProblemDetailInfo(@RequestParam("problemId")Integer problemId){
+        return problemBankService.getSelfOrPublicProblemDetailInfo(problemId);
     }
 
 }
