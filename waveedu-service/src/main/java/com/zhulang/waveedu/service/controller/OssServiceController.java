@@ -60,4 +60,14 @@ public class OssServiceController {
     public Result noteImage() {
         return ossClientUtils.policy(OssConstants.NOTE_IMAGE_DIR);
     }
+
+    /**
+     * 获取编程问题图片的签名
+     *
+     * @return 签名信息
+     */
+    @GetMapping("/programProblemImage")
+    public Result programProblemImage() {
+        return ossClientUtils.policy(OssConstants.PROGRAM_PROBLEM_IMAGE);
+    }
 }
