@@ -37,8 +37,11 @@ public abstract class AbstractJudge {
 
     public JSONObject judge(JudgeDTO judgeDTO, JudgeGlobalDTO judgeGlobalDTO) throws SystemError {
 
+
+        // 对该案例进行测试
+        JSONArray judgeResultList = judgeCase(judgeDTO, judgeGlobalDTO);
         /*
-            返回：
+            judgeResultList：
                 0. status -> 0
                 1. exitStatus -> 0
                 2. time -> 88361171
@@ -48,19 +51,7 @@ public abstract class AbstractJudge {
                               stdout->5
                 6. originalStatus -> Accepted
          */
-        JSONArray judgeResultList = judgeCase(judgeDTO, judgeGlobalDTO);
-
-        switch (judgeGlobalDTO.getJudgeMode()) {
-            case SPJ:
-            case TEST:
-            case DEFAULT:
-                return process(judgeDTO, judgeGlobalDTO, judgeResultList);
-            case INTERACTIVE:
-                return processMultiple(judgeDTO, judgeGlobalDTO, judgeResultList);
-            default:
-                throw new RuntimeException("The problem mode is error:" + judgeGlobalDTO.getJudgeMode());
-        }
-
+        return process(judgeDTO, judgeGlobalDTO, judgeResultList);
     }
 
     public abstract JSONArray judgeCase(JudgeDTO judgeDTO, JudgeGlobalDTO judgeGlobalDTO) throws SystemError;
@@ -81,8 +72,10 @@ public abstract class AbstractJudge {
         SandBoxRes sandBoxRes = SandBoxRes.builder()
                 .stdout(((JSONObject) judgeResult.get("files")).getStr("stdout"))
                 .stderr(((JSONObject) judgeResult.get("files")).getStr("stderr"))
-                .time(judgeResult.getLong("time") / 1000000) //  ns->ms
-                .memory(judgeResult.getLong("memory") / 1024) // b-->kb
+                //  ns->ms
+                .time(judgeResult.getLong("time") / 1000000)
+                // b-->kb
+                .memory(judgeResult.getLong("memory") / 1024)
                 .exitCode(judgeResult.getInt("exitStatus"))
                 .status(judgeResult.getInt("status"))
                 .originalStatus(judgeResult.getStr("originalStatus"))

@@ -1,17 +1,6 @@
 package com.zhulang.waveedu.judge.judge;
 
-import com.zhulang.waveedu.judge.dto.TestJudgeReq;
-import com.zhulang.waveedu.judge.dto.TestJudgeRes;
-import com.zhulang.waveedu.judge.entity.judge.Judge;
-import com.zhulang.waveedu.judge.entity.problem.Problem;
-import com.zhulang.waveedu.judge.exception.SystemError;
-import com.zhulang.waveedu.judge.judge.entity.LanguageConfig;
-import com.zhulang.waveedu.judge.util.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.HashMap;
 
 /**
  * @Author: Himit_ZH
@@ -21,65 +10,5 @@ import java.util.HashMap;
 @Component
 public class JudgeContext {
 
-    @Autowired
-    private JudgeStrategy judgeStrategy;
 
-    @Resource
-    private LanguageConfigLoader languageConfigLoader;
-
-    public Judge Judge(Problem problem, Judge judge) {
-
-        // 1.c和c++为一倍时间和空间，其它语言为2倍时间和空间
-        LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(judge.getLanguage());
-        if (languageConfig.getSrcName() == null
-                || (!languageConfig.getSrcName().endsWith(".c")
-                && !languageConfig.getSrcName().endsWith(".cpp"))) {
-            problem.setTimeLimit(problem.getTimeLimit() * 2);
-            problem.setMemoryLimit(problem.getMemoryLimit() * 2);
-        }
-
-        // 2.进入编译
-        HashMap<String, Object> judgeResult = judgeStrategy.judge(problem, judge);
-
-        Judge finalJudgeRes = new Judge();
-        finalJudgeRes.setSubmitId(judge.getSubmitId());
-        // 如果是编译失败、提交错误或者系统错误就有错误提醒
-        if (judgeResult.get("code") == Constants.Judge.STATUS_COMPILE_ERROR.getStatus() ||
-                judgeResult.get("code") == Constants.Judge.STATUS_SYSTEM_ERROR.getStatus() ||
-                judgeResult.get("code") == Constants.Judge.STATUS_RUNTIME_ERROR.getStatus() ||
-                judgeResult.get("code") == Constants.Judge.STATUS_SUBMITTED_FAILED.getStatus()) {
-            finalJudgeRes.setErrorMessage((String) judgeResult.getOrDefault("errMsg", ""));
-        }
-        // 设置最终结果状态码
-        finalJudgeRes.setStatus((Integer) judgeResult.get("code"));
-        // 设置最大时间和最大空间不超过题目限制时间和空间
-        // kb
-        Integer memory = (Integer) judgeResult.get("memory");
-        finalJudgeRes.setMemory(Math.min(memory, problem.getMemoryLimit() * 1024));
-        // ms
-        Integer time = (Integer) judgeResult.get("time");
-        finalJudgeRes.setTime(Math.min(time, problem.getTimeLimit()));
-
-        return finalJudgeRes;
-    }
-
-    public TestJudgeRes testJudge(TestJudgeReq testJudgeReq) {
-        // c和c++为一倍时间和空间，其它语言为2倍时间和空间
-        LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(testJudgeReq.getLanguage());
-        if (languageConfig.getSrcName() == null
-                || (!languageConfig.getSrcName().endsWith(".c")
-                && !languageConfig.getSrcName().endsWith(".cpp"))) {
-            testJudgeReq.setTimeLimit(testJudgeReq.getTimeLimit() * 2);
-            testJudgeReq.setMemoryLimit(testJudgeReq.getMemoryLimit() * 2);
-        }
-        return judgeStrategy.testJudge(testJudgeReq);
-    }
-
-    public Boolean compileSpj(String code, Long pid, String spjLanguage, HashMap<String, String> extraFiles) throws SystemError {
-        return java.lang.Compiler.compileSpj(code, pid, spjLanguage, extraFiles);
-    }
-
-    public Boolean compileInteractive(String code, Long pid, String interactiveLanguage, HashMap<String, String> extraFiles) throws SystemError {
-        return java.lang.Compiler.compileInteractive(code, pid, interactiveLanguage, extraFiles);
-    }
 }

@@ -20,9 +20,24 @@ public class ToJudgeDTO implements Serializable {
     private static final long serialVersionUID = 999L;
 
     /**
-     *  判题数据实体类
+     * 问题id
      */
-    private Judge judge;
+    private Integer problemId;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
+     * 语言
+     */
+    private String language;
+
+    /**
+     * 代码
+     */
+    private String code;
 
 
 }

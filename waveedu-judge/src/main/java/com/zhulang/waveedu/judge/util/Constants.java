@@ -30,7 +30,8 @@ public class Constants {
         STATUS_PARTIAL_ACCEPTED(8, "Partial Accepted"),
         STATUS_SUBMITTING(9, "Submitting"),
         STATUS_SUBMITTED_FAILED(10, "Submitted Failed"),
-        STATUS_NULL(15, "No Status");
+        STATUS_NULL(15, "No Status"),
+        STATUS_LANGUAGE_NO_SUPPORT(16,"language no support");
 
         private final Integer status;
         private final String name;

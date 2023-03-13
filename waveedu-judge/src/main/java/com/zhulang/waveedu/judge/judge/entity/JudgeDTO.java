@@ -61,11 +61,6 @@ public class JudgeDTO implements Serializable {
     private Long maxOutputSize;
 
     /**
-     * 当前题目评测点的分数（OI题目的测试点才有）
-     */
-    private Integer score;
-
-    /**
      * problem_case_id
      */
     private Long problemCaseId;

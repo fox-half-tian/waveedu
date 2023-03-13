@@ -147,6 +147,7 @@ public class SandboxRun {
 
     public JSONArray run(String uri, JSONObject param) throws SystemError {
         HttpHeaders headers = new HttpHeaders();
+        // 请求格式为 application/json
         headers.setContentType(MediaType.APPLICATION_JSON);
         /*
             测试案例的时候的参数：
@@ -180,7 +181,7 @@ public class SandboxRun {
             // 编译时与测试案例时 -》 SANDBOX_BASE_URL + uri：http://1.14.94.100:5050/run
             postForEntity = restTemplate.postForEntity(SANDBOX_BASE_URL + uri, request, String.class);
             /*
-            postForEntity
+            响应数据 postForEntity
                 编译时：
                     <200,
                         [
@@ -307,26 +308,21 @@ public class SandboxRun {
      * @param args              编译的cmd参数
      * @param envs              编译的环境变量
      * @param code              编译的源代码
-     * @param extraFiles        编译所需的额外文件 key:文件名，value:文件内容
      * @param needCopyOutCached 是否需要生成用户程序的缓存文件，即生成用户程序id
-//     * @param needCopyOutExe    是否需要生成编译后的用户程序exe文件
-//     * @param copyOutDir        生成编译后的用户程序exe文件的指定路径
-     * @MethodName compile
+     *
      * @Description 编译运行
      * @Return
-     * @Since 2022/1/3
      */
-    public static JSONArray compile(Long maxCpuTime, // 10000
-                                    Long maxRealTime, // 20000
-                                    Long maxMemory, // 536870912
-                                    Long maxStack, // 268435456
-                                    String srcName, // Main.java
-                                    String exeName, // Main.jar
-                                    List<String> args, //
+    public static JSONArray compile(Long maxCpuTime,
+                                    Long maxRealTime,
+                                    Long maxMemory,
+                                    Long maxStack,
+                                    String srcName,
+                                    String exeName,
+                                    List<String> args,
                                     List<String> envs,
-                                    String code, // import ...
-                                    HashMap<String, String> extraFiles, // null
-                                    Boolean needCopyOutCached // true
+                                    String code,
+                                    Boolean needCopyOutCached
                                     ) throws SystemError {
         JSONObject cmd = new JSONObject();
         /*
