@@ -33,4 +33,14 @@ public class ProblemBankController {
         return problemBankService.getSelfProblemInfoList();
     }
 
+    /**
+     * 获取公开题库的列表信息
+     *
+     * @return 题库列表
+     */
+    @GetMapping("/get/publicProblemInfoList")
+    public Result getPublicProblemInfoList(){
+        return problemBankService.getPublicProblemInfoList();
+    }
+
 }

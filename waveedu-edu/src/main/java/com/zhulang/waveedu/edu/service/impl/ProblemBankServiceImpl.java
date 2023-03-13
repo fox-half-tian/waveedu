@@ -30,4 +30,9 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         return Result.ok(problemBankMapper.selectSelfProblemInfoList(UserHolderUtils.getUserId()));
 
     }
+
+    @Override
+    public Result getPublicProblemInfoList() {
+        return Result.ok(problemBankMapper.selectPublicProblemInfoList());
+    }
 }

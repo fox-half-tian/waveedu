@@ -9,4 +9,19 @@
         FROM `program_problem_bank`
         WHERE `author_id` = #{authorId}
     </select>
+    <select id="selectPublicProblemInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.PublicSimpleProblemInfoQuery">
+        SELECT b.`id`,
+               b.`title`,
+               b.`difficulty`,
+               b.`description`,
+               b.`author_type` AS `authorType`,
+               b.`author_id`   AS `authorId`,
+               i.`name`        AS `authorName`,
+               i.`icon`        AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`is_public` = 1
+    </select>
 </mapper>

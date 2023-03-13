@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.ProblemBank;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.PublicSimpleProblemInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.SelfSimpleProblemInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,4 +27,11 @@ public interface ProblemBankMapper extends BaseMapper<ProblemBank> {
      * @return 列表信息
      */
     List<SelfSimpleProblemInfoQuery> selectSelfProblemInfoList(@Param("authorId") Long authorId);
+
+    /**
+     * 获取公开题库列表信息
+     *
+     * @return 列表信息
+     */
+    List<PublicSimpleProblemInfoQuery> selectPublicProblemInfoList();
 }
