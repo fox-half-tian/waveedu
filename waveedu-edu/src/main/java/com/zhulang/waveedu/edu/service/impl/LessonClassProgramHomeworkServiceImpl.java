@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassService;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -77,7 +82,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
 
     @Override
     public Integer getIsPublishByHomeworkIdAndCreatorId(Integer homeworkId, Long creatorId) {
-        return lessonClassProgramHomeworkMapper.selectIsPublishByHomeworkIdAndCreatorId(homeworkId,creatorId);
+        return lessonClassProgramHomeworkMapper.selectIsPublishByHomeworkIdAndCreatorId(homeworkId, creatorId);
     }
 
     @Override
@@ -89,8 +94,8 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
 //    @Transactional(rollbackFor = Exception.class)
     public Result removeHomework(Integer homeworkId) {
         // 1.校验权限
-        if (!existsByHomeworkIdAndCreatorId(homeworkId,UserHolderUtils.getUserId())){
-            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        if (!existsByHomeworkIdAndCreatorId(homeworkId, UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 2.删除作业
         lessonClassProgramHomeworkMapper.deleteById(homeworkId);
@@ -105,7 +110,42 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     }
 
     @Override
-    public boolean existsByHomeworkIdAndCreatorId(Integer homeworkId,Long creatorId){
-        return lessonClassProgramHomeworkMapper.existsByHomeworkIdAndCreatorId(homeworkId,creatorId)!=null;
+    public boolean existsByHomeworkIdAndCreatorId(Integer homeworkId, Long creatorId) {
+        return lessonClassProgramHomeworkMapper.existsByHomeworkIdAndCreatorId(homeworkId, creatorId) != null;
+    }
+
+    @Override
+    public Result tchGetHomeworkInfoList(Long classId, Integer status) {
+        // 1.校验数据格式
+        if (RegexUtils.isSnowIdInvalid(classId)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "班级id格式错误");
+        }
+        if (status != null && (status < 0 || status > 3)) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业状态格式错误");
+        }
+        // 2.校验身份
+        if (!lessonClassService.existsByUserIdAndClassId(UserHolderUtils.getUserId(), classId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取列表信息
+        List<TchSimpleHomeworkInfoQuery> infoList;
+        if (status == null) {
+            infoList = lessonClassProgramHomeworkMapper.selectTchHomeworkInfoList(classId, status);
+            infoList.forEach(info -> {
+                if (info.getStatus() == 1 && LocalDateTime.now().isAfter(info.getEndTime())) {
+                    info.setStatus(3);
+                }
+            });
+        } else if (status == 3) {
+            infoList = lessonClassProgramHomeworkMapper.selectTchHomeworkInfoList(classId, 1);
+            LocalDateTime now = LocalDateTime.now();
+            infoList = infoList.stream().filter(info -> now.isAfter(info.getEndTime())).collect(Collectors.toList());
+            infoList.forEach(info -> {
+                info.setStatus(3);
+            });
+        } else {
+            infoList = lessonClassProgramHomeworkMapper.selectTchHomeworkInfoList(classId, status);
+        }
+        return Result.ok(infoList);
     }
 }

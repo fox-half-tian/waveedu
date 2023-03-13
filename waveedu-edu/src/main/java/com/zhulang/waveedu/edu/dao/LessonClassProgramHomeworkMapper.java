@@ -2,7 +2,10 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +41,13 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @return null-不存在
      */
     Integer existsByHomeworkIdAndCreatorId(@Param("homeworkId") Integer homeworkId, @Param("creatorId") Long creatorId);
+
+    /**
+     * 根据作业状态查询作业信息
+     *
+     * @param classId 班级id
+     * @param status 状态
+     * @return 信息列表
+     */
+    List<TchSimpleHomeworkInfoQuery> selectTchHomeworkInfoList(@Param("classId") Long classId, @Param("status") Integer status);
 }

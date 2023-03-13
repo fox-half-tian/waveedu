@@ -19,4 +19,17 @@
         WHERE `id` = #{homeworkId}
           AND `creator_id` = #{creatorId}
     </select>
+    <select id="selectTchHomeworkInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery">
+        SELECT `id`,`title`,`num`,`is_publish` AS `status`,`end_time`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `class_id` = #{classId}
+        <if test="status!=null">
+            AND `is_publish` = #{status}
+        </if>
+        <if test="status!=null and status==1">
+            AND `end_time` &gt; NOW()
+        </if>
+        ORDER BY `create_time` DESC
+    </select>
 </mapper>

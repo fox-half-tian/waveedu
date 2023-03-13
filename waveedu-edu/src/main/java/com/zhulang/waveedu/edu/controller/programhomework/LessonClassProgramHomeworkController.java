@@ -60,4 +60,17 @@ public class LessonClassProgramHomeworkController {
         return lessonClassProgramHomeworkService.removeHomework(homeworkId);
     }
 
+    /**
+     * 作业创建者获取班级作业信息列表
+     *
+     * @param classId 班级id
+     * @param status 作业状态：null-所有，0-未发布，1-已发布，2-发布中，3-已截止
+     * @return 信息列表，按照时间从近到远排序
+     */
+    @GetMapping("/tch/getHomeworkInfoList")
+    public Result tchGetHomeworkInfoList(@RequestParam("classId")Long classId,
+                                         @RequestParam(value = "status",required = false)Integer status){
+        return lessonClassProgramHomeworkService.tchGetHomeworkInfoList(classId,status);
+    }
+
 }
