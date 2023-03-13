@@ -4,9 +4,16 @@
 
     <select id="selectIsPublishByProblemIdAndCreatorId" resultType="java.lang.Integer">
         SELECT h.`is_publish`
-        FROM `edu_program_homework_problem` p,`edu_lesson_class_program_homework` h
+        FROM `edu_program_homework_problem` p,
+             `edu_lesson_class_program_homework` h
         WHERE p.`id` = #{problemId}
           AND p.`homework_id` = h.`id`
           AND h.`creator_id` = #{creatorId}
+    </select>
+    <select id="selectTchSimpleHomeworkProblemInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkProblemInfoQuery">
+        SELECT `id`, `title`, `difficulty`, `create_time`, `update_time`
+        FROM `edu_program_homework_problem`
+        WHERE `homework_id` = #{homeworkId}
     </select>
 </mapper>

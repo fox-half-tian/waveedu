@@ -57,4 +57,15 @@ public class ProgramHomeworkProblemController {
         return programHomeworkProblemService.removeProblem(problemId);
     }
 
+    /**
+     * 作业创建者获取作业问题列表
+     *
+     * @param homeworkId 作业id
+     * @return 列表信息
+     */
+    @GetMapping("/tch/getHomeworkProblemList")
+    public Result tchGetHomeworkProblemList(@RequestParam("homeworkId")Integer homeworkId){
+        return programHomeworkProblemService.tchGetHomeworkProblemList(homeworkId);
+    }
+
 }

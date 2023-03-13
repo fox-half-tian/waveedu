@@ -55,4 +55,13 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 删除状态
      */
     Result removeHomework(Integer homeworkId);
+
+    /**
+     * 判断是否为作业的创建者
+     *
+     * @param homeworkId 作业id
+     * @param creatorId 创建者id
+     * @return true-是创建者，false-不是
+     */
+    boolean existsByHomeworkIdAndCreatorId(Integer homeworkId,Long creatorId);
 }

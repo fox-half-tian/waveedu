@@ -48,4 +48,12 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @return 删除状况
      */
     Result removeProblem(Integer problemId);
+
+    /**
+     * 作业创建者获取作业问题列表
+     *
+     * @param homeworkId 作业id
+     * @return 列表信息
+     */
+    Result tchGetHomeworkProblemList(Integer homeworkId);
 }

@@ -9,6 +9,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkProblemMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkProblemInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.naming.spi.ObjectFactory;
+import java.util.List;
 
 /**
  * <p>
@@ -109,6 +111,18 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
                 .eq(ProgramHomeworkProblemCase::getProblemId, problemId));
         // 3.返回
         return Result.ok();
+    }
+
+    @Override
+    public Result tchGetHomeworkProblemList(Integer homeworkId) {
+        // 1.校验身份
+        if (!lessonClassProgramHomeworkService.existsByHomeworkIdAndCreatorId(homeworkId,UserHolderUtils.getUserId())){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.获取列表信息
+        List<TchSimpleHomeworkProblemInfoQuery> infoList = programHomeworkProblemMapper.selectTchSimpleHomeworkProblemInfoList(homeworkId);
+        // 3.返回
+        return Result.ok(infoList);
     }
 
 }
