@@ -16,4 +16,9 @@
         FROM `edu_program_homework_problem`
         WHERE `homework_id` = #{homeworkId}
     </select>
+    <select id="selectHomeworkIdByProblemId" resultType="java.lang.Integer">
+        SELECT `homework_id`
+        FROM `edu_program_homework_problem`
+        WHERE `id` = #{problemId}
+    </select>
 </mapper>

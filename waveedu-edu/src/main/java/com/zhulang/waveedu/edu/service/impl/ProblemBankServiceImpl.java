@@ -104,12 +104,16 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         for (ProblemImportInfoQuery problem : problemImportInfoQueries) {
             ProgramHomeworkProblem homeworkProblem = BeanUtil.copyProperties(problem, ProgramHomeworkProblem.class);
             homeworkProblem.setHomeworkId(homeworkId);
+            // 添加到问题表
             programHomeworkProblemService.save(homeworkProblem);
             List<ProgramHomeworkProblemCase> caseList = BeanUtil.copyToList(problem.getCaseList(), ProgramHomeworkProblemCase.class);
             caseList.forEach(c ->{
                 c.setProblemId(homeworkProblem.getId());
             });
+            // 添加到案例表
             programHomeworkProblemCaseService.saveBatch(caseList);
         }
+        // 修改题目数量
+        lessonClassProgramHomeworkService.updateNumById(homeworkId);
     }
 }

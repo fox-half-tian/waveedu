@@ -109,6 +109,8 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
         programHomeworkProblemMapper.deleteById(problemId);
         programHomeworkProblemCaseService.remove(new LambdaQueryWrapper<ProgramHomeworkProblemCase>()
                 .eq(ProgramHomeworkProblemCase::getProblemId, problemId));
+        // 3.修改题目数量
+        lessonClassProgramHomeworkService.updateNumById(programHomeworkProblemMapper.selectHomeworkIdByProblemId(problemId));
         // 3.返回
         return Result.ok();
     }

@@ -33,4 +33,12 @@ public interface ProgramHomeworkProblemMapper extends BaseMapper<ProgramHomework
      * @return 问题列表
      */
     List<TchSimpleHomeworkProblemInfoQuery> selectTchSimpleHomeworkProblemInfoList(@Param("homeworkId") Integer homeworkId);
+
+    /**
+     * 查询作业id
+     *
+     * @param problemId 问题id
+     * @return 作业id
+     */
+    Integer selectHomeworkIdByProblemId(@Param("problemId") Integer problemId);
 }
