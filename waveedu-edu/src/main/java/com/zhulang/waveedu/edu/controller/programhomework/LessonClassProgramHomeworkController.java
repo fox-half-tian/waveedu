@@ -73,4 +73,15 @@ public class LessonClassProgramHomeworkController {
         return lessonClassProgramHomeworkService.tchGetHomeworkInfoList(classId,status);
     }
 
+    /**
+     * 作业创建者获取作业详细信息
+     *
+     * @param homeworkId 作业id
+     * @return 详细信息
+     */
+    @GetMapping("/tch/getHomeworkDetailInfo")
+    public Result tchGetHomeworkDetailInfo(@RequestParam("homeworkId")Integer homeworkId){
+        return lessonClassProgramHomeworkService.tchGetHomeworkDetailInfo(homeworkId);
+    }
+
 }

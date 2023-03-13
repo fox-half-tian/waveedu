@@ -73,4 +73,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 信息列表，按照时间从近到远排序
      */
     Result tchGetHomeworkInfoList(Long classId, Integer status);
+
+    /**
+     * 作业创建者获取作业详细信息
+     *
+     * @param homeworkId 作业id
+     * @return 详细信息
+     */
+    Result tchGetHomeworkDetailInfo(Integer homeworkId);
 }

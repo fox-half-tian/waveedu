@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.edu.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -19,6 +20,7 @@ import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
+import jdk.net.SocketFlow;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,5 +149,30 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
             infoList = lessonClassProgramHomeworkMapper.selectTchHomeworkInfoList(classId, status);
         }
         return Result.ok(infoList);
+    }
+
+    @Override
+    public Result tchGetHomeworkDetailInfo(Integer homeworkId) {
+        // 1.校验格式
+        if (homeworkId<1000){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
+        }
+        // 2.校验身份
+        if (!existsByHomeworkIdAndCreatorId(homeworkId,UserHolderUtils.getUserId())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 3.获取信息
+        LessonClassProgramHomework homework = lessonClassProgramHomeworkMapper.selectById(homeworkId);
+        if (homework==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"作业不存在");
+        }
+        // 4.判断状态
+        if (homework.getIsPublish()==1){
+            if (homework.getEndTime().isBefore(LocalDateTime.now())){
+                homework.setIsPublish(3);
+            }
+        }
+        // 5.返回
+        return Result.ok(homework);
     }
 }
