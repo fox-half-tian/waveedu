@@ -49,4 +49,28 @@
                            ON b.`author_id` = i.`id`
         WHERE b.`is_public` = 1
     </select>
+    <select id="selectPublicProblemDetailInfo"
+            resultType="com.zhulang.waveedu.program.query.PublicProblemDetailInfoQuery">
+        SELECT b.`id`           AS `problemId`,
+               b.`title`        AS `title`,
+               b.`time_limit`   AS `timeLimit`,
+               b.`memory_limit` AS `memoryLimit`,
+               b.`stack_limit`  AS `stackLimit`,
+               b.`description`  AS `description`,
+               b.`input`        AS `input`,
+               b.`output`       AS `output`,
+               b.`examples`     AS `examples`,
+               b.`difficulty`   AS `difficulty`,
+               b.`hint`         AS `hint`,
+               b.`create_time`  AS `createTime`,
+               b.`update_time`  AS `updateTime`,
+               b.`author_type`  AS `authorType`,
+               i.`name`         AS `authorName`,
+               i.`icon`         AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`id` = #{problemId}
+          AND b.`is_public` = 1
+    </select>
 </mapper>

@@ -66,4 +66,12 @@ public interface ProblemBankService extends IService<ProblemBank> {
      * @return 列表信息
      */
     Result getPublicProblemList(Integer type);
+
+    /**
+     * 获取某个公开问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    Result getPublicProblemDetailInfo(Integer problemId);
 }

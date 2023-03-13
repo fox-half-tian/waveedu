@@ -96,7 +96,7 @@ public class ProblemBankController {
     }
 
     /**
-     * 用户获取题目列表
+     * 用户获取自己的题目列表
      *
      * @return 题目信息列表
      */
@@ -106,7 +106,7 @@ public class ProblemBankController {
     }
 
     /**
-     * 管理员获取题目列表
+     * 管理员获取自己的题目列表
      *
      * @return 题目信息列表
      */
@@ -116,7 +116,7 @@ public class ProblemBankController {
     }
 
     /**
-     * 管理员获取问题的详细信息
+     * 管理员获取自己问题的详细信息
      *
      * @param problemId 问题id
      * @return 信息
@@ -127,7 +127,7 @@ public class ProblemBankController {
     }
 
     /**
-     * 用户获取问题的详细信息
+     * 用户获取自己问题的详细信息
      *
      * @param problemId 问题id
      * @return 信息
@@ -146,5 +146,16 @@ public class ProblemBankController {
     @GetMapping("/getPublicProblemList")
     public Result getPublicProblemList(@RequestParam(value = "type")Integer type){
         return problemBankService.getPublicProblemList(type);
+    }
+
+    /**
+     * 获取某个公开问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    @GetMapping("/getPublicProblemDetailInfo")
+    public Result getPublicProblemDetailInfo(@RequestParam("problemId")Integer problemId){
+        return problemBankService.getPublicProblemDetailInfo(problemId);
     }
 }

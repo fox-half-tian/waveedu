@@ -12,6 +12,7 @@ import com.zhulang.waveedu.program.po.ProblemBank;
 import com.zhulang.waveedu.program.po.ProblemBankCase;
 import com.zhulang.waveedu.program.query.ProblemCaseInfoQuery;
 import com.zhulang.waveedu.program.query.ProblemDetailInfoQuery;
+import com.zhulang.waveedu.program.query.PublicProblemDetailInfoQuery;
 import com.zhulang.waveedu.program.service.ProblemBankCaseService;
 import com.zhulang.waveedu.program.service.ProblemBankService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -148,5 +149,27 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         } else {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "类型格式错误");
         }
+    }
+
+    @Override
+    public Result getPublicProblemDetailInfo(Integer problemId) {
+        // 1.校验格式
+        if (problemId < 1000) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "问题id格式错误");
+        }
+        // 2.获取问题信息
+        PublicProblemDetailInfoQuery questionInfo = problemBankMapper.selectPublicProblemDetailInfo(problemId);
+        if (questionInfo == null) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "权限不足或问题不存在");
+        }
+        // 3.获取示例测试
+        List<ProblemCaseInfoQuery> caseList = problemBankCaseService.getProblemCaseInfoByProblemId(problemId);
+
+        // 4.将测试案例加入到问题信息中
+        questionInfo.setProblemCaseInfoQueryList(caseList);
+
+        // 5.返回
+        return Result.ok(questionInfo);
+
     }
 }
