@@ -50,4 +50,12 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @return 信息列表
      */
     List<TchSimpleHomeworkInfoQuery> selectTchHomeworkInfoList(@Param("classId") Long classId, @Param("status") Integer status);
+
+    /**
+     * 根据 作业id 查询数量
+     *
+     * @param id 作业id
+     * @return 数量
+     */
+    long selectNumById(@Param("id") Integer id);
 }

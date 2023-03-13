@@ -5,28 +5,35 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
+import com.zhulang.waveedu.common.constant.RabbitConstants;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
-import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
+import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper;
-import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
-import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
-import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
+import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhulang.waveedu.edu.service.LessonClassService;
-import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
-import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
 import jdk.net.SocketFlow;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.FailureCallback;
+import org.springframework.util.concurrent.SuccessCallback;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +45,7 @@ import java.util.stream.Collectors;
  * @since 2023-03-12
  */
 @Service
+@Slf4j
 public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonClassProgramHomeworkMapper, LessonClassProgramHomework> implements LessonClassProgramHomeworkService {
     @Resource
     private LessonClassService lessonClassService;
@@ -47,6 +55,10 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     private ProgramHomeworkProblemService programHomeworkProblemService;
     @Resource
     private ProgramHomeworkProblemCaseService programHomeworkProblemCaseService;
+    @Resource
+    private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public Result saveHomework(SaveProgramHomeworkVO saveProgramHomeworkVO) {
@@ -174,5 +186,150 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         }
         // 5.返回
         return Result.ok(homework);
+    }
+
+    @Override
+    public Result publish(PublishProgramHomeworkVO publishProgramHomeworkVO) {
+        // 1.校验创建者，发布状况
+        Map<String, Object> map = this.getMap(new LambdaQueryWrapper<LessonClassProgramHomework>()
+                .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
+                .select(LessonClassProgramHomework::getIsPublish, LessonClassProgramHomework::getCreatorId,LessonClassProgramHomework::getEndTime));
+        // 1.1 是否为创建者
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 1.2 判断是否设置了截止时间
+        if (map.get("endTime")==null){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"请先设置作业截止时间");
+        }
+        // 1.2 如果是已经发布了，就不能发布
+        if ((Integer) map.get("isPublish") == 1) {
+            return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
+        }
+        // 2.查询题目数量，如果为0则无法发布
+        long count = lessonClassProgramHomeworkMapper.selectNumById(publishProgramHomeworkVO.getHomeworkId());
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "请先添加至少一道题目");
+        }
+
+        // 3.如果是定时发布就加入到延迟队列
+        if (publishProgramHomeworkVO.getIsRegularTime() == 1) {
+            // 3.1 判断是否设置定时时间
+            if (publishProgramHomeworkVO.getStartTime() == null) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "未设置定时发布时间");
+            }
+            // 3.2 创建一个消息回调对象，需要指定一个唯一的id，因为每一个消息发送成功或失败都需要回调，用于区分是哪一个消息
+            CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+            // 3.3 注册回调函数
+            correlationData.getFuture().addCallback(new SuccessCallback<CorrelationData.Confirm>() {
+                private int count = 0;
+
+                /**
+                 * 回调实际：消息发送到交换机，成功或者失败的时候都会调用
+                 *
+                 * @param result the result
+                 */
+                @Override
+                public void onSuccess(CorrelationData.Confirm result) {
+                    // 获取本次发送消息的结果
+                    boolean ack = result.isAck();
+                    if (!ack) {
+                        log.error("发布编程作业任务的消息没有到达交换机，原因是：{}", result.getReason());
+                        if (count == 3) {
+                            // 消息没有到达交换机，则需要重发，重发三次之后如果还是失败，那么这个消息需要存储到数据库中做兜底工作
+                            MessageSdkSendErrorLog messageSdkSendErrorLog = new MessageSdkSendErrorLog();
+                            // 设置错误信息
+                            messageSdkSendErrorLog.setErrorMsg(result.getReason());
+                            // /设置发送者
+                            messageSdkSendErrorLog.setSender(UserHolderUtils.getUserId() + "");
+                            // 设置消息内容
+                            messageSdkSendErrorLog.setContent(publishProgramHomeworkVO.getHomeworkId() + "");
+                            // 设置消息备注
+                            messageSdkSendErrorLog.setRemark("发送到普通作业预发布交换机错误");
+                            // 设置消息类型
+                            messageSdkSendErrorLog.setType(MessageSdkSendErrorTypeConstants.COMMON_HOMEWORK_PUBLISH_SEND_ERROR);
+                            // 保存错误信息
+                            messageSdkSendErrorLogService.save(messageSdkSendErrorLog);
+                            // 修改作业状态为0-未发布
+                            lessonClassProgramHomeworkMapper.update(null, new LambdaUpdateWrapper<LessonClassProgramHomework>()
+                                    .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
+                                    .set(LessonClassProgramHomework::getIsPublish, 0));
+                        } else {
+                            // 重发
+                            count++;
+                            // 设置发送的内容
+                            HashMap<String, Object> sendMap = new HashMap<>(2);
+                            sendMap.put("programHomeworkId", publishProgramHomeworkVO.getHomeworkId());
+                            sendMap.put("startTime", publishProgramHomeworkVO.getStartTime());
+                            // 设置发送消息的延迟时长（单位 ms）
+                            int delayedTime = (int) Duration.between(LocalDateTime.now(), publishProgramHomeworkVO.getStartTime()).toMillis();
+                            // 异步发送到消息队列
+                            // todo 有bug，在交换机不存在情况下无法重发三次
+//                            correlationData.setId(UUID.randomUUID().toString());
+                            rabbitTemplate.convertAndSend(RabbitConstants.PROGRAM_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME,
+                                    RabbitConstants.PROGRAM_HOMEWORK_PUBLISH_ROUTING_KEY,
+                                    sendMap,
+                                    msg -> {
+                                        msg.getMessageProperties().setDelay(delayedTime);
+                                        return msg;
+                                    }, correlationData
+                            );
+                        }
+
+                    }
+                }
+            }, new FailureCallback() {
+                /**
+                 * 这个方法回调的时机：
+                 * 消息到达交换机，但是交换机的消息到队列的时候，队列没有给消息绘制的时候调用
+                 * 这种情况发生很少
+                 *
+                 * @param ex the failure
+                 */
+                @Override
+                public void onFailure(Throwable ex) {
+                    log.error("发送到编程作业预发布交换机失败原因：{}" + ex.getMessage());
+                }
+            });
+
+            // 3.4 设置发送的内容
+            HashMap<String, Object> sendMap = new HashMap<>(2);
+            sendMap.put("programHomeworkId", publishProgramHomeworkVO.getHomeworkId());
+            sendMap.put("startTime", publishProgramHomeworkVO.getStartTime());
+
+            // 3.5 设置发送消息的延迟时长（单位 ms）
+            long delayedTime = Duration.between(LocalDateTime.now(), publishProgramHomeworkVO.getStartTime()).toMillis();
+            if (delayedTime > 2073600000) {
+                return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "定时不能距离当前超过24天");
+            }
+
+            // 3.6 异步发送到延迟队列
+            rabbitTemplate.convertAndSend(RabbitConstants.PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME,
+                    RabbitConstants.PROGRAM_HOMEWORK_PUBLISH_ROUTING_KEY,
+                    sendMap,
+                    msg -> {
+                        msg.getMessageProperties().setDelay((int) delayedTime);
+                        return msg;
+                    },
+                    correlationData
+            );
+            // 3.7 将时间保存到数据库，并修改状态为 定时发布中
+            this.update(new LambdaUpdateWrapper<LessonClassProgramHomework>()
+                    .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
+                    .set(LessonClassProgramHomework::getStartTime, publishProgramHomeworkVO.getStartTime())
+                    .set(LessonClassProgramHomework::getIsPublish, 2));
+            return Result.ok();
+        }
+
+        // 4.如果不是定时发布，就获取总分数，并修改发布状态为已发布，设置发布时间为当前时间
+        this.update(new LambdaUpdateWrapper<LessonClassProgramHomework>()
+                .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
+                .set(LessonClassProgramHomework::getStartTime, LocalDateTime.now())
+                .set(LessonClassProgramHomework::getIsPublish, 1)
+        );
+
+        // 5.返回
+        return Result.ok();
+
     }
 }

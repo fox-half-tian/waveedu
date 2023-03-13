@@ -60,16 +60,16 @@ public class CommonHomeworkTimePublishListener {
 //                .set(LessonClassCommonHomework::getIsPublish, 1));
     }
 
-    /**
-     * 测试
-     */
+//    /**
+//     * 测试
+//     */
 //    @RabbitListener(bindings = @QueueBinding(
 //            value = @Queue(name = "work.queue"),
 //            // 交换机 durable 默认就是 true
 //            exchange = @Exchange(name = "work.exchange", type = ExchangeTypes.DIRECT, durable = "true"),
 //            key = "work.key"))
-    @RabbitListener(queues = "work.queue")
-    public void listenerWorkQueue1(Message message) throws Exception {
-        log.info("监听器 1 接收到的消息：{}", new String(message.getBody()));
-    }
+//    @RabbitListener(queues = "work.queue")
+//    public void listenerWorkQueue1(Message message) throws Exception {
+//        log.info("监听器 1 接收到的消息：{}", new String(message.getBody()));
+//    }
 }

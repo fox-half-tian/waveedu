@@ -4,6 +4,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
 
 /**
@@ -81,4 +82,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 详细信息
      */
     Result tchGetHomeworkDetailInfo(Integer homeworkId);
+
+    /**
+     * 发布作业
+     *
+     * @param publishProgramHomeworkVO 作业id+是否定时发布+定时发布时间
+     * @return 发布状况
+     */
+    Result publish(PublishProgramHomeworkVO publishProgramHomeworkVO);
 }

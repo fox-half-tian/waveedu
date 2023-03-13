@@ -54,4 +54,18 @@ public class RabbitConstants {
      * 笔记目录删除交换机到工作队列的路由
      */
     public static final String NOTE_DIR_DEL_QUEUE_ROUTING_KEY = "del";
+
+
+    /**
+     * 普通作业发布延迟队列
+     */
+    public static final String PROGRAM_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME = "program.homework.publish.delayed.queue";
+    /**
+     * 普通作业发布延迟交换机
+     */
+    public static final String PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME = "program.homework.publish.delayed.exchange";
+    /**
+     * 普通作业发布延迟交换机到延迟队列的路由
+     */
+    public static final String PROGRAM_HOMEWORK_PUBLISH_ROUTING_KEY = "publish";
 }

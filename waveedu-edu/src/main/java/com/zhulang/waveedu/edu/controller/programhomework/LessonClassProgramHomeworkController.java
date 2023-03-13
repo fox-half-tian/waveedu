@@ -4,7 +4,9 @@ package com.zhulang.waveedu.edu.controller.programhomework;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.PublishCommonHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +84,17 @@ public class LessonClassProgramHomeworkController {
     @GetMapping("/tch/getHomeworkDetailInfo")
     public Result tchGetHomeworkDetailInfo(@RequestParam("homeworkId")Integer homeworkId){
         return lessonClassProgramHomeworkService.tchGetHomeworkDetailInfo(homeworkId);
+    }
+
+    /**
+     * 发布作业
+     *
+     * @param publishProgramHomeworkVO 作业id+是否定时发布+定时发布时间
+     * @return 发布状况
+     */
+    @PostMapping("/tch/publish")
+    public Result publish(@Validated @RequestBody PublishProgramHomeworkVO publishProgramHomeworkVO){
+        return lessonClassProgramHomeworkService.publish(publishProgramHomeworkVO);
     }
 
 }

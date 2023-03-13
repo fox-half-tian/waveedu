@@ -2,6 +2,7 @@ package com.zhulang.waveedu.messagesdk.config;
 
 import com.zhulang.waveedu.common.constant.MessageSdkSendErrorTypeConstants;
 import com.zhulang.waveedu.common.constant.RabbitConstants;
+import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import com.zhulang.waveedu.messagesdk.po.SendErrorLog;
 import com.zhulang.waveedu.messagesdk.service.SendErrorLogService;
@@ -60,8 +61,8 @@ public class RabbitConfig implements ApplicationContextAware {
             public void returnedMessage(@NotNull ReturnedMessage returnedMessage) {
                 // 发送时使用的交换机
                 String exchange = returnedMessage.getExchange();
-                // 如果是普通作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
-                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)) {
+                // 如果是普通/编程作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
+                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)||exchange.equals(PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)) {
                     return;
                 }
                 // 当前失败的消息对象
@@ -148,22 +149,71 @@ public class RabbitConfig implements ApplicationContextAware {
                 .noargs();
     }
 
+
     /**
-     * todo 测试使用 需要删除
+     * 声明编程作业定时发布延迟队列
+     *
+     * @return 延迟队列
      */
     @Bean
-    public Queue workQueue() {
-        return new Queue("work.queue");
+    public Queue programHomeworkPublishDelayedQueue() {
+        return new Queue(PROGRAM_HOMEWORK_PUBLISH_DELAYED_QUEUE_NAME);
     }
 
+    /**
+     * 声明编程作业定时发布延迟交换机
+     *
+     * @return 延迟交换机
+     */
     @Bean
-    public DirectExchange workExchange() {
-        return new DirectExchange("work.exchange");
+    public CustomExchange programHomeworkPublishDelayedExchange() {
+        HashMap<String, Object> arguments = new HashMap<>(1);
+        arguments.put("x-delayed-type", "direct");
+
+        /*
+            第一个参数：交换机的名称
+            第二个参数：交换机的类型
+            第三个参数：是否需要持久化
+            第四个参数：是否需要自动删除
+            第五个参数：其它的参数
+         */
+        return new CustomExchange(PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME, "x-delayed-message", true, false, arguments);
     }
 
+    /**
+     * 编程作业定时发布
+     * 将延迟队列 与 延迟交换机进行捆绑
+     *
+     * @param programHomeworkPublishDelayedQueue    延迟队列
+     * @param programHomeworkPublishDelayedExchange 延迟交换机
+     * @return 捆绑
+     */
     @Bean
-    public Binding binding(@Qualifier("workQueue") Queue workQueue,
-                           @Qualifier("workExchange") DirectExchange workExchange) {
-        return BindingBuilder.bind(workQueue).to(workExchange).with("work.key");
+    public Binding programHomeworkPublishDelayedQueueBindingExchange(@Qualifier("programHomeworkPublishDelayedQueue") Queue programHomeworkPublishDelayedQueue,
+                                                                    @Qualifier("programHomeworkPublishDelayedExchange") CustomExchange programHomeworkPublishDelayedExchange) {
+        return BindingBuilder
+                .bind(programHomeworkPublishDelayedQueue)
+                .to(programHomeworkPublishDelayedExchange)
+                .with(PROGRAM_HOMEWORK_PUBLISH_ROUTING_KEY)
+                .noargs();
     }
+
+//    /**
+//     * todo 测试使用 需要删除
+//     */
+//    @Bean
+//    public Queue workQueue() {
+//        return new Queue("work.queue");
+//    }
+//
+//    @Bean
+//    public DirectExchange workExchange() {
+//        return new DirectExchange("work.exchange");
+//    }
+//
+//    @Bean
+//    public Binding binding(@Qualifier("workQueue") Queue workQueue,
+//                           @Qualifier("workExchange") DirectExchange workExchange) {
+//        return BindingBuilder.bind(workQueue).to(workExchange).with("work.key");
+//    }
 }
