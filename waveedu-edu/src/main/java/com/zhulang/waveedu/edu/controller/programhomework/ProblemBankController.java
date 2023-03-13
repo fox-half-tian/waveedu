@@ -3,12 +3,11 @@ package com.zhulang.waveedu.edu.controller.programhomework;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.ProblemBankService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveImportHomeworkVO;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -54,6 +53,17 @@ public class ProblemBankController {
     @GetMapping("/get/selfOrPublicProblemDetailInfo")
     public Result getSelfOrPublicProblemDetailInfo(@RequestParam("problemId")Integer problemId){
         return problemBankService.getSelfOrPublicProblemDetailInfo(problemId);
+    }
+
+    /**
+     * 批量导入题目到作业
+     *
+     * @param saveImportHomeworkVO 作业id + 问题id数组
+     * @return 导入情况
+     */
+    @PostMapping("/save/importHomework")
+    public Result saveImportHomework(@RequestBody SaveImportHomeworkVO saveImportHomeworkVO){
+        return problemBankService.saveImportHomework(saveImportHomeworkVO);
     }
 
 }

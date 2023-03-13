@@ -1,49 +1,25 @@
-package com.zhulang.waveedu.edu.po;
+package com.zhulang.waveedu.edu.query.programhomeworkquery;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * <p>
- * 编程作业表的题目表
- * </p>
- *
  * @author 狐狸半面添
- * @since 2023-03-12
+ * @create 2023-03-12 15:05
  */
-@TableName("edu_program_homework_problem")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgramHomeworkProblem implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 自增id
-     */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+public class ProblemImportInfoQuery {
 
     /**
      * 题目标题
      */
-    private String title;
-
-    /**
-     * 作业Id
-     */
-    private Integer homeworkId;
-
-    /**
-     * 作者id
-     */
-    private Long authorId;
+    private String title;;
 
     /**
      * 单位ms
@@ -91,14 +67,21 @@ public class ProgramHomeworkProblem implements Serializable {
     private String hint;
 
     /**
-     * 创建时间
+     * 案例测试
      */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private List<InnerCase> caseList;
 
-    /**
-     * 修改时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InnerCase{
+        /**
+         * 输入
+         */
+        private String input;
+        /**
+         * 输出
+         */
+        private String output;
+    }
 }

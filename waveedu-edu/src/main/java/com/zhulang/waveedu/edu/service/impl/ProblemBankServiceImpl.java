@@ -1,19 +1,28 @@
 package com.zhulang.waveedu.edu.service.impl;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dao.ProblemBankMapper;
 import com.zhulang.waveedu.edu.po.ProblemBank;
+import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
+import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemDetailInfoQuery;
-import com.zhulang.waveedu.edu.service.ProblemBankCaseService;
-import com.zhulang.waveedu.edu.service.ProblemBankService;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemImportInfoQuery;
+import com.zhulang.waveedu.edu.service.*;
+import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveImportHomeworkVO;
+import org.apache.ibatis.annotations.Case;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +39,12 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
     private ProblemBankMapper problemBankMapper;
     @Resource
     private ProblemBankCaseService problemBankCaseService;
+    @Resource
+    private LessonClassProgramHomeworkService lessonClassProgramHomeworkService;
+    @Resource
+    private ProgramHomeworkProblemService programHomeworkProblemService;
+    @Resource
+    private ProgramHomeworkProblemCaseService programHomeworkProblemCaseService;
 
     @Override
     public Result getSelfProblemInfoList() {
@@ -61,5 +76,40 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
 
         // 5.返回
         return Result.ok(questionInfo);
+    }
+
+    @Override
+    public Result saveImportHomework(SaveImportHomeworkVO saveImportHomeworkVO) {
+        Long userId = UserHolderUtils.getUserId();
+        // 1.校验权限与作业状态
+        Integer status = lessonClassProgramHomeworkService.getIsPublishByHomeworkIdAndCreatorId(saveImportHomeworkVO.getHomeworkId(), userId);
+        if (status == null) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        if (status != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "只允许修改未发布的作业信息");
+        }
+        // 2.查询信息
+        List<ProblemImportInfoQuery> problemImportInfoQueries = problemBankMapper.selectNeedImportProblemsInfoList(saveImportHomeworkVO.getProblemIds(), userId);
+        // 3.导入到作业
+        ((ProblemBankService) AopContext.currentProxy()).importProblemToHomework(problemImportInfoQueries, saveImportHomeworkVO.getHomeworkId());
+        // 4.返回
+        return Result.ok();
+
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void importProblemToHomework(List<ProblemImportInfoQuery> problemImportInfoQueries,Integer homeworkId){
+        for (ProblemImportInfoQuery problem : problemImportInfoQueries) {
+            ProgramHomeworkProblem homeworkProblem = BeanUtil.copyProperties(problem, ProgramHomeworkProblem.class);
+            homeworkProblem.setHomeworkId(homeworkId);
+            programHomeworkProblemService.save(homeworkProblem);
+            List<ProgramHomeworkProblemCase> caseList = BeanUtil.copyToList(problem.getCaseList(), ProgramHomeworkProblemCase.class);
+            caseList.forEach(c ->{
+                c.setProblemId(homeworkProblem.getId());
+            });
+            programHomeworkProblemCaseService.saveBatch(caseList);
+        }
     }
 }
