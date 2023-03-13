@@ -20,7 +20,7 @@
         WHERE `id` = #{id}
     </select>
     <select id="selectTchHomeworkSimpleListInfo"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkSimpleInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.TchHomeworkSimpleInfoQuery">
         SELECT `id`,
         `title`,
         IF(is_publish != 1, is_publish, IF(`end_time` = NOW(), 1, 3)) AS `status`
@@ -38,7 +38,7 @@
           AND `creator_id` = #{creatorId}
     </select>
     <select id="selectTchHomeworkDetailInfo"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.TchHomeworkDetailInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.TchHomeworkDetailInfoQuery">
         SELECT h.*, c.`num` AS `classStuNum`
         FROM `edu_lesson_class_common_homework` h,
              `edu_lesson_class` c
@@ -47,7 +47,7 @@
           AND c.`is_deleted` = 0
     </select>
     <select id="selectStuHomeworkSimpleInfoList"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkSimpleInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.StuHomeworkSimpleInfoQuery">
         SELECT h.`id`, h.`title`, h.`difficulty`, h.`end_time`, s.`status`
         FROM `edu_lesson_class_common_homework` h
                  LEFT JOIN `edu_common_homework_stu_score` s
@@ -66,7 +66,7 @@
           AND s.`stu_id` = #{stuId}
     </select>
     <select id="selectStuHomeworkDetailInfo"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkDetailInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.StuHomeworkDetailInfoQuery">
         SELECT h.`type`,
                h.`title`,
                h.`difficulty`,
@@ -83,7 +83,7 @@
           AND h.`is_publish` = 1
     </select>
     <select id="selectStuHomeworkStatus"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.StuHomeworkStatusQuery">
         SELECT s.`status`, h.`is_complete_after_explain`, h.`is_end_after_explain`, h.`end_time`
         FROM `edu_lesson_class_common_homework` h
                  LEFT JOIN `edu_common_homework_stu_score` s

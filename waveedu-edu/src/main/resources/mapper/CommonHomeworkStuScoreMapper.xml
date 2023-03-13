@@ -14,7 +14,7 @@
     </update>
 
     <select id="selectHomeworkNoCommitStuInfoListByHomeworkId"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCommitStuInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkNoCommitStuInfoQuery">
         SELECT i.`name` AS `stuName`,
                i.`id`   AS `stuId`
         FROM `basic_user_info` i,
@@ -29,7 +29,7 @@
           AND t.`stu_id` = i.`id`
     </select>
     <select id="selectHomeworkAllStuInfoListByHomeworkId"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkAnyStatusStuInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkAnyStatusStuInfoQuery">
 
         SELECT i.`name`              AS `stuName`,
                u.`stu_id`            AS `stuId`,
@@ -45,7 +45,7 @@
           AND u.`stu_id` = i.`id`
     </select>
     <select id="selectHomeworkNoCheckStuInfoListByHomeworkId"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCheckStuInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkNoCheckStuInfoQuery">
         SELECT s.`stu_id`      AS `stuId`,
                i.`name`        AS `stuName`,
                s.`create_time` AS `commitTime`
@@ -56,7 +56,7 @@
           AND s.`stu_id` = i.`id`
     </select>
     <select id="selectCheckedStuInfoListByHomeworkId"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkCheckedStuInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkCheckedStuInfoQuery">
         SELECT s.`stu_id`      AS `stuId`,
                i.`name`        AS `stuName`,
                s.`create_time` AS `commitTime`,
@@ -68,7 +68,7 @@
           AND s.`stu_id` = i.`id`
     </select>
     <select id="selectHomeworksNoCheckTaskInfoList"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkNoCheckTaskInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkNoCheckTaskInfoQuery">
         SELECT s.`stu_id` AS `stuId`,
         s.`homework_id` AS `homeworkId`,
         s.`id` AS `scoreId`,

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.query.homeworkquery;
+package com.zhulang.waveedu.edu.query.commonhomeworkquery;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.query.homeworkquery;
+package com.zhulang.waveedu.edu.query.commonhomeworkquery;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author 狐狸半面添
- * @create 2023-03-03 19:35
+ * @create 2023-03-03 19:56
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionDetailAndSelfAnswerWithoutScoreQuery {
+public class QuestionSimpleAndSelfAnswerWithoutScoreQuery {
     /**
      * 问题id
      */
@@ -24,14 +24,6 @@ public class QuestionDetailAndSelfAnswerWithoutScoreQuery {
      * 问题描述
      */
     private String problemDesc;
-    /**
-     * 参考答案
-     */
-    private String suggestAnswer;
-    /**
-     * 解析
-     */
-    private String analysis;
     /**
      * 本题满分
      */

@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.query.homeworkquery;
+package com.zhulang.waveedu.edu.query.commonhomeworkquery;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,28 +8,32 @@ import java.time.LocalDateTime;
 
 /**
  * @author 狐狸半面添
- * @create 2023-03-04 18:07
+ * @create 2023-03-04 21:28
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomeworkAnyStatusStuInfoQuery {
-    /**
-     * 学生姓名
-     */
-    private String stuName;
+public class HomeworkNoCheckTaskInfoQuery {
     /**
      * 学生id
      */
     private Long stuId;
     /**
-     * 状态
+     * 作业id
      */
-    private Integer status;
+    private Integer homeworkId;
     /**
-     * 学生分数
+     * 分数表id
      */
-    private Integer stuScore;
+    private Integer scoreId;
+    /**
+     * 作业标题
+     */
+    private String homeworkTitle;
+    /**
+     * 学生姓名
+     */
+    private String stuName;
     /**
      * 提交时间
      */

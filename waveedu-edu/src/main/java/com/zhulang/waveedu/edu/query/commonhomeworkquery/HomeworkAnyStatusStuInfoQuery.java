@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.query.homeworkquery;
+package com.zhulang.waveedu.edu.query.commonhomeworkquery;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomeworkCheckedStuInfoQuery {
+public class HomeworkAnyStatusStuInfoQuery {
     /**
      * 学生姓名
      */
@@ -23,11 +23,15 @@ public class HomeworkCheckedStuInfoQuery {
      */
     private Long stuId;
     /**
-     * 提交时间
+     * 状态
      */
-    private LocalDateTime commitTime;
+    private Integer status;
     /**
      * 学生分数
      */
     private Integer stuScore;
+    /**
+     * 提交时间
+     */
+    private LocalDateTime commitTime;
 }

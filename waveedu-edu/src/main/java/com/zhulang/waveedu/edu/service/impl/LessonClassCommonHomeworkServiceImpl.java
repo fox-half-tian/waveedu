@@ -12,7 +12,7 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassCommonHomeworkMapper;
-import com.zhulang.waveedu.edu.query.homeworkquery.*;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.*;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkVo;

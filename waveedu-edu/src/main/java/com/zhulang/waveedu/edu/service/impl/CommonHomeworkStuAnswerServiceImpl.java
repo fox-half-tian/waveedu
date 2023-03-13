@@ -18,7 +18,7 @@ import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.dao.CommonHomeworkStuAnswerMapper;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuScore;
 import com.zhulang.waveedu.edu.po.MessageSdkSendErrorLog;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.commonhomeworkvo.HomeworkAnswerVO;

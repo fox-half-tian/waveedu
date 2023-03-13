@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.ProblemBankMapper">
+
+
+    <select id="selectSelfProblemInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.SelfSimpleProblemInfoQuery">
+        SELECT `id`, `title`, `difficulty`, `description`
+        FROM `program_problem_bank`
+        WHERE `author_id` = #{authorId}
+    </select>
+</mapper>
