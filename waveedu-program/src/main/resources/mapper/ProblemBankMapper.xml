@@ -25,12 +25,28 @@
         ORDER BY `id` DESC
     </select>
     <select id="selectProblemDetailInfo" resultType="com.zhulang.waveedu.program.query.ProblemDetailInfoQuery">
-        SELECT id, title, is_public, time_limit, memory_limit, stack_limit, `description`, input, output, examples, difficulty, hint, create_time, update_time
+        SELECT id, title, is_public, time_limit, memory_limit, stack_limit, `description`, input, output, examples,
+        difficulty, hint, create_time, update_time
         FROM `program_problem_bank`
         WHERE `id` = #{problemId}
-          AND author_type = #{authorType}
+        AND author_type = #{authorType}
         <if test="authorType=='0'">
             AND `author_id` = #{authorId}
         </if>
+    </select>
+    <select id="selectPublicProblemInfoList"
+            resultType="com.zhulang.waveedu.program.query.PublicProblemInfoQuery">
+        SELECT b.`id`   AS `problemId`,
+               b.`title`,
+               b.`author_type`,
+               b.`author_id`,
+               b.`difficulty`,
+               b.`description`,
+               i.`name` AS `authorName`,
+               i.`icon` AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`is_public` = 1
     </select>
 </mapper>

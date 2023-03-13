@@ -58,4 +58,12 @@ public interface ProblemBankService extends IService<ProblemBank> {
      * @return 详细信息
      */
     Result getProblemDetailInfo(Integer problemId, int authorType);
+
+    /**
+     * 获取公开题库的信息列表
+     *
+     * @param type 类型：null-所有，0-普通用户，1-官方
+     * @return 列表信息
+     */
+    Result getPublicProblemList(Integer type);
 }

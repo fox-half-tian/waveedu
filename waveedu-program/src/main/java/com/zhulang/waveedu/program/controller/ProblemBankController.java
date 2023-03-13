@@ -136,4 +136,15 @@ public class ProblemBankController {
     public Result userGetProblemDetailInfo(@RequestParam("problemId")Integer problemId){
         return problemBankService.getProblemDetailInfo(problemId,USER);
     }
+
+    /**
+     * 获取公开题库的信息列表
+     *
+     * @param type 类型：0-所有，1-普通用户，2-官方
+     * @return 列表信息
+     */
+    @GetMapping("/getPublicProblemList")
+    public Result getPublicProblemList(@RequestParam(value = "type")Integer type){
+        return problemBankService.getPublicProblemList(type);
+    }
 }

@@ -4,6 +4,7 @@ import com.zhulang.waveedu.program.po.ProblemBank;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.program.query.AdminSimpleProblemQuery;
 import com.zhulang.waveedu.program.query.ProblemDetailInfoQuery;
+import com.zhulang.waveedu.program.query.PublicProblemInfoQuery;
 import com.zhulang.waveedu.program.query.UserSimpleProblemQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -43,4 +44,11 @@ public interface ProblemBankMapper extends BaseMapper<ProblemBank> {
      * @return 详细信息
      */
     ProblemDetailInfoQuery selectProblemDetailInfo(@Param("problemId") Integer problemId, @Param("authorType") Integer authorType, @Param("authorId") Long authorId);
+
+    /**
+     * 获取所有的公开题库信息列表
+     *
+     * @return 列表信息
+     */
+    List<PublicProblemInfoQuery> selectPublicProblemInfoList();
 }

@@ -123,8 +123,8 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
         }
         // 2.获取问题信息
         ProblemDetailInfoQuery questionInfo = problemBankMapper.selectProblemDetailInfo(problemId, authorType, UserHolderUtils.getUserId());
-        if (questionInfo==null){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"权限不足或问题不存在");
+        if (questionInfo == null) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "权限不足或问题不存在");
         }
         // 3.获取示例测试
         List<ProblemCaseInfoQuery> caseList = problemBankCaseService.getProblemCaseInfoByProblemId(problemId);
@@ -134,5 +134,19 @@ public class ProblemBankServiceImpl extends ServiceImpl<ProblemBankMapper, Probl
 
         // 5.返回
         return Result.ok(questionInfo);
+    }
+
+    @Override
+    public Result getPublicProblemList(Integer type) {
+        // 1.获取信息列表
+        if (type == 0) {
+            return Result.ok(problemBankMapper.selectPublicProblemInfoList());
+        } else if (type == 1) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "暂未实现单独获取普通用户公开题库");
+        } else if (type == 2) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "暂未实现单独获取官方公开题库");
+        } else {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "类型格式错误");
+        }
     }
 }
