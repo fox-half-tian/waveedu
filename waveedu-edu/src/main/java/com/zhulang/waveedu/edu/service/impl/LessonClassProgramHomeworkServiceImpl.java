@@ -166,21 +166,21 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     @Override
     public Result tchGetHomeworkDetailInfo(Integer homeworkId) {
         // 1.校验格式
-        if (homeworkId<1000){
+        if (homeworkId < 1000) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业id格式错误");
         }
         // 2.校验身份
-        if (!existsByHomeworkIdAndCreatorId(homeworkId,UserHolderUtils.getUserId())) {
+        if (!existsByHomeworkIdAndCreatorId(homeworkId, UserHolderUtils.getUserId())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 3.获取信息
         LessonClassProgramHomework homework = lessonClassProgramHomeworkMapper.selectById(homeworkId);
-        if (homework==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"作业不存在");
+        if (homework == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业不存在");
         }
         // 4.判断状态
-        if (homework.getIsPublish()==1){
-            if (homework.getEndTime().isBefore(LocalDateTime.now())){
+        if (homework.getIsPublish() == 1) {
+            if (homework.getEndTime().isBefore(LocalDateTime.now())) {
                 homework.setIsPublish(3);
             }
         }
@@ -193,14 +193,19 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         // 1.校验创建者，发布状况
         Map<String, Object> map = this.getMap(new LambdaQueryWrapper<LessonClassProgramHomework>()
                 .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
-                .select(LessonClassProgramHomework::getIsPublish, LessonClassProgramHomework::getCreatorId,LessonClassProgramHomework::getEndTime));
+                .select(LessonClassProgramHomework::getIsPublish, LessonClassProgramHomework::getCreatorId, LessonClassProgramHomework::getEndTime));
         // 1.1 是否为创建者
         if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
         }
         // 1.2 判断是否设置了截止时间
-        if (map.get("endTime")==null){
-            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"请先设置作业截止时间");
+        LocalDateTime endTime = (LocalDateTime) map.get("endTime");
+        if (endTime == null) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "请先设置作业截止时间");
+        }
+        // 如果现在的时间在截止时间之后或者开始时间在截止时间之后
+        if (LocalDateTime.now().isAfter(endTime) || (publishProgramHomeworkVO.getStartTime() != null && publishProgramHomeworkVO.getStartTime().isAfter(endTime))) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "截止时间必须在开始时间之后，请重新设置截止时间");
         }
         // 1.2 如果是已经发布了，就不能发布
         if ((Integer) map.get("isPublish") == 1) {
