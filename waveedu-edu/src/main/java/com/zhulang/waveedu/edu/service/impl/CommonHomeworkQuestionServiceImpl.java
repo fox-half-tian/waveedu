@@ -17,8 +17,9 @@ import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
 import com.zhulang.waveedu.edu.service.CommonHomeworkQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.LessonClassCommonHomeworkService;
-import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.BatchSaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.SaveCommonHomeworkQuestionVO;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -254,32 +255,32 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
                 resultMap.put("status", 2);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
-                    resultMap.put("isOpen",1);
+                    resultMap.put("isOpen", 1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看 作业解析
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId, userId));
 
-                }else{
-                    resultMap.put("isOpen",0);
+                } else {
+                    resultMap.put("isOpen", 0);
                     // 获取问题情况以及自己的答案
                     // 获取： 问题id,问题类型，问题描述，问题满分，学生答案
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithoutScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithoutScore(homeworkId, userId));
                 }
             } else {
                 // 如果已批阅
                 resultMap.put("status", 3);
                 if (statusInfo.getIsCompleteAfterExplain() == 1 ||
                         (LocalDateTime.now().isAfter(statusInfo.getEndTime())) && statusInfo.getIsEndAfterExplain() == 1) {
-                    resultMap.put("isOpen",1);
+                    resultMap.put("isOpen", 1);
                     // 如果允许完成作业后查看或者 时间已经截止了并且允许时间截止后查看
                     // 获取： 问题id,问题类型，问题描述，问题参考答案，问题解析，问题满分，学生答案，学生该题分数
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId, userId));
 
-                }else{
-                    resultMap.put("isOpen",0);
+                } else {
+                    resultMap.put("isOpen", 0);
                     // 获取问题情况以及自己的答案
                     // 获取：问题id,问题类型，问题描述，问题满分，学生答案，学生该题分数
-                    resultMap.put("questions",commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithScore(homeworkId,userId));
+                    resultMap.put("questions", commonHomeworkQuestionMapper.selectQuestionSimpleAndSelfAnswerWithScore(homeworkId, userId));
                 }
             }
         }
@@ -293,22 +294,141 @@ public class CommonHomeworkQuestionServiceImpl extends ServiceImpl<CommonHomewor
 
     @Override
     public List<QuestionDetailAndSelfAnswerWithoutScoreQuery> getQuestionDetailAndSelfAnswerWithoutScore(Integer homeworkId, Long stuId) {
-        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId,stuId);
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithoutScore(homeworkId, stuId);
     }
 
     @Override
     public List<QuestionDetailAndSelfAnswerWithScoreQuery> getQuestionDetailAndSelfAnswerWithScore(Integer homeworkId, Long stuId) {
-        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId,stuId);
+        return commonHomeworkQuestionMapper.selectQuestionDetailAndSelfAnswerWithScore(homeworkId, stuId);
     }
 
     @Override
     public boolean isHomeworkCreatorByQuestionIdAndUserId(Integer questionId, Long userId) {
-        return commonHomeworkQuestionMapper.isHomeworkCreatorByQuestionIdAndUserId(questionId,userId)!=null;
+        return commonHomeworkQuestionMapper.isHomeworkCreatorByQuestionIdAndUserId(questionId, userId) != null;
     }
 
     @Override
     public Integer getHomeworkIdByQuestionId(Integer questionId) {
         return commonHomeworkQuestionMapper.selectHomeworkIdByQuestionId(questionId);
+    }
+
+    @Override
+    public Result batchSaveQuestion(BatchSaveCommonHomeworkQuestionVO batchSaveCommonHomeworkQuestionVO) {
+        // 1.查询作业的信息：type + is_publish + creator_id
+        Map<String, Object> map = lessonClassCommonHomeworkService.getMap(new LambdaQueryWrapper<LessonClassCommonHomework>()
+                .eq(LessonClassCommonHomework::getId, batchSaveCommonHomeworkQuestionVO.getCommonHomeworkId())
+                .select(LessonClassCommonHomework::getIsPublish, LessonClassCommonHomework::getType, LessonClassCommonHomework::getCreatorId));
+        // 1.1 为空说明不存在该作业信息
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "作业信息不存在");
+        }
+        // 1.2 如果不是创建者说明权限不足
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 1.3 如果已经发布则不能再修改
+        if ((Integer) map.get("isPublish") != 0) {
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "作业已发布，无法添加");
+        }
+        // 1.4 如果作业类型为1并且题目类型不为4，或者，作业类型为0并且题目类型为4则操作失败
+        // 获取作业类型
+        int homeworkType = (Integer) map.get("type");
+        List<BatchSaveCommonHomeworkQuestionVO.InnerQuestion> innerQuestionList = batchSaveCommonHomeworkQuestionVO.getInnerQuestionList();
+        ArrayList<CommonHomeworkQuestion> questions = new ArrayList<>(innerQuestionList.size());
+        for (BatchSaveCommonHomeworkQuestionVO.InnerQuestion innerQuestion : innerQuestionList) {
+
+            // 获取题目类型
+            int questionType = innerQuestion.getType();
+            if ((homeworkType == 1 && questionType == 4) || (homeworkType == 0 && questionType != 4)) {
+                return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue());
+            }
+
+            // 2.属性转换
+            CommonHomeworkQuestion question = BeanUtil.copyProperties(innerQuestion, CommonHomeworkQuestion.class);
+            question.setCommonHomeworkId(batchSaveCommonHomeworkQuestionVO.getCommonHomeworkId());
+            // 3.根据问题类型校验答案的格式
+            try {
+                verifyAnswerFormat(question.getType(), question.getProblemDesc(), question.getAnswer());
+            } catch (Exception e) {
+                return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目格式错误");
+            }
+            // 4.将无效的答案和解析设为空串
+            if (!StringUtils.hasText(question.getAnswer())) {
+                question.setAnswer("");
+            }
+            if (!StringUtils.hasText(question.getAnalysis())) {
+                question.setAnalysis("");
+            }
+            // 校验成功
+            questions.add(question);
+        }
+        // 5.保存问题并修改总分数
+//        ((CommonHomeworkQuestionService) AopContext.currentProxy()).saveQuestionAndModifyTotalScore(question);
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).batchSaveQuestionAndModifyTotalScore(questions);
+        // 6.返回
+        return Result.ok();
+    }
+
+    /**
+     * 批量保存问题并修改总分数
+     *
+     * @param questions 问题信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void batchSaveQuestionAndModifyTotalScore(List<CommonHomeworkQuestion> questions) {
+        // 批量问题保存
+        commonHomeworkQuestionMapper.insertBatchSomeColumn(questions);
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(questions.get(0).getCommonHomeworkId());
+    }
+
+    @Override
+    public Result batchDelQuestion(List<Integer> questionIds) {
+        // 1.判断 questionId 格式
+//        if (questionId < 1) {
+//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "题目id格式错误");
+//        }
+
+        // 1.判断是否属于同一道作业
+        Integer count = commonHomeworkQuestionMapper.selectHomeworkIdByQuestionIds(questionIds);
+        if (count == 0) {
+            return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(), "未查询到问题信息");
+        }
+        if (count != 1) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "问题不属于同一作业");
+        }
+
+        // 2.查看问题是否发布
+        Map<String, Object> map = commonHomeworkQuestionMapper.selectHomeworkIsPublishAndCreatorIdAndCommonHomeworkIdById(questionIds.get(0));
+        if (map == null || map.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未查询到题目或作业信息");
+        }
+
+        if ((Integer) map.get("isPublish") != 0) {
+            return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "作业已发布，无法修改题目");
+        }
+
+        // 3.查看是否为创建者
+        if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 4.删除题目
+//        ((CommonHomeworkQuestionService) AopContext.currentProxy()).removeQuestionAndModifyTotalScore(questionId, Integer.parseInt(map.get("homeworkId").toString()));
+        ((CommonHomeworkQuestionService) AopContext.currentProxy()).batchRemoveQuestionAndModifyTotalScore(questionIds, Integer.parseInt(map.get("homeworkId").toString()));
+
+        // 5.返回
+        return Result.ok();
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchRemoveQuestionAndModifyTotalScore(List<Integer> questionIds, Integer homeworkId) {
+        // 问题删除
+        commonHomeworkQuestionMapper.deleteBatchIds(questionIds);
+        // 修改作业表的总分数
+        lessonClassCommonHomeworkService.modifyTotalScore(homeworkId);
     }
 
     @Override

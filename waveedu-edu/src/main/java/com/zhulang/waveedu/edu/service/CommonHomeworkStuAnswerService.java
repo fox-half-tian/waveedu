@@ -3,8 +3,8 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkStuAnswer;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.HomeworkAnswerVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.MarkHomeworkVO;
 
 import java.util.List;
 

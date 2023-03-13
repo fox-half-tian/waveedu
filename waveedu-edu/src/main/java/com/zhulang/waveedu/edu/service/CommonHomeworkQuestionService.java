@@ -6,8 +6,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
 import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
-import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.BatchSaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.SaveCommonHomeworkQuestionVO;
 
 import java.util.List;
 
@@ -87,6 +88,14 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
     void removeQuestionAndModifyTotalScore(Integer questionId, Integer homeworkId);
 
     /**
+     * 批量删除问题并修改总分数
+     *
+     * @param questionIds 问题ids
+     * @param homeworkId 问题所在的作业id
+     */
+    void batchRemoveQuestionAndModifyTotalScore(List<Integer> questionIds, Integer homeworkId);
+
+    /**
      * 修改问题并修改总分数
      *
      * @param question   问题信息
@@ -144,4 +153,28 @@ public interface CommonHomeworkQuestionService extends IService<CommonHomeworkQu
      * @return 作业id
      */
     Integer getHomeworkIdByQuestionId(Integer questionId);
+
+    /**
+     * 添加一个题目
+     *
+     * @param batchSaveCommonHomeworkQuestionVO 题目内容
+     * @return 是否添加成功
+     */
+    Result batchSaveQuestion(BatchSaveCommonHomeworkQuestionVO batchSaveCommonHomeworkQuestionVO);
+
+    /**
+     * 保存问题并修改总分数
+     *
+     * @param questions 问题信息
+     */
+    void batchSaveQuestionAndModifyTotalScore(List<CommonHomeworkQuestion> questions);
+
+    /**
+     * 删除多个题目
+     * 只有未发布的作业才可以删除题目
+     *
+     * @param questionIds 多个题目Ids
+     * @return 是否删除
+     */
+    Result batchDelQuestion(List<Integer> questionIds);
 }

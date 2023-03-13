@@ -4,9 +4,10 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.edu.query.homeworkquery.StuHomeworkStatusQuery;
-import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkVo;
-import com.zhulang.waveedu.edu.vo.homeworkvo.PublishCommonHomeworkVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkVo;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.PublishCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.PublishPlusCommonHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.SaveCommonHomeworkVO;
 
 /**
  * <p>
@@ -134,4 +135,18 @@ public interface LessonClassCommonHomeworkService extends IService<LessonClassCo
      * @return 删除状况
      */
     Result removeHomework(Integer homeworkId);
+
+    /**
+     * 发布作业（增强）
+     *
+     * @param publishPlusCommonHomeworkVO 作业信息
+     * @return 发布状况
+     */
+    Result publishPlus(PublishPlusCommonHomeworkVO publishPlusCommonHomeworkVO);
+
+    /**
+     * 提交人数 + 1
+     * @param homeworkId 作业id
+     */
+    void modifySubmitNumOfAddOne(Integer homeworkId);
 }

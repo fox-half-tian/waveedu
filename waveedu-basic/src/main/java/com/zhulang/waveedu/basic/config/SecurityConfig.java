@@ -40,28 +40,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //关闭csrf
+                // 关闭csrf
                 .csrf().disable()
-                //不通过Session获取SecurityContext
+                // 不通过Session获取SecurityContext
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/user/login/*").anonymous()
+                .antMatchers("/admin/login").anonymous()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
-        //把token校验过滤器添加到过滤器链中
+        // 把token校验过滤器添加到过滤器链中
         http.addFilterBefore(new AuthenticationTokenFilter(redisCacheUtils), UsernamePasswordAuthenticationFilter.class);
 
-        //配置异常处理器
+        // 配置异常处理器
         http.exceptionHandling()
                 // 配置认证失败处理器
                 .authenticationEntryPoint(new AuthenticationEntryPointImpl())
                 // 配置授权失败处理器
                 .accessDeniedHandler(new AccessDeniedHandlerImpl());
 
-        //允许跨域
+        // 允许跨域
         http.cors()
                 .configurationSource(configurationSource());
     }
@@ -74,9 +75,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
         corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
         corsConfiguration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper">
+    <update id="updateNumById">
+        UPDATE `edu_lesson_class_program_homework`
+        SET `num` = (SELECT COUNT(*) FROM `edu_program_homework_problem` WHERE `homework_id` = #{homeworkId})
+        WHERE `id` = #{homeworkId}
+    </update>
+
+    <select id="selectIsPublishByHomeworkIdAndCreatorId" resultType="java.lang.Integer">
+        SELECT `is_publish`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{homeworkId}
+          AND `creator_id` = #{creatorId}
+    </select>
+    <select id="existsByHomeworkIdAndCreatorId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{homeworkId}
+          AND `creator_id` = #{creatorId}
+    </select>
+</mapper>

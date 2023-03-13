@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.program.dao.ProblemBankMapper">
+
+    <select id="selectUserSimpleProblemList"
+            resultType="com.zhulang.waveedu.program.query.UserSimpleProblemQuery">
+        SELECT `id`, `title`, `is_public`, `difficulty`, `create_time`
+        FROM `program_problem_bank`
+        WHERE `author_id` = #{authorId}
+        ORDER BY `id` DESC
+    </select>
+    <select id="selectAdminSimpleProblemList"
+            resultType="com.zhulang.waveedu.program.query.AdminSimpleProblemQuery">
+        SELECT b.`id`,
+               b.`title`,
+               b.`is_public`,
+               b.`difficulty`,
+               b.`create_time`,
+               b.`author_id`,
+               a.`nick_name` AS `authorName`
+        FROM `program_problem_bank` b,
+             `basic_admin` a
+        WHERE b.`author_type` = 1
+          AND b.`author_id` = a.`id`
+        ORDER BY `id` DESC
+    </select>
+    <select id="selectProblemDetailInfo" resultType="com.zhulang.waveedu.program.query.ProblemDetailInfoQuery">
+        SELECT id, title, is_public, time_limit, memory_limit, stack_limit, `description`, input, output, examples,
+        difficulty, hint, create_time, update_time
+        FROM `program_problem_bank`
+        WHERE `id` = #{problemId}
+        AND author_type = #{authorType}
+        <if test="authorType=='0'">
+            AND `author_id` = #{authorId}
+        </if>
+    </select>
+    <select id="selectPublicProblemInfoList"
+            resultType="com.zhulang.waveedu.program.query.PublicProblemInfoQuery">
+        SELECT b.`id`   AS `problemId`,
+               b.`title`,
+               b.`author_type`,
+               b.`author_id`,
+               b.`difficulty`,
+               b.`description`,
+               i.`name` AS `authorName`,
+               i.`icon` AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`is_public` = 1
+    </select>
+    <select id="selectPublicProblemDetailInfo"
+            resultType="com.zhulang.waveedu.program.query.PublicProblemDetailInfoQuery">
+        SELECT b.`id`           AS `problemId`,
+               b.`title`        AS `title`,
+               b.`time_limit`   AS `timeLimit`,
+               b.`memory_limit` AS `memoryLimit`,
+               b.`stack_limit`  AS `stackLimit`,
+               b.`description`  AS `description`,
+               b.`input`        AS `input`,
+               b.`output`       AS `output`,
+               b.`examples`     AS `examples`,
+               b.`difficulty`   AS `difficulty`,
+               b.`hint`         AS `hint`,
+               b.`create_time`  AS `createTime`,
+               b.`update_time`  AS `updateTime`,
+               b.`author_type`  AS `authorType`,
+               i.`name`         AS `authorName`,
+               i.`icon`         AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`id` = #{problemId}
+          AND b.`is_public` = 1
+    </select>
+</mapper>

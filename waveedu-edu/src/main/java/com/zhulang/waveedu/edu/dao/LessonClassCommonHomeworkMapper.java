@@ -94,4 +94,11 @@ public interface LessonClassCommonHomeworkMapper extends BaseMapper<LessonClassC
      * @return 作业状态信息
      */
     StuHomeworkStatusQuery selectStuHomeworkStatus(@Param("id") Integer id,@Param("stuId") Long stuId);
+
+    /**
+     * 提交人数加一
+     *
+     * @param id 作业id
+     */
+    void updateCommitNumOfAddOne(@Param("id") Integer id);
 }

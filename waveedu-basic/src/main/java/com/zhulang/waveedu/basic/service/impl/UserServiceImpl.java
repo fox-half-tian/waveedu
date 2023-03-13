@@ -20,6 +20,7 @@ import com.zhulang.waveedu.basic.vo.PhoneCodeVO;
 import com.zhulang.waveedu.basic.vo.PhonePasswordVO;
 import com.zhulang.waveedu.basic.vo.UpdatePwdVO;
 import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.entity.Result;
@@ -140,7 +141,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 2.生成 token
         String uuid = UUID.randomUUID().toString(true);
-        String token = CipherUtils.encrypt(userInfo.getId() + "-" + uuid);
+        String token = CipherUtils.encrypt(LoginIdentityConstants.USER_MARK + "-" + userInfo.getId() + "-" + uuid);
 
         // 3.设置缓存的用户信息
         RedisUser redisUser = new RedisUser();

@@ -9,6 +9,11 @@ public class BasicConstants {
      * 默认的用户头像
      */
     public final static String DEFAULT_USER_ICON = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/head-image/waveedudefault.png";
+
+    /**
+     * 默认的管理员头像
+     */
+    public final static String DEFAULT_ADMIN_ICON = "https://waveedu.oss-cn-hangzhou.aliyuncs.com/head-image/authoritydefaulticon.png";
     /**
      * 登录时最大验证密码的次数
      */
@@ -31,4 +36,5 @@ public class BasicConstants {
      * 注销冻结天数，7天后将无法通过登录修改状态（真正注销）
      */
     public static final int LOGOFF_FROZEN_DAY = 7;
+
 }
