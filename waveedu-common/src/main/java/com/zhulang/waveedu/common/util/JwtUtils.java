@@ -1,6 +1,9 @@
 package com.zhulang.waveedu.common.util;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -91,7 +94,11 @@ public class JwtUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        create("20200001");
+        create("1630268094557634561");
+        create("1630585280572461057");
+        create("1630618516837285889");
+        create("1631981115958419457");
+        create("1627542977134080001");
         //parse("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJmNzc1YWVkODlmZWY0YTY5YWQ3NTAyMGY1OWMzYjYxZSIsInN1YiI6IjIwMjEyODgwIiwiaXNzIjoid2F2ZUVkdSIsImlhdCI6MTY3ODEyOTk4MywiZXhwIjoxNjc4MTM3MTgzfQ.ugErFs24RsZEh_FYpg9YrB-n0k46kaNvRVZPRYL2-ng");
     }
 
@@ -99,6 +106,7 @@ public class JwtUtils {
         String jwt = createJWT("20212880");
         System.out.println(jwt);
     }
+
     public static void create(String username) {
         String jwt = createJWT(username);
         System.out.println(jwt);
@@ -127,7 +135,7 @@ public class JwtUtils {
      * @param jwt jwt
      * @return 信息
      */
-    public static Claims parseJWT(String jwt) throws Exception{
+    public static Claims parseJWT(String jwt) throws Exception {
         SecretKey secretKey = generalKey();
         return Jwts.parser()
                 .setSigningKey(secretKey)
