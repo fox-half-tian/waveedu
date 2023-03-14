@@ -130,14 +130,14 @@ language: Python2
 src_path: main.py
 exe_path: main.pyc
 compile:
-  env: default
-  command: /usr/bin/python -m py_compile /w/{src_path}
+  env: python2.7
+  command: /usr/bin/python2.7 -m py_compile /w/{src_path}
   maxCpuTime: 5s
   maxRealTime: 10s
   maxMemory: 256mb
 run:
-  env: default
-  command: /usr/bin/python /w/{exe_path}
+  env: python2.7
+  command: /usr/bin/python2.7 /w/{exe_path}
 
 ---
 language: Python3
