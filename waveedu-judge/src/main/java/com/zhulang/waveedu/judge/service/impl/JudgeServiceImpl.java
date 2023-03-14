@@ -23,14 +23,10 @@ import java.util.HashMap;
 @RefreshScope
 public class JudgeServiceImpl implements JudgeService {
 
-    @Value("${hoj-judge-server.name}")
-    private String name;
     @Resource
     private ProgramHomeworkProblemService programHomeworkProblemService;
     @Resource
     private JudgeStrategy judgeStrategy;
-    @Resource
-    private LanguageConfigLoader languageConfigLoader;
 
 
     @Override

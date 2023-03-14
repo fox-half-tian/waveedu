@@ -8,13 +8,15 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
+ * EnableAsync(proxyTargetClass=true) 开启异步注解
+ *
  * @author 狐狸半面添
  * @since 2023-03-12
  * @Description: 判题机服务系统启动类
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableAsync(proxyTargetClass=true) //开启异步注解
+@EnableAsync(proxyTargetClass=true)
 @EnableTransactionManagement
 @EnableRetry
 public class JudgeServerApplication {

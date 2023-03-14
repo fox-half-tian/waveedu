@@ -6,7 +6,6 @@ import com.zhulang.waveedu.judge.dao.ProgramHomeworkProblemCaseMapper;
 import com.zhulang.waveedu.judge.dao.ProgramHomeworkProblemMapper;
 import com.zhulang.waveedu.judge.po.ProgramHomeworkProblemCase;
 import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemCaseService;
-import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

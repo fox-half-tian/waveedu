@@ -19,7 +19,7 @@ public class JudgeController {
     private JudgeService judgeService;
 
 
-    @PostMapping(value = "/judge")
+    @PostMapping(value = "/submitProblemJudge")
     public Result submitProblemJudge(@RequestBody ToJudgeDTO toJudgeDTO) {
         /*
             1.输入答案的信息
@@ -30,8 +30,8 @@ public class JudgeController {
          */
 
         // 进入判断
-        judgeService.judge(toJudgeDTO);
+        Result judgeResult = judgeService.judge(toJudgeDTO);
 
-        return Result.ok("判题机评测完成！");
+        return Result.ok(judgeResult);
     }
 }
