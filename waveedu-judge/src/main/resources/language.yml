@@ -4,7 +4,8 @@ src_path: main.c
 exe_path: main
 compile:
   env: default
-  command: /usr/bin/gcc -shared -DONLINE_JUDGE -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
+  command: /usr/bin/gcc -DONLINE_JUDGE -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
+#  command: /usr/bin/gcc {src_path} -o {exe_path}
   maxCpuTime: 3s
   maxRealTime: 10s
   maxMemory: 256mb
@@ -232,60 +233,3 @@ exe_path: main.js
 run:
   env: default
   command: /usr/bin/jsv8/d8 /w/{exe_path}
-
-# 以下为特殊评测或交互评测使用的语言
----
-language: SPJ-C
-src_path: spj.c
-exe_path: spj
-compile:
-  env: default
-  command: /usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c11 {src_path} -lm -o {exe_path}
-  maxCpuTime: 3s
-  maxRealTime: 10s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path} {std_input} {user_output} {std_output}
-
----
-language: SPJ-C++
-src_path: spj.cpp
-exe_path: spj
-compile:
-  env: default
-  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++14 {src_path} -lm -o {exe_path}
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path} {std_input} {user_output} {std_output}
-
----
-language: INTERACTIVE-C
-src_path: interactive.c
-exe_path: interactive
-compile:
-  env: default
-  command: /usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c11 {src_path} -lm -o {exe_path}
-  maxCpuTime: 3s
-  maxRealTime: 10s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path} {std_input} {user_output} {std_output}
-
----
-language: INTERACTIVE-C++
-src_path: interactive.cpp
-exe_path: interactive
-compile:
-  env: default
-  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c++14 {src_path} -lm -o {exe_path}
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path} {std_input} {user_output} {std_output}

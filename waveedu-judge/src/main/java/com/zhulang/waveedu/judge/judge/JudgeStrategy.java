@@ -153,7 +153,6 @@ public class JudgeStrategy {
             // 状态
             int status = jsonObject.getInt("status");
 
-
             if (!Objects.equals(status, Constants.Judge.STATUS_ACCEPTED.getStatus())) {
                 HashMap<String, Object> result = new HashMap<>(2);
                 result.put("code", status);
