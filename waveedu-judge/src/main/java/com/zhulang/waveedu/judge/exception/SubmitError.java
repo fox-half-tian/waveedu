@@ -3,9 +3,8 @@ package com.zhulang.waveedu.judge.exception;
 import lombok.Data;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/4/16 13:52
- * @Description:
+ * @author 狐狸半面添
+ * @create 2023-03-13 22:36
  */
 @Data
 public class SubmitError extends Exception {

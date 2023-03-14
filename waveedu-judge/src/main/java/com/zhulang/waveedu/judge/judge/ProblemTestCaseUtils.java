@@ -8,28 +8,20 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zhulang.waveedu.judge.entity.problem.ProblemCase;
 import com.zhulang.waveedu.judge.exception.SystemError;
 import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemCaseService;
-import com.zhulang.waveedu.judge.util.Constants;
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/4/16 13:21
+ * @author 狐狸半面添
+ * @create 2023-03-14 12:09
  * @Description: 判题流程解耦重构2.0，该类只负责题目测试数据的检查与初始化
  */
 @Component

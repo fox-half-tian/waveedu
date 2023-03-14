@@ -10,6 +10,7 @@ import com.zhulang.waveedu.judge.judge.entity.JudgeGlobalDTO;
 import com.zhulang.waveedu.judge.judge.entity.LanguageConfig;
 import com.zhulang.waveedu.judge.judge.entity.SandBoxRes;
 import com.zhulang.waveedu.judge.util.Constants;
+import com.zhulang.waveedu.judge.util.JudgeUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
@@ -41,7 +42,7 @@ public class DefaultJudge extends AbstractJudge {
                 6. originalStatus -> Accepted
          */
         return SandboxRun.testCase(
-                parseRunCommand(runConfig.getRunCommand(), null, null, null),
+                JudgeUtils.translateCommandline(runConfig.getRunCommand()),
                 runConfig.getRunEnvs(),
                 // 输入文件的绝对路径
                 judgeDTO.getTestCaseInputPath(),
@@ -115,16 +116,12 @@ public class DefaultJudge extends AbstractJudge {
         return result;
     }
 
-    @Override
-    public JSONObject checkMultipleResult(SandBoxRes userSandBoxRes, SandBoxRes interactiveSandBoxRes, JudgeDTO judgeDTO, JudgeGlobalDTO judgeGlobalDTO) {
-        return null;
-    }
 
     // 根据评测结果与用户程序输出的字符串MD5进行对比
-    private Integer compareOutput(String userOutput, Boolean isRemoveEOLBlank, JSONObject testcaseInfo) {
+    private Integer compareOutput(String userOutput, Boolean isRemoveEolBlank, JSONObject testcaseInfo) {
 
         // 如果当前题目选择默认去掉字符串末位空格
-        if (isRemoveEOLBlank) {
+        if (isRemoveEolBlank) {
             String userOutputMd5 = DigestUtils.md5DigestAsHex(rtrim(userOutput).getBytes(StandardCharsets.UTF_8));
             if (userOutputMd5.equals(testcaseInfo.getStr("EOFStrippedOutputMd5"))) {
                 return Constants.Judge.STATUS_ACCEPTED.getStatus();

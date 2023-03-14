@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.judge.judge;
 
-import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.zhulang.waveedu.judge.exception.CompileError;
@@ -11,13 +10,11 @@ import com.zhulang.waveedu.judge.util.Constants;
 import com.zhulang.waveedu.judge.util.JudgeUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/4/16 12:14
+ * @author 狐狸半面添
+ * @create 2023-03-14 09:30
  * @Description: 判题流程解耦重构2.0，该类只负责编译
  */
 public class Compiler {

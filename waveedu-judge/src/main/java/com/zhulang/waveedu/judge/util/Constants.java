@@ -2,8 +2,8 @@ package com.zhulang.waveedu.judge.util;
 
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/1/1 13:00
+ * @author 狐狸半面添
+ * @since 2023-03-14
  * @Description: 常量枚举类
  */
 public class Constants {

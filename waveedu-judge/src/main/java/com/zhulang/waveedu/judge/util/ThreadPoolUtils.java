@@ -3,9 +3,8 @@ package com.zhulang.waveedu.judge.util;
 import java.util.concurrent.*;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/12/21 12:06
- * @Description:
+ * @author 狐狸半面添
+ * @since 2023-03-14
  */
 public class ThreadPoolUtils {
 

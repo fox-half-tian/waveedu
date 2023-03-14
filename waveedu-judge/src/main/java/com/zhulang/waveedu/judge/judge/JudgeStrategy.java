@@ -1,31 +1,26 @@
 package com.zhulang.waveedu.judge.judge;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.file.FileReader;
-import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.json.JSONObject;
 import com.zhulang.waveedu.judge.dto.ProblemLimitInfoDTO;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
-import com.zhulang.waveedu.judge.entity.judge.Judge;
-import com.zhulang.waveedu.judge.entity.judge.JudgeCase;
-import com.zhulang.waveedu.judge.entity.problem.Problem;
 import com.zhulang.waveedu.judge.exception.CompileError;
 import com.zhulang.waveedu.judge.exception.LanguageNoSupportError;
 import com.zhulang.waveedu.judge.exception.SubmitError;
 import com.zhulang.waveedu.judge.exception.SystemError;
 import com.zhulang.waveedu.judge.judge.entity.LanguageConfig;
-import com.zhulang.waveedu.judge.judge.entity.Pair_;
 import com.zhulang.waveedu.judge.util.Constants;
-import com.zhulang.waveedu.judge.util.JudgeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.*;
 
+/**
+ * @author 狐狸半面添
+ * @create 2023-03-14 09:30
+ */
 @Slf4j(topic = "hoj")
 @Component
 public class JudgeStrategy {
@@ -48,7 +43,7 @@ public class JudgeStrategy {
             // 对用户源代码进行编译 获取tmpfs中的fileId
             LanguageConfig languageConfig = languageConfigLoader.getLanguageConfigByName(toJudgeDTO.getLanguage());
             // 有的语言可能不支持编译, 目前有js、php不支持编译，则 languageConfig 的值为 null
-            if (languageConfig==null){
+            if (languageConfig == null) {
                 throw new LanguageNoSupportError("Unsupported language " + toJudgeDTO.getLanguage());
             }
             if (languageConfig.getCompileCommand() != null) {
@@ -104,152 +99,91 @@ public class JudgeStrategy {
             );
 
             // 对全部测试点结果进行评判,获取最终评判结果
-            return getJudgeInfo(allCaseResultList, problem, judge, judgeCaseMode);
-        }catch (LanguageNoSupportError languageNoSupportError){
-            result.put("code",Constants.Judge.STATUS_LANGUAGE_NO_SUPPORT.getStatus());
-            result.put("errMsg",languageNoSupportError.getMessage());
+            return getJudgeInfo(allCaseResultList);
+        } catch (LanguageNoSupportError languageNoSupportError) {
+            result.put("code", Constants.Judge.STATUS_LANGUAGE_NO_SUPPORT.getStatus());
+            result.put("errMsg", languageNoSupportError.getMessage());
             log.error("[Judge] [LanguageNoSupport Error] Problem Id:[{}], Error:[{}]",
                     problemLimitInfo.getId(),
                     languageNoSupportError);
         } catch (SystemError systemError) {
             result.put("code", Constants.Judge.STATUS_SYSTEM_ERROR.getStatus());
             result.put("errMsg", "Oops, something has gone wrong with the judgeServer. Please report this to administrator.");
-            result.put("time", 0);
-            result.put("memory", 0);
             log.error("[Judge] [System Error] Problem Id:[{}], Error:[{}]",
                     problemLimitInfo.getId(),
                     systemError);
         } catch (SubmitError submitError) {
             result.put("code", Constants.Judge.STATUS_SUBMITTED_FAILED.getStatus());
             result.put("errMsg", mergeNonEmptyStrings(submitError.getMessage(), submitError.getStdout(), submitError.getStderr()));
-            result.put("time", 0);
-            result.put("memory", 0);
             log.error("[Judge] [Submit Error] Problem Id:[{}], Error:[{}]",
                     problemLimitInfo.getId(),
                     submitError);
         } catch (CompileError compileError) {
             result.put("code", Constants.Judge.STATUS_COMPILE_ERROR.getStatus());
             result.put("errMsg", mergeNonEmptyStrings(compileError.getStdout(), compileError.getStderr()));
-            result.put("time", 0);
-            result.put("memory", 0);
         } catch (Exception e) {
             result.put("code", Constants.Judge.STATUS_SYSTEM_ERROR.getStatus());
             result.put("errMsg", "Oops, something has gone wrong with the judgeServer. Please report this to administrator.");
-            result.put("time", 0);
-            result.put("memory", 0);
             log.error("[Judge] [System Runtime Error] Problem Id:[{}], Error:[{}]",
                     problemLimitInfo.getId(),
                     e);
         } finally {
-
             // 删除tmpfs内存中的用户代码可执行文件
-            if (!StringUtils.isEmpty(userFileId)) {
+            if (StringUtils.hasText(userFileId)) {
                 SandboxRun.delFile(userFileId);
             }
         }
         return result;
     }
 
-    // 进行最终测试结果的判断（除编译失败外的评测状态码和时间，空间,OI题目的得分）
-    public HashMap<String, Object> getJudgeInfo(List<JSONObject> testCaseResultList,
-                                                Problem problem,
-                                                Judge judge,
-                                                String judgeCaseMode) {
+    /**
+     * 进行最终测试结果的判断（除编译失败外的评测状态码和时间，空间,OI题目的得分）
+     *
+     * @param testCaseResultList 测试结果信息
+     * @return 最终结果
+     */
+    public HashMap<String, Object> getJudgeInfo(List<JSONObject> testCaseResultList) {
 
-        boolean isACM = Objects.equals(problem.getType(), Constants.Contest.TYPE_ACM.getCode());
-
-        List<JSONObject> errorTestCaseList = new LinkedList<>();
-
-        List<JudgeCase> allCaseResList = new LinkedList<>();
+        int maxTime = -1;
+        int maxMemory = -1;
 
         // 记录所有测试点的结果
-        testCaseResultList.forEach(jsonObject -> {
-            Integer time = jsonObject.getLong("time").intValue();
-            Integer memory = jsonObject.getLong("memory").intValue();
-            Integer status = jsonObject.getInt("status");
+        for (JSONObject jsonObject : testCaseResultList) {
 
-            Long caseId = jsonObject.getLong("caseId", null);
-            Integer groupNum = jsonObject.getInt("groupNum", null);
-            Integer seq = jsonObject.getInt("seq", 0);
-            String inputFileName = jsonObject.getStr("inputFileName");
-            String outputFileName = jsonObject.getStr("outputFileName");
-            String msg = jsonObject.getStr("errMsg");
-            JudgeCase judgeCase = new JudgeCase();
-            judgeCase.setTime(time)
-                    .setMemory(memory)
-                    .setStatus(status)
-                    .setInputData(inputFileName)
-                    .setOutputData(outputFileName)
-                    .setPid(problem.getId())
-                    .setUid(judge.getUid())
-                    .setCaseId(caseId)
-                    .setSeq(seq)
-                    .setGroupNum(groupNum)
-                    .setMode(judgeCaseMode)
-                    .setSubmitId(judge.getSubmitId());
+            // 状态
+            int status = jsonObject.getInt("status");
 
-            if (!StringUtils.isEmpty(msg) && !Objects.equals(status, Constants.Judge.STATUS_COMPILE_ERROR.getStatus())) {
-                judgeCase.setUserOutput(msg);
+
+            if (!Objects.equals(status, Constants.Judge.STATUS_ACCEPTED.getStatus())) {
+                HashMap<String, Object> result = new HashMap<>(2);
+                result.put("code", status);
+                result.put("errMsg", jsonObject.getStr("errMsg"));
+                return result;
             }
 
-            if (isACM) {
-                if (!Objects.equals(status, Constants.Judge.STATUS_ACCEPTED.getStatus())) {
-                    errorTestCaseList.add(jsonObject);
-                }
-            } else {
-                int oiScore = jsonObject.getInt("score");
-                if (Objects.equals(status, Constants.Judge.STATUS_ACCEPTED.getStatus())) {
-                    judgeCase.setScore(oiScore);
-                } else if (Objects.equals(status, Constants.Judge.STATUS_PARTIAL_ACCEPTED.getStatus())) {
-                    errorTestCaseList.add(jsonObject);
-                    Double percentage = jsonObject.getDouble("percentage");
-                    if (percentage != null) {
-                        int score = (int) Math.floor(percentage * oiScore);
-                        judgeCase.setScore(score);
-                    } else {
-                        judgeCase.setScore(0);
-                    }
-                } else {
-                    errorTestCaseList.add(jsonObject);
-                    judgeCase.setScore(0);
-                }
+            // 实际运行时间
+            int caseTime = jsonObject.getLong("time").intValue();
+            // 实际消耗内存
+            int caseMemory = jsonObject.getLong("memory").intValue();
+            // 用时和内存占用保存为多个测试点中最长的
+            if (caseTime > maxTime) {
+                maxTime = caseTime;
             }
-
-            allCaseResList.add(judgeCase);
-        });
-
-        // 更新到数据库
-        boolean addCaseRes = JudgeCaseEntityService.saveBatch(allCaseResList);
-        if (!addCaseRes) {
-            log.error("题号为：" + problem.getId() + "，提交id为：" + judge.getSubmitId() + "的各个测试数据点的结果更新到数据库操作失败");
+            if (caseMemory > maxMemory) {
+                maxMemory = caseMemory;
+            }
         }
-
-        // 获取判题的运行时间，运行空间，OI得分
-        HashMap<String, Object> result = computeResultInfo(allCaseResList,
-                isACM,
-                errorTestCaseList.size(),
-                problem.getIoScore(),
-                problem.getDifficulty(),
-                judgeCaseMode);
-
-        // 如果该题为ACM类型的题目，多个测试点全部正确则AC，否则取第一个错误的测试点的状态
-        // 如果该题为OI类型的题目, 若多个测试点全部正确则AC，若全部错误则取第一个错误测试点状态，否则为部分正确
-        if (errorTestCaseList.size() == 0) { // 全部测试点正确，则为AC
-            result.put("code", Constants.Judge.STATUS_ACCEPTED.getStatus());
-        } else if (isACM || errorTestCaseList.size() == testCaseResultList.size()) {
-            errorTestCaseList.sort(Comparator.comparingInt(jsonObject -> jsonObject.getInt("seq")));
-            result.put("code", errorTestCaseList.get(0).getInt("status"));
-            result.put("errMsg", errorTestCaseList.get(0).getStr("errMsg", ""));
-        } else {
-            result.put("code", Constants.Judge.STATUS_PARTIAL_ACCEPTED.getStatus());
-        }
+        HashMap<String, Object> result = new HashMap<>(3);
+        result.put("code", Constants.Judge.STATUS_ACCEPTED.getStatus());
+        result.put("time",maxTime);
+        result.put("memory",maxMemory);
         return result;
     }
 
     public String mergeNonEmptyStrings(String... strings) {
         StringBuilder sb = new StringBuilder();
         for (String str : strings) {
-            if (!StringUtils.isEmpty(str)) {
+            if (StringUtils.hasText(str)) {
                 sb.append(str.substring(0, Math.min(1024 * 1024, str.length()))).append("\n");
             }
         }

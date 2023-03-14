@@ -8,23 +8,19 @@ import com.zhulang.waveedu.judge.judge.entity.JudgeDTO;
 import com.zhulang.waveedu.judge.judge.entity.JudgeGlobalDTO;
 import com.zhulang.waveedu.judge.judge.entity.LanguageConfig;
 import com.zhulang.waveedu.judge.judge.task.DefaultJudge;
-import com.zhulang.waveedu.judge.judge.task.InteractiveJudge;
-import com.zhulang.waveedu.judge.judge.task.SpecialJudge;
-import com.zhulang.waveedu.judge.judge.task.TestJudge;
 import com.zhulang.waveedu.judge.util.Constants;
 import com.zhulang.waveedu.judge.util.ThreadPoolUtils;
 import org.springframework.stereotype.Component;
 
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/4/16 12:15
+ * @author 狐狸半面添
+ * @create 2023-03-14 11:30
  * @Description: 判题流程解耦重构3.0，该类负责输入数据进入程序进行测评
  */
 @Component

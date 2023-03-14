@@ -9,8 +9,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2022/1/3 11:53
+ * @author 狐狸半面添
+ * @create 2023-03-14 09:30
  * @Description: 一次评测全局通用的传输实体类
  */
 
