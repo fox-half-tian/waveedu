@@ -22,7 +22,7 @@ public class ProblemLimitInfoDTO {
     private Integer timeLimit;
 
     /**
-     * 内存限制，单位kb
+     * 内存限制，单位mb
      */
     private Integer memoryLimit;
 

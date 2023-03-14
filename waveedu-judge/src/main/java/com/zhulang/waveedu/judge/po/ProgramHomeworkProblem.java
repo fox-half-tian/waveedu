@@ -51,7 +51,7 @@ public class ProgramHomeworkProblem implements Serializable {
     private Integer timeLimit;
 
     /**
-     * 单位kb
+     * 单位mb
      */
     private Integer memoryLimit;
 

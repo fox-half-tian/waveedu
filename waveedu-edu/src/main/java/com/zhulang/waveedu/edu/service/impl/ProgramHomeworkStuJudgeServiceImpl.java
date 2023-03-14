@@ -22,6 +22,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
 
     @Override
     public Result submit(SubmitCodeVO submitCodeVO) {
+        // 1.判断语言是否正确
         return null;
     }
 }

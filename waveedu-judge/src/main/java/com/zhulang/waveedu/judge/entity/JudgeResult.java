@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.judge.entity;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,8 +8,20 @@ import lombok.Data;
  */
 @Data
 public class JudgeResult {
+    /**
+     * 状态码
+     */
     private Integer code;
+    /**
+     * 错误信息
+     */
     private String errMsg;
+    /**
+     * 运行时间，ms
+     */
     private Integer time;
+    /**
+     * 运行内存，kb
+     */
     private Integer memory;
 }

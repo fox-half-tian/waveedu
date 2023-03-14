@@ -10,6 +10,7 @@ import com.zhulang.waveedu.judge.service.JudgeService;
 import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemService;
 import com.zhulang.waveedu.judge.util.Constants;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -49,9 +50,15 @@ public class JudgeServiceImpl implements JudgeService {
          */
         JudgeResult judgeResult = BeanUtil.fillBeanWithMap(judgeResultMap, new JudgeResult(), false);
         // 设置最大时间和最大空间不超过题目限制时间和空间
-        if (judgeResult.getCode().equals(Constants.Judge.STATUS_ACCEPTED.getStatus())){
+        if (judgeResult.getCode().equals(Constants.Judge.STATUS_ACCEPTED.getStatus())) {
             judgeResult.setTime(Math.min(judgeResult.getTime(), problemLimitInfo.getTimeLimit()));
-            judgeResult.setMemory(Math.min(judgeResult.getMemory(), problemLimitInfo.getMemoryLimit()));
+            judgeResult.setMemory(Math.min(judgeResult.getMemory(), problemLimitInfo.getMemoryLimit() * 1024));
+        }else{
+            String errMsg = judgeResult.getErrMsg();
+            if (!StringUtils.hasText(errMsg)){
+                errMsg = Constants.Judge.getTypeByStatus(judgeResult.getCode()).getName();
+            }
+            judgeResult.setErrMsg(errMsg);
         }
         // 返回
         return judgeResult;
