@@ -76,8 +76,10 @@ public class DefaultJudge extends AbstractJudge {
             // 对结果的时间损耗和空间损耗与题目限制做比较，判断是否mle和tle
             if (sandBoxRes.getTime() > judgeGlobalDTO.getMaxTime()) {
                 result.set("status", Constants.Judge.STATUS_TIME_LIMIT_EXCEEDED.getStatus());
+                result.set("errMsg","Time Limit Exceeded");
             } else if (sandBoxRes.getMemory() > judgeGlobalDTO.getMaxMemory() * 1024) {
                 result.set("status", Constants.Judge.STATUS_MEMORY_LIMIT_EXCEEDED.getStatus());
+                result.set("errMsg","Memory Limit Exceeded");
             } else {
                 // 与原测试数据输出的md5进行对比 AC（通过）或者是WA（答案错误）
                 JSONObject testcaseInfo = (JSONObject) ((JSONArray) judgeGlobalDTO.getTestCaseInfo().get("testCases")).get(judgeDTO.getTestCaseNum() - 1);

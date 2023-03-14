@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.edu.controller;
+package com.zhulang.waveedu.edu.controller.programhomework;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -4,7 +4,7 @@ src_path: main.c
 exe_path: main
 compile:
   env: default
-  command: /usr/bin/gcc -DONLINE_JUDGE -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
+  command: /usr/bin/gcc -shared -DONLINE_JUDGE -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
   maxCpuTime: 3s
   maxRealTime: 10s
   maxMemory: 256mb
@@ -18,7 +18,7 @@ src_path: main.c
 exe_path: main
 compile:
   env: default
-  command: /usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
+  command: /usr/bin/gcc -shared -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
   maxCpuTime: 3s
   maxRealTime: 10s
   maxMemory: 256mb

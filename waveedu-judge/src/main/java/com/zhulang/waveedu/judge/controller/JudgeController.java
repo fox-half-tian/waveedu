@@ -1,7 +1,7 @@
 package com.zhulang.waveedu.judge.controller;
 
-import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
+import com.zhulang.waveedu.judge.entity.JudgeResult;
 import com.zhulang.waveedu.judge.service.JudgeService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +20,9 @@ public class JudgeController {
 
 
     @PostMapping(value = "/submitProblemJudge")
-    public Result submitProblemJudge(@RequestBody ToJudgeDTO toJudgeDTO) {
+    public JudgeResult submitProblemJudge(@RequestBody ToJudgeDTO toJudgeDTO) {
         /*
-            1.输入答案的信息
+            输入答案的信息
                 - problemId：问题的id
                 - userId：用户的id
                 - language：使用的语言，比如 Java
@@ -30,8 +30,6 @@ public class JudgeController {
          */
 
         // 进入判断
-        Result judgeResult = judgeService.judge(toJudgeDTO);
-
-        return Result.ok(judgeResult);
+        return judgeService.judge(toJudgeDTO);
     }
 }

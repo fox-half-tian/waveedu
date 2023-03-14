@@ -63,7 +63,8 @@ public class SandboxRun {
     // 单例模式
     private static final SandboxRun instance = new SandboxRun();
 
-    private static final String SANDBOX_BASE_URL = "http://8.130.97.145:5050";
+//    private static final String SANDBOX_BASE_URL = "http://8.130.97.145:5050";
+    private static final String SANDBOX_BASE_URL = "http://114.132.54.129:5050";
 
     public static final HashMap<String, Integer> RESULT_MAP_STATUS = new HashMap<>();
 

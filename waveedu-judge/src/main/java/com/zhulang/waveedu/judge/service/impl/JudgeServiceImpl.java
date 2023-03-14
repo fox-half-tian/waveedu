@@ -1,14 +1,14 @@
 package com.zhulang.waveedu.judge.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.judge.dto.ProblemLimitInfoDTO;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
+import com.zhulang.waveedu.judge.entity.JudgeResult;
 import com.zhulang.waveedu.judge.judge.JudgeStrategy;
-import com.zhulang.waveedu.judge.judge.LanguageConfigLoader;
 import com.zhulang.waveedu.judge.service.JudgeService;
 import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
+import com.zhulang.waveedu.judge.util.Constants;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,10 +17,8 @@ import java.util.HashMap;
 /**
  * @author 狐狸半面添
  * @since 2023-03-14
- * @Description:
  */
 @Service
-@RefreshScope
 public class JudgeServiceImpl implements JudgeService {
 
     @Resource
@@ -30,7 +28,7 @@ public class JudgeServiceImpl implements JudgeService {
 
 
     @Override
-    public Result judge(ToJudgeDTO toJudgeDTO) {
+    public JudgeResult judge(ToJudgeDTO toJudgeDTO) {
         // 标志该判题过程进入编译阶段
 
         /*
@@ -43,12 +41,19 @@ public class JudgeServiceImpl implements JudgeService {
         ProblemLimitInfoDTO problemLimitInfo = programHomeworkProblemService.getProblemLimitInfo(toJudgeDTO.getProblemId());
 
         // 2.进入编译
-        HashMap<String, Object> judgeResult = judgeStrategy.judge(problemLimitInfo, toJudgeDTO);
+        HashMap<String, Object> judgeResultMap = judgeStrategy.judge(problemLimitInfo, toJudgeDTO);
         /*
             3.返回结果，在正常情况下：
                 如果运行正确：返回 code time memory
                 如果运行失败：返回 code errMsg
          */
-        return Result.ok(judgeResult);
+        JudgeResult judgeResult = BeanUtil.fillBeanWithMap(judgeResultMap, new JudgeResult(), false);
+        // 设置最大时间和最大空间不超过题目限制时间和空间
+        if (judgeResult.getCode().equals(Constants.Judge.STATUS_ACCEPTED.getStatus())){
+            judgeResult.setTime(Math.min(judgeResult.getTime(), problemLimitInfo.getTimeLimit()));
+            judgeResult.setMemory(Math.min(judgeResult.getMemory(), problemLimitInfo.getMemoryLimit()));
+        }
+        // 返回
+        return judgeResult;
     }
 }

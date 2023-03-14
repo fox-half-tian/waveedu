@@ -35,6 +35,6 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
-  configuration:
+#  configuration:
 #     这里我们配置出底层的sql，可以输出sql日志信息，方便我们观察
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

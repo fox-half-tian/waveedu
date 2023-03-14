@@ -2,6 +2,7 @@ package com.zhulang.waveedu.judge.service;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
+import com.zhulang.waveedu.judge.entity.JudgeResult;
 
 /**
  * @author 狐狸半面添
@@ -15,5 +16,5 @@ public interface JudgeService {
      * @param toJudgeDTO 用户判题信息
      * @return 结果
      */
-    Result judge(ToJudgeDTO toJudgeDTO);
+    JudgeResult judge(ToJudgeDTO toJudgeDTO);
 }

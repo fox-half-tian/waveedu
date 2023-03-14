@@ -60,7 +60,7 @@ public class JudgeStrategy {
                 userFileId = Compiler.compile(languageConfig, toJudgeDTO.getCode());
             }
             // 指定测试数据文件所在文件夹：/judge/test_case/problem_1000   1000是问题的id
-            String testCasesDir = Constants.JudgeDir.TEST_CASE_DIR.getContent() + "/problem_" + problemLimitInfo.getId();
+            String testCasesDir = Constants.TEST_CASE_DIR + "/problem_" + problemLimitInfo.getId();
             /*
             从文件中加载测试数据json——testCasesInfo：
                 0. mode -> default
@@ -157,7 +157,11 @@ public class JudgeStrategy {
             if (!Objects.equals(status, Constants.Judge.STATUS_ACCEPTED.getStatus())) {
                 HashMap<String, Object> result = new HashMap<>(2);
                 result.put("code", status);
-                result.put("errMsg", jsonObject.getStr("errMsg"));
+                String errMsg = jsonObject.getStr("errMsg");
+                if (!StringUtils.hasText(errMsg)){
+                    errMsg = Constants.Judge.getTypeByStatus(status).getName();
+                }
+                result.put("errMsg", errMsg);
                 return result;
             }
 
