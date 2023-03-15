@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.edu.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -12,29 +11,25 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper;
-import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
-import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.FailureCallback;
 import org.springframework.util.concurrent.SuccessCallback;
 
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,6 +55,8 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
     @Resource
     private RabbitTemplate rabbitTemplate;
+    @Resource
+    private LessonClassStuService lessonClassStuService;
 
     @Override
     public Result saveHomework(SaveProgramHomeworkVO saveProgramHomeworkVO) {
@@ -340,7 +337,38 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     }
 
     @Override
-    public HomeworkIsPublishAndEndTimeQuery getIsPublishAndEndTimeByProblemId(Integer problemId) {
-        return lessonClassProgramHomeworkMapper.selectIsPublishAndEndTimeByProblemId(problemId);
+    public HomeworkIsPublishAndEndTimeAndHomeworkIdQuery getIsPublishAndEndTimeAndHomeworkIdByProblemId(Integer problemId) {
+        return lessonClassProgramHomeworkMapper.selectIsPublishAndEndTimeAndHomeworkIdAndHomeworkIdByProblemId(problemId);
     }
+
+    @Override
+    public Result stuGetHomeworkSimpleListInfo(Long classId) {
+        Long userId = UserHolderUtils.getUserId();
+        // 1.校验身份
+        if (!lessonClassStuService.existsByClassIdAndUserId(classId,userId)) {
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), "未找到您在该班级中的学生信息");
+        }
+        // 2.获取信息
+        List<StuSimpleHomeworkInfoQuery> infoList = lessonClassProgramHomeworkMapper.selectStuHomeworkSimpleInfoList(userId, classId);
+        // 3.设置作业状态
+        for (StuSimpleHomeworkInfoQuery info : infoList) {
+            // 如果问题数量等于已完成数量，说明已完成作业
+            if (Objects.equals(info.getCompleteNum(), info.getProblemNum())) {
+                info.setStatus(0);
+            } else if (LocalDateTime.now().isAfter(info.getEndTime())) {
+                // 如果当前时间在截止时间之后，说明作业已截止
+                info.setStatus(1);
+            }else{
+                // 否则就是 进行中
+                info.setStatus(2);
+            }
+        }
+        // 4.返回
+        return Result.ok(infoList);
+
+    }
+
+//    public boolean isClassStuByIdAndStuId(Integer id, Long stuId){
+//        return lessonClassProgramHomeworkMapper.isClassStuByIdAndStuId(id,stuId)!=null;
+//    }
 }

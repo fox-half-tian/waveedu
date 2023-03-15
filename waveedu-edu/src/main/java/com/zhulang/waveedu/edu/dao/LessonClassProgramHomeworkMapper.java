@@ -2,7 +2,9 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.StuHomeworkSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -61,10 +63,19 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
     long selectNumById(@Param("id") Integer id);
 
     /**
-     * 根据问题id查询作业的发布状况与截止时间
+     * 根据问题id查询作业的发布状况，截止时间与作业id
      *
      * @param problemId 问题id
      * @return 信息
      */
-    HomeworkIsPublishAndEndTimeQuery selectIsPublishAndEndTimeByProblemId(@Param("problemId") Integer problemId);
+    HomeworkIsPublishAndEndTimeAndHomeworkIdQuery selectIsPublishAndEndTimeAndHomeworkIdAndHomeworkIdByProblemId(@Param("problemId") Integer problemId);
+
+    /**
+     * 查询学生在该班级中的所有作业信息
+     *
+     * @param stuId 学生id
+     * @param classId 班级id
+     * @return 信息列表
+     */
+    List<StuSimpleHomeworkInfoQuery> selectStuHomeworkSimpleInfoList(@Param("stuId") Long stuId, @Param("classId") Long classId);
 }

@@ -37,12 +37,29 @@
         FROM `edu_lesson_class_program_homework`
         WHERE `id` = #{id}
     </select>
-    <select id="selectIsPublishAndEndTimeByProblemId"
-            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery">
-        SELECT h.`is_publish`, h.`end_time`
+    <select id="selectIsPublishAndEndTimeAndHomeworkIdAndHomeworkIdByProblemId"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery">
+        SELECT h.`is_publish`, h.`end_time`, h.`id` AS `homeworkId`
         FROM `edu_program_homework_problem` p,
              `edu_lesson_class_program_homework` h
         WHERE p.`id` = #{problemId}
           AND p.`homework_id` = h.`id`
+    </select>
+    <select id="selectStuHomeworkSimpleInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery">
+        SELECT h.`id`                     AS `problemId`,
+               h.`title`                  AS `title`,
+               h.`num`                    AS `problemNum`,
+               h.`end_time`               AS `endTime`,
+               IFNULL(t.`completeNum`, 0) AS `completeNum`
+        FROM `edu_lesson_class_program_homework` h
+                 LEFT JOIN (SELECT `homework_id`, COUNT(*) AS `completeNum`
+                            FROM edu_program_homework_stu_answer
+                            WHERE `stu_id` = #{stuId}
+                            GROUP BY `homework_id`) t
+                           ON h.`id` = t.`homework_id`
+        WHERE h.`class_id` = #{classId}
+          AND h.`is_publish` = 1
+        ORDER BY h.`start_time` DESC
     </select>
 </mapper>

@@ -12,9 +12,8 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkStuJudgeMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuJudge;
-import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
-import com.zhulang.waveedu.edu.service.LessonClassService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuAnswerService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuJudgeService;
 import com.zhulang.waveedu.edu.utils.LanguageSupportUtils;
@@ -32,8 +31,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Objects;
 
 import static com.zhulang.waveedu.common.constant.CommonConstants.REQUEST_HEADER_TOKEN;
 
@@ -67,7 +64,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "暂不支持该语言判题");
         }
         // 判断作业状态与截止时间
-        HomeworkIsPublishAndEndTimeQuery queryInfo = lessonClassProgramHomeworkService.getIsPublishAndEndTimeByProblemId(submitCodeVO.getProblemId());
+        HomeworkIsPublishAndEndTimeAndHomeworkIdQuery queryInfo = lessonClassProgramHomeworkService.getIsPublishAndEndTimeAndHomeworkIdByProblemId(submitCodeVO.getProblemId());
         if (queryInfo == null) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "问题或作业信息不存在");
         }
@@ -99,6 +96,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
                     submitCodeVO.getCode(),
                     submitCodeVO.getProblemId(),
                     submitCodeVO.getLanguage(),
+                    queryInfo.getHomeworkId(),
                     LocalDateTime.now().isAfter(queryInfo.getEndTime())
             );
             // 5.返回判题结果
@@ -116,6 +114,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
                              String languageCode,
                              Integer problemId,
                              String language,
+                             Integer homeworkId,
                              boolean isEnd
     ) {
         // 如果状态码是0并且没有到截止时间，说明成功，则需要需要修改答案表
@@ -141,6 +140,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
                 programHomeworkStuAnswer.setLanguage(language);
                 programHomeworkStuAnswer.setCode(languageCode);
                 programHomeworkStuAnswer.setProblemId(problemId);
+                programHomeworkStuAnswer.setHomeworkId(homeworkId);
                 programHomeworkStuAnswer.setStuId(userId);
                 // 插入记录
                 programHomeworkStuAnswerService.save(programHomeworkStuAnswer);

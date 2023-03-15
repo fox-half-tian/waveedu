@@ -31,6 +31,11 @@ public class ProgramHomeworkStuAnswer implements Serializable {
     private Integer id;
 
     /**
+     * 作业id
+     */
+    private Integer homeworkId;
+
+    /**
      * 学生id
      */
     private Long stuId;

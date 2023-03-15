@@ -35,6 +35,7 @@ public interface ProgramHomeworkStuJudgeService extends IService<ProgramHomework
      * @param languageCode 代码
      * @param problemId 问题id
      * @param language 语言
+     * @param homeworkId 作业id
      * @param isEnd 是否到了截止时间，true-已截止，false-为截止
      */
     void updateRecord(JudgeResult judgeResult,
@@ -42,6 +43,7 @@ public interface ProgramHomeworkStuJudgeService extends IService<ProgramHomework
                       String languageCode,
                       Integer problemId,
                       String language,
+                      Integer homeworkId,
                       boolean isEnd
     );
 }

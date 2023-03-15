@@ -97,6 +97,15 @@ public class LessonClassProgramHomeworkController {
         return lessonClassProgramHomeworkService.publish(publishProgramHomeworkVO);
     }
 
-
+    /**
+     * 学生获取班级作业的简单信息列表
+     *
+     * @param classId 班级id
+     * @return 信息列表
+     */
+    @GetMapping("/stu/getHomeworkSimpleListInfo")
+    public Result stuGetHomeworkSimpleListInfo(@RequestParam("classId")Long classId){
+        return lessonClassProgramHomeworkService.stuGetHomeworkSimpleListInfo(classId);
+    }
 
 }

@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomeworkIsPublishAndEndTimeQuery {
+public class HomeworkIsPublishAndEndTimeAndHomeworkIdQuery {
+    /**
+     * 作业id
+     */
+    private Integer homeworkId;
     /**
      * 发布状况
      */

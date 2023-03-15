@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
@@ -98,5 +98,13 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @param problemId 问题id
      * @return 信息
      */
-    HomeworkIsPublishAndEndTimeQuery getIsPublishAndEndTimeByProblemId(Integer problemId);
+    HomeworkIsPublishAndEndTimeAndHomeworkIdQuery getIsPublishAndEndTimeAndHomeworkIdByProblemId(Integer problemId);
+
+    /**
+     * 学生获取班级作业的简单信息列表
+     *
+     * @param classId 班级id
+     * @return 信息列表
+     */
+    Result stuGetHomeworkSimpleListInfo(Long classId);
 }
