@@ -23,6 +23,11 @@ public class ProgramHomeworkStuAnswerServiceImpl extends ServiceImpl<ProgramHome
 
     @Override
     public Integer getIdByUserIdAndProblemId(Long stuId, Integer problemId) {
-        return programHomeworkStuAnswerMapper.selectIdByUserIdAndProblemId(stuId,problemId);
+        return programHomeworkStuAnswerMapper.selectIdByUserIdAndProblemId(stuId, problemId);
+    }
+
+    @Override
+    public boolean existsByStuIdAndProblemId(Long stuId, Integer problemId) {
+        return programHomeworkStuAnswerMapper.existsByStuIdAndProblemId(stuId, problemId) != null;
     }
 }

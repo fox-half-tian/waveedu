@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuHomeworkProblemDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkProblemInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +42,15 @@ public interface ProgramHomeworkProblemMapper extends BaseMapper<ProgramHomework
      * @return 作业id
      */
     Integer selectHomeworkIdByProblemId(@Param("problemId") Integer problemId);
+
+
+    /**
+     * 学生获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @param stuId 学生id
+     * @return 详细信息
+     */
+    StuHomeworkProblemDetailInfoQuery selectStuHomeworkProblemDetailInfo(@Param("problemId") Integer problemId,
+                                                                         @Param("stuId") Long stuId);
 }

@@ -9,11 +9,14 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkProblemMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
+import com.zhulang.waveedu.edu.po.ProgramHomeworkStuAnswer;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuHomeworkProblemDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkProblemInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhulang.waveedu.edu.service.ProgramHomeworkStuAnswerService;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProblemVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProblemVO;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,8 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
     private LessonClassProgramHomeworkService lessonClassProgramHomeworkService;
     @Resource
     private ProgramHomeworkProblemCaseService programHomeworkProblemCaseService;
+    @Resource
+    private ProgramHomeworkStuAnswerService programHomeworkStuAnswerService;
 
     @Override
     public Result saveProblem(SaveProblemVO saveProblemVO) {
@@ -127,4 +132,22 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
         return Result.ok(infoList);
     }
 
+    @Override
+    public Result stuGetHomeworkProblemDetailInfo(Integer problemId) {
+        Long userId = UserHolderUtils.getUserId();
+        // 1.查询信息
+        StuHomeworkProblemDetailInfoQuery infoQuery = programHomeworkProblemMapper.selectStuHomeworkProblemDetailInfo(problemId, userId);
+        if (infoQuery==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"未找到问题信息");
+        }
+        // 2.获取状态
+        if (programHomeworkStuAnswerService.existsByStuIdAndProblemId(userId,problemId)){
+            // 如果存在答题
+            infoQuery.setStatus(1);
+        }else{
+            infoQuery.setStatus(0);
+        }
+        // 3.返回
+        return Result.ok(infoQuery);
+    }
 }

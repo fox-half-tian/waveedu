@@ -21,4 +21,29 @@
         FROM `edu_program_homework_problem`
         WHERE `id` = #{problemId}
     </select>
+    <select id="selectStuHomeworkProblemDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuHomeworkProblemDetailInfoQuery">
+        SELECT p.`id`,
+               p.`title`,
+               p.`time_limit`,
+               p.`memory_limit`,
+               p.`stack_limit`,
+               p.`description`,
+               p.`input`,
+               p.`output`,
+               p.`examples`,
+               p.`difficulty`,
+               p.`hint`,
+               t.`language`,
+               t.`code`
+        FROM `edu_program_homework_problem` p LEFT JOIN
+             (SELECT `problem_id`,`code`, `language`
+              FROM `edu_program_homework_stu_judge`
+              WHERE `stu_id` = #{stuId}
+                AND `problem_id` = #{problemId}
+              ORDER BY `create_time` DESC
+              LIMIT 1) t
+        ON p.`id` = t.`problem_id`
+        WHERE p.`id` = #{problemId}
+    </select>
 </mapper>

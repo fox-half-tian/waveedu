@@ -21,4 +21,13 @@ public interface ProgramHomeworkStuAnswerService extends IService<ProgramHomewor
      * @return 正确答案id
      */
     Integer getIdByUserIdAndProblemId(Long userId, Integer problemId);
+
+    /**
+     * 查询是否做了这个题
+     *
+     * @param stuId 学生id
+     * @param problemId 问题id
+     * @return true-做了，false-没做
+     */
+    boolean existsByStuIdAndProblemId(Long stuId, Integer problemId);
 }

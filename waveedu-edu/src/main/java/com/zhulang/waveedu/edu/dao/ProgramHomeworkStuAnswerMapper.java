@@ -22,4 +22,13 @@ public interface ProgramHomeworkStuAnswerMapper extends BaseMapper<ProgramHomewo
      * @return 正确答案id
      */
     Integer selectIdByUserIdAndProblemId(@Param("stuId") Long stuId, @Param("problemId") Integer problemId);
+
+    /**
+     * 查询是否做了这个题
+     *
+     * @param stuId 学生id
+     * @param problemId 问题id
+     * @return null-没做，不为空-做了
+     */
+    Integer existsByStuIdAndProblemId(@Param("stuId") Long stuId, @Param("problemId") Integer problemId);
 }

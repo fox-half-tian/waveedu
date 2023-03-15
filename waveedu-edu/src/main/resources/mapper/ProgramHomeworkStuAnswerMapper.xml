@@ -8,4 +8,10 @@
         WHERE `problem_id` = #{problemId}
           AND `stu_id` = #{stuId}
     </select>
+    <select id="existsByStuIdAndProblemId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_program_homework_stu_answer`
+        WHERE `stu_id` = #{stuId}
+          AND `problem_id` = #{problemId}
+    </select>
 </mapper>
