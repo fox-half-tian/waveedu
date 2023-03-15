@@ -107,4 +107,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 信息列表
      */
     Result stuGetHomeworkSimpleListInfo(Long classId);
+
+    /**
+     * 学生获取某个作业的详细信息
+     *
+     * @param homeworkId 作业id
+     * @return 详细信息
+     */
+    Result stuGetHomeworkDetailInfo(Integer homeworkId);
 }

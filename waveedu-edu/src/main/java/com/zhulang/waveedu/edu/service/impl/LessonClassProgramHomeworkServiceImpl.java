@@ -12,6 +12,7 @@ import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
@@ -367,6 +368,46 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         return Result.ok(infoList);
 
     }
+
+    @Override
+    public Result stuGetHomeworkDetailInfo(Integer homeworkId) {
+        // 1.校验格式（身份不校验了）
+        if (homeworkId<1000){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业Id格式错误");
+        }
+        // 2.查询作业信息
+        StuDetailHomeworkInfoQuery infoQuery = lessonClassProgramHomeworkMapper.selectStuHomeworkDetailInfo(homeworkId);
+        if (infoQuery==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"未找到相关作业信息");
+        }
+        if (Objects.equals(infoQuery.getCompleteNum(), infoQuery.getProblemNum())){
+            // 完成数量等于问题数量
+            infoQuery.setHomeworkStatus(0);
+        }else if(LocalDateTime.now().isAfter(infoQuery.getEndTime())){
+            // 如果已经截止
+            infoQuery.setHomeworkStatus(1);
+        }else{
+            // 说明还在进行中，并未完成
+            infoQuery.setHomeworkStatus(2);
+        }
+        // 3.查询问题与自己的回答信息
+        List<StuDetailHomeworkInfoQuery.InnerProblemInfo> innerProblemInfos = lessonClassProgramHomeworkMapper.selectAnswerProblemSimpleInfolist(homeworkId, UserHolderUtils.getUserId());
+        if(innerProblemInfos==null||innerProblemInfos.isEmpty()){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"未找到相关问题信息");
+        }
+        for (StuDetailHomeworkInfoQuery.InnerProblemInfo innerProblemInfo : innerProblemInfos) {
+            if (innerProblemInfo.getCompleteTime()==null){
+                innerProblemInfo.setStatus(0);
+            }else{
+                innerProblemInfo.setStatus(1);
+            }
+        }
+        // 4.装载属性
+        infoQuery.setProblemInfoList(innerProblemInfos);
+        // 5.返回
+        return Result.ok(infoQuery);
+    }
+
 
 //    public boolean isClassStuByIdAndStuId(Integer id, Long stuId){
 //        return lessonClassProgramHomeworkMapper.isClassStuByIdAndStuId(id,stuId)!=null;

@@ -62,4 +62,35 @@
           AND h.`is_publish` = 1
         ORDER BY h.`start_time` DESC
     </select>
+    <select id="selectStuHomeworkDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery">
+        SELECT h.`id`         AS `homeworkId`,
+               h.`title`      AS `homeworkTitle`,
+               h.`num`        AS `problemNum`,
+               h.`start_time` AS `startTime`,
+               h.`end_time`   AS `endTime`,
+               t.`completeNum` AS `completeNum`
+        FROM `edu_lesson_class_program_homework` h,
+             (SELECT COUNT(*) AS `completeNum`
+              FROM `edu_program_homework_stu_answer`
+              WHERE `homework_id` = #{homeworkId}) t
+        WHERE h.`id` = #{homeworkId}
+    </select>
+    <select id="selectAnswerProblemSimpleInfolist"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery$InnerProblemInfo">
+        SELECT p.`id`          AS `problemId`,
+               p.`title`       AS `problemTitle`,
+               p.`difficulty`  AS `difficulty`,
+               t.`create_time` AS `completeTime`,
+               t.`time`        AS `runTime`,
+               t.`memory`      AS `runMemory`
+        FROM `edu_program_homework_problem` p
+                 LEFT JOIN (SELECT `problem_id`, `create_time`, `time`, `memory`
+                            FROM `edu_program_homework_stu_answer`
+                            WHERE `homework_id` = #{homeworkId}
+                              AND `stu_id` = #{stuId}) t
+                           ON p.`id` = t.`problem_id`
+        WHERE p.`homework_id` = #{homeworkId}
+        ORDER BY p.`id`
+    </select>
 </mapper>

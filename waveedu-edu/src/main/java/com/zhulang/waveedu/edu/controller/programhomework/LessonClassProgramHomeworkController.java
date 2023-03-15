@@ -108,4 +108,15 @@ public class LessonClassProgramHomeworkController {
         return lessonClassProgramHomeworkService.stuGetHomeworkSimpleListInfo(classId);
     }
 
+    /**
+     * 学生获取某个作业的详细信息
+     *
+     * @param homeworkId 作业id
+     * @return 详细信息
+     */
+    @GetMapping("/stu/getHomeworkDetailInfo")
+    public Result stuGetHomeworkDetailInfo(@RequestParam("homeworkId")Integer homeworkId){
+        return lessonClassProgramHomeworkService.stuGetHomeworkDetailInfo(homeworkId);
+    }
+
 }

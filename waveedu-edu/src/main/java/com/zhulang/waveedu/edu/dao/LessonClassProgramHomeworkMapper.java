@@ -4,6 +4,7 @@ import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.query.commonhomeworkquery.StuHomeworkSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import org.apache.ibatis.annotations.Param;
@@ -78,4 +79,22 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @return 信息列表
      */
     List<StuSimpleHomeworkInfoQuery> selectStuHomeworkSimpleInfoList(@Param("stuId") Long stuId, @Param("classId") Long classId);
+
+    /**
+     * 查询作业的基本详细信息
+     *
+     * @param homeworkId 作业id
+     * @return 作业id，标题，问题数量，完成数量，作业开始时间，结束时间
+     */
+    StuDetailHomeworkInfoQuery selectStuHomeworkDetailInfo(@Param("homeworkId") Integer homeworkId);
+
+    /**
+     * 查询自己对问题的简单答案信息列表
+     *
+     * @param homeworkId 作业id
+     * @param stuId 学生id
+     * @return 信息列表
+     */
+    List<StuDetailHomeworkInfoQuery.InnerProblemInfo> selectAnswerProblemSimpleInfolist(@Param("homeworkId") Integer homeworkId,
+                                                                                        @Param("stuId") Long stuId);
 }
