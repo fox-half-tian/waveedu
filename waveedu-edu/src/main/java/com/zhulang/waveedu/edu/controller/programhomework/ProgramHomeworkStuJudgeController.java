@@ -5,12 +5,9 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuJudgeService;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SubmitCodeVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,5 +36,16 @@ public class ProgramHomeworkStuJudgeController {
     @PostMapping("/submit")
     public Result submit(@Validated @RequestBody SubmitCodeVO submitCodeVO, HttpServletRequest request){
         return programHomeworkStuJudgeService.submit(submitCodeVO,request);
+    }
+
+    /**
+     * 学生获取该问题的所有提交记录
+     *
+     * @param problemId 问题id
+     * @return 提交记录列表
+     */
+    @GetMapping("/getAllSubmitRecords")
+    public Result getAllSubmitRecords(@RequestParam("problemId")Integer problemId){
+        return programHomeworkStuJudgeService.getAllSubmitRecords(problemId);
     }
 }

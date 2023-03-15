@@ -13,6 +13,7 @@ import com.zhulang.waveedu.edu.dao.ProgramHomeworkStuJudgeMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuAnswer;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuJudge;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.SimpleSubmitRecordQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuAnswerService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuJudgeService;
@@ -31,6 +32,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.zhulang.waveedu.common.constant.CommonConstants.REQUEST_HEADER_TOKEN;
 
@@ -157,5 +159,17 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
         programHomeworkStuJudge.setProblemId(problemId);
         programHomeworkStuJudge.setStuId(userId);
         programHomeworkStuJudgeMapper.insert(programHomeworkStuJudge);
+    }
+
+    @Override
+    public Result getAllSubmitRecords(Integer problemId) {
+        // 1.校验格式
+        if (problemId<1000){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "问题id格式错误");
+        }
+        // 2.获取信息
+        List<SimpleSubmitRecordQuery> recordList = programHomeworkStuJudgeMapper.selectAllSubmitRecords(UserHolderUtils.getUserId(), problemId);
+        // 3.返回
+        return Result.ok(recordList);
     }
 }
