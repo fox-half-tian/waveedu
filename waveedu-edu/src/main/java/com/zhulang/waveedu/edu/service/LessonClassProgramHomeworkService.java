@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
@@ -90,4 +91,12 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 发布状况
      */
     Result publish(PublishProgramHomeworkVO publishProgramHomeworkVO);
+
+    /**
+     * 根据问题id查询作业的发布状况与截止时间
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    HomeworkIsPublishAndEndTimeQuery getIsPublishAndEndTimeByProblemId(Integer problemId);
 }

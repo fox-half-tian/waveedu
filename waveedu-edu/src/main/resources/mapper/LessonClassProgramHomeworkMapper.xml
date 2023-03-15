@@ -37,4 +37,12 @@
         FROM `edu_lesson_class_program_homework`
         WHERE `id` = #{id}
     </select>
+    <select id="selectIsPublishAndEndTimeByProblemId"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery">
+        SELECT h.`is_publish`, h.`end_time`
+        FROM `edu_program_homework_problem` p,
+             `edu_lesson_class_program_homework` h
+        WHERE p.`id` = #{problemId}
+          AND p.`homework_id` = h.`id`
+    </select>
 </mapper>

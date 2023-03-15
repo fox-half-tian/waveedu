@@ -1,8 +1,7 @@
 package com.zhulang.waveedu.judge.service;
 
-import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.entity.JudgeResult;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
-import com.zhulang.waveedu.judge.entity.JudgeResult;
 
 /**
  * @author 狐狸半面添

@@ -12,6 +12,7 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.*;
 import com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import com.zhulang.waveedu.edu.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -336,5 +337,10 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         // 5.返回
         return Result.ok();
 
+    }
+
+    @Override
+    public HomeworkIsPublishAndEndTimeQuery getIsPublishAndEndTimeByProblemId(Integer problemId) {
+        return lessonClassProgramHomeworkMapper.selectIsPublishAndEndTimeByProblemId(problemId);
     }
 }

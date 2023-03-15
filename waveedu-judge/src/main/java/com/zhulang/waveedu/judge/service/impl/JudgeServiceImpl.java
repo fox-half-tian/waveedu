@@ -1,10 +1,9 @@
 package com.zhulang.waveedu.judge.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.entity.JudgeResult;
 import com.zhulang.waveedu.judge.dto.ProblemLimitInfoDTO;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
-import com.zhulang.waveedu.judge.entity.JudgeResult;
 import com.zhulang.waveedu.judge.judge.JudgeStrategy;
 import com.zhulang.waveedu.judge.service.JudgeService;
 import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemService;

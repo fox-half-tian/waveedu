@@ -90,15 +90,17 @@ mybatis-plus:
   configuration:
     # 这里我们配置出底层的sql，可以输出sql日志信息，方便我们观察
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-sms:
-  # 应用的AppID
-  appId: 1400791280
-  # 应用的App Key
-  appKey: cbd511ed24bd832d05af54f63c84e52d
-  # 签名的内容
-  signContent: 狐狸半面添公众号
-  # 登录&注册短信模板的id
-  loginTemplateId: 1671035
+judge:
+  address: http://114.132.54.129:10001/judge/submitProblemJudge
+#sms:
+#  # 应用的AppID
+#  appId: 1400791280
+#  # 应用的App Key
+#  appKey: cbd511ed24bd832d05af54f63c84e52d
+#  # 签名的内容
+#  signContent: 狐狸半面添公众号
+#  # 登录&注册短信模板的id
+#  loginTemplateId: 1671035
 
 
 

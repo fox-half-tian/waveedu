@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassProgramHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -58,4 +59,12 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @return 数量
      */
     long selectNumById(@Param("id") Integer id);
+
+    /**
+     * 根据问题id查询作业的发布状况与截止时间
+     *
+     * @param problemId 问题id
+     * @return 信息
+     */
+    HomeworkIsPublishAndEndTimeQuery selectIsPublishAndEndTimeByProblemId(@Param("problemId") Integer problemId);
 }

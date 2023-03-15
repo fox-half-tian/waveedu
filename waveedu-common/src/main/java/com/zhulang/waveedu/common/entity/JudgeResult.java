@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.judge.entity;
+package com.zhulang.waveedu.common.entity;
 
 import lombok.Data;
 

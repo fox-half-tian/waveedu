@@ -109,4 +109,11 @@ public class RedisConstants {
      */
     public static final String CHAT_CLASS_INFO="chat:class:info:";
 
+    /**
+     * 用户判题时，只允许该用户的单线程操作，减轻判题机压力
+     * TTL为 10s
+     */
+    public static final String LOCK_JUDGE_KEY = "lock:judge:";
+    public static final Long LOCK_JUDGE_TTL = 20L;
+
 }

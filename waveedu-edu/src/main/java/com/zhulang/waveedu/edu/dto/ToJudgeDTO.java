@@ -1,4 +1,4 @@
-package com.zhulang.waveedu.judge.dto;
+package com.zhulang.waveedu.edu.dto;
 
 
 import lombok.Data;

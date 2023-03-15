@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -29,13 +30,14 @@ public class ProgramHomeworkStuJudgeController {
     private ProgramHomeworkStuJudgeService programHomeworkStuJudgeService;
 
     /**
-     * 判题操作
+     * 学生提交问题代码，进行判题操作
      *
      * @param submitCodeVO 提交代码信息
+     * @param request 请求
      * @return 判题结果
      */
     @PostMapping("/submit")
-    public Result submit(@Validated @RequestBody SubmitCodeVO submitCodeVO){
-        return programHomeworkStuJudgeService.submit(submitCodeVO);
+    public Result submit(@Validated @RequestBody SubmitCodeVO submitCodeVO, HttpServletRequest request){
+        return programHomeworkStuJudgeService.submit(submitCodeVO,request);
     }
 }
