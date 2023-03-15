@@ -1,33 +1,23 @@
-package com.zhulang.waveedu.edu.po;
+package com.zhulang.waveedu.edu.query.programhomeworkquery;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * <p>
- * 编程作业表的题目表
- * </p>
- *
  * @author 狐狸半面添
- * @since 2023-03-12
+ * @create 2023-03-15 22:07
  */
-@TableName("edu_program_homework_problem")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgramHomeworkProblem implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ProgramHomeworkProblemQuery {
     /**
      * 自增id
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -88,12 +78,14 @@ public class ProgramHomeworkProblem implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+    /**
+     * 案例列表
+     */
+    private List<ProblemCaseInfoQuery> caseList;
 }

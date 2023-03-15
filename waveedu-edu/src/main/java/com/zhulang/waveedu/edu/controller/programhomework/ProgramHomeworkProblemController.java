@@ -79,4 +79,15 @@ public class ProgramHomeworkProblemController {
         return programHomeworkProblemService.stuGetHomeworkProblemDetailInfo(problemId);
     }
 
+    /**
+     * 教师获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 详细信息
+     */
+    @GetMapping("/tch/getHomeworkProblemDetailInfo")
+    public Result tchGetHomeworkProblemDetailInfo(@RequestParam("problemId")Integer problemId){
+        return programHomeworkProblemService.tchGetHomeworkProblemDetailInfo(problemId);
+    }
+
 }

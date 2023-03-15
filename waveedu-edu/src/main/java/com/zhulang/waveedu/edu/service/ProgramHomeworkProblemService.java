@@ -64,4 +64,12 @@ public interface ProgramHomeworkProblemService extends IService<ProgramHomeworkP
      * @return 详细信息
      */
     Result stuGetHomeworkProblemDetailInfo(Integer problemId);
+
+    /**
+     * 教师获取问题的详细信息
+     *
+     * @param problemId 问题id
+     * @return 详细信息
+     */
+    Result tchGetHomeworkProblemDetailInfo(Integer problemId);
 }

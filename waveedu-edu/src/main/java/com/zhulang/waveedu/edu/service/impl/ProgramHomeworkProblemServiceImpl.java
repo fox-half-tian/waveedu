@@ -10,6 +10,8 @@ import com.zhulang.waveedu.edu.po.ProgramHomeworkProblem;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkProblemMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuAnswer;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProgramHomeworkProblemQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.StuHomeworkProblemDetailInfoQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkProblemInfoQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.naming.spi.ObjectFactory;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -149,5 +152,20 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
         }
         // 3.返回
         return Result.ok(infoQuery);
+    }
+
+    @Override
+    public Result tchGetHomeworkProblemDetailInfo(Integer problemId) {
+        // 1.校验身份
+        Integer status = programHomeworkProblemMapper.selectIsPublishByProblemIdAndCreatorId(problemId, UserHolderUtils.getUserId());
+        if (status==null){
+            return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(),HttpStatus.HTTP_FORBIDDEN.getValue());
+        }
+        // 2.查询问题信息
+        ProgramHomeworkProblemQuery problemInfo = programHomeworkProblemMapper.selectProblemInfoById(problemId);
+        // 3.查询问题案例信息
+        problemInfo.setCaseList(programHomeworkProblemCaseService.getProblemCaseList(problemId));
+        // 4.返回
+        return Result.ok(problemInfo);
     }
 }

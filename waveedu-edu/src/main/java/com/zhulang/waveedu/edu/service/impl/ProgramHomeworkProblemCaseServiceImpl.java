@@ -6,6 +6,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkProblemCaseMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemCaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkProblemService;
@@ -14,6 +15,7 @@ import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveCaseVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -84,5 +86,10 @@ public class ProgramHomeworkProblemCaseServiceImpl extends ServiceImpl<ProgramHo
         programHomeworkProblemCaseMapper.updateById(problemCase);
         // 4.返回
         return Result.ok();
+    }
+
+    @Override
+    public List<ProblemCaseInfoQuery> getProblemCaseList(Integer problemId) {
+        return programHomeworkProblemCaseMapper.selectProblemCaseList(problemId);
     }
 }

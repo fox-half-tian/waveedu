@@ -2,7 +2,10 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,12 @@ public interface ProgramHomeworkProblemCaseMapper extends BaseMapper<ProgramHome
      * @return 0-未发布，1-已发布，2-发布中
      */
     Integer selectIsPublishByProblemIdAndCreatorId(@Param("caseId") Integer caseId, @Param("creatorId") Long creatorId);
+
+    /**
+     * 获取问题的案例信息
+     *
+     * @param problemId 问题id
+     * @return 信息列表
+     */
+    List<ProblemCaseInfoQuery> selectProblemCaseList(@Param("problemId") Integer problemId);
 }

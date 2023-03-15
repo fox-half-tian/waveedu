@@ -3,8 +3,11 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkProblemCase;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyCaseVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveCaseVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -48,4 +51,12 @@ public interface ProgramHomeworkProblemCaseService extends IService<ProgramHomew
      * @return 修改状况
      */
     Result modifyCase(ModifyCaseVO modifyCaseVO);
+
+    /**
+     * 获取问题的案例信息
+     *
+     * @param problemId 问题id
+     * @return 信息列表
+     */
+    List<ProblemCaseInfoQuery> getProblemCaseList(Integer problemId);
 }

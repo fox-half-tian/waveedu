@@ -10,4 +10,10 @@
           AND p.`homework_id` = h.`id`
           AND h.`creator_id` = #{creatorId}
     </select>
+    <select id="selectProblemCaseList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemCaseInfoQuery">
+        SELECT `id` AS `caseId`,`input`,`output`
+        FROM `edu_program_homework_problem_case`
+        WHERE `problem_id` = #{problemId}
+    </select>
 </mapper>

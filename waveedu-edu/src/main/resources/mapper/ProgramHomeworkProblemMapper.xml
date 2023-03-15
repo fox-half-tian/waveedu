@@ -36,14 +36,34 @@
                p.`hint`,
                t.`language`,
                t.`code`
-        FROM `edu_program_homework_problem` p LEFT JOIN
-             (SELECT `problem_id`,`code`, `language`
+        FROM `edu_program_homework_problem` p
+                 LEFT JOIN
+             (SELECT `problem_id`, `code`, `language`
               FROM `edu_program_homework_stu_judge`
               WHERE `stu_id` = #{stuId}
                 AND `problem_id` = #{problemId}
               ORDER BY `create_time` DESC
               LIMIT 1) t
-        ON p.`id` = t.`problem_id`
+             ON p.`id` = t.`problem_id`
         WHERE p.`id` = #{problemId}
+    </select>
+    <select id="selectProblemInfoById"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.ProgramHomeworkProblemQuery">
+        SELECT id,
+               title,
+               homework_id,
+               time_limit,
+               memory_limit,
+               stack_limit,
+               `description`,
+               input,
+               output,
+               examples,
+               difficulty,
+               hint,
+               create_time,
+               update_time
+        FROM edu_program_homework_problem
+        WHERE `id` = #{problemId}
     </select>
 </mapper>
