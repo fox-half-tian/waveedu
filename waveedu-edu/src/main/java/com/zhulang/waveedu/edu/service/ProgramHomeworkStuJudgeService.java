@@ -54,4 +54,12 @@ public interface ProgramHomeworkStuJudgeService extends IService<ProgramHomework
      * @return 提交记录列表
      */
     Result getAllSubmitRecords(Integer problemId);
+
+    /**
+     * 学生获取某一条详细提交记录的信息
+     *
+     * @param submitId 提交id
+     * @return 记录信息
+     */
+    Result getSubmitRecordDetailInfo(Integer submitId);
 }

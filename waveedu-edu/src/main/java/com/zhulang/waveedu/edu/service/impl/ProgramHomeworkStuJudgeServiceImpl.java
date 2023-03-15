@@ -2,6 +2,7 @@ package com.zhulang.waveedu.edu.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -171,5 +172,22 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
         List<SimpleSubmitRecordQuery> recordList = programHomeworkStuJudgeMapper.selectAllSubmitRecords(UserHolderUtils.getUserId(), problemId);
         // 3.返回
         return Result.ok(recordList);
+    }
+
+    @Override
+    public Result getSubmitRecordDetailInfo(Integer submitId) {
+        // 1.校验格式
+        if (submitId<1000){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "提交id格式错误");
+        }
+        // 2.获取信息（同时身份校验）
+        ProgramHomeworkStuJudge info = programHomeworkStuJudgeMapper.selectOne(new LambdaQueryWrapper<ProgramHomeworkStuJudge>()
+                .eq(ProgramHomeworkStuJudge::getId, submitId)
+                .eq(ProgramHomeworkStuJudge::getStuId, UserHolderUtils.getUserId()));
+        if (info==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"提交记录不存在或权限不足");
+        }
+        // 3.返回
+        return Result.ok(info);
     }
 }

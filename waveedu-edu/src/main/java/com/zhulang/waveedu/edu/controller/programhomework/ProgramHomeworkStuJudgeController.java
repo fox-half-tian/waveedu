@@ -7,8 +7,6 @@ import com.zhulang.waveedu.edu.vo.programhomeworkvo.SubmitCodeVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,5 +45,16 @@ public class ProgramHomeworkStuJudgeController {
     @GetMapping("/getAllSubmitRecords")
     public Result getAllSubmitRecords(@RequestParam("problemId")Integer problemId){
         return programHomeworkStuJudgeService.getAllSubmitRecords(problemId);
+    }
+
+    /**
+     * 学生获取某一条详细提交记录的信息
+     *
+     * @param submitId 提交id
+     * @return 记录信息
+     */
+    @GetMapping("/getSubmitRecordDetailInfo")
+    public Result getSubmitRecordDetailInfo(@RequestParam("submitId")Integer submitId){
+        return programHomeworkStuJudgeService.getSubmitRecordDetailInfo(submitId);
     }
 }
