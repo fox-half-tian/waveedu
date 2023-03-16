@@ -62,4 +62,12 @@ public interface ProgramHomeworkProblemMapper extends BaseMapper<ProgramHomework
      * @return 信息
      */
     ProgramHomeworkProblemQuery selectProblemInfoById(@Param("problemId") Integer problemId);
+
+    /**
+     * 查询有测试案例的问题个数
+     *
+     * @param homeworkId 作业id
+     * @return 问题个数
+     */
+    Integer selectProblemCountHaveCase(@Param("homeworkId") Integer homeworkId);
 }

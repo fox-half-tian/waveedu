@@ -66,4 +66,10 @@
         FROM edu_program_homework_problem
         WHERE `id` = #{problemId}
     </select>
+    <select id="selectProblemCountHaveCase" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT p.`id`)
+        FROM `edu_program_homework_problem` p,`edu_program_homework_problem_case` c
+        WHERE p.`homework_id` = #{homeworkId}
+          AND p.`id` = c.`problem_id`
+    </select>
 </mapper>

@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/waveedu-service/pom.xml" />
         <option value="$PROJECT_DIR$/waveedu-xxl-job/pom.xml" />
         <option value="$PROJECT_DIR$/waveedu-basic/pom.xml" />
+        <option value="$PROJECT_DIR$/waveedu-vm/pom.xml" />
       </list>
     </option>
   </component>

@@ -56,6 +56,8 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     private RabbitTemplate rabbitTemplate;
     @Resource
     private LessonClassStuService lessonClassStuService;
+    @Resource
+    private ProgramHomeworkProblemService programHomeworkProblemService;
 
     @Override
     public Result saveHomework(SaveProgramHomeworkVO saveProgramHomeworkVO) {
@@ -212,6 +214,11 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         int count = lessonClassProgramHomeworkMapper.selectNumById(publishProgramHomeworkVO.getHomeworkId());
         if (count == 0) {
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "请先添加至少一道题目");
+        }
+        // 查询是否存在问题没有案例测试
+        Integer problemCount = programHomeworkProblemService.getProblemCountHaveCase(publishProgramHomeworkVO.getHomeworkId());
+        if (count-problemCount!=0){
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"您有 "+(count-problemCount)+" 道题目未添加测试案例，请先添加再发布");
         }
 
         // 3.如果是定时发布就加入到延迟队列
