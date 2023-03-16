@@ -27,6 +27,7 @@
         <module>waveedu-judge</module>
         <module>waveedu-share</module>
         <module>waveedu-program</module>
+        <module>waveedu-vm</module>
     </modules>
 
 </project>
