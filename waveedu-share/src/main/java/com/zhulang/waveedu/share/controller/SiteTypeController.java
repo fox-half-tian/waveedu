@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * @create 2023/3/12 11:22
  */
 @RestController
-@RequestMapping("/site/type")
+@RequestMapping("/site-type")
 public class SiteTypeController {
     @Resource
     private SiteTypeService siteTypeService;
@@ -39,7 +39,7 @@ public class SiteTypeController {
 
     }
     @GetMapping("/getall")
-    public Result getSiteall() {
+    public Result getSiteAll() {
         return siteTypeService.getSiteTypeall();
     }
     @GetMapping("/get/site")

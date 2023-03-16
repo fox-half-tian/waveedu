@@ -21,13 +21,14 @@ public class SiteController {
     @PostMapping("/add")
     public Result addSite(@Validated @RequestBody Site site) {
         return siteService.addSite(site);
-
     }
+
     @PostMapping("/del")
-    public Result removeSiteById(@Validated @RequestParam(value = "id") Long id) {
+    public Result removeSiteById(@RequestParam(value = "id") Long id) {
         return siteService.removeSiteById(id);
 
     }
+
     @GetMapping("/get/id")
     public Result getSite(@Validated @RequestParam(value = "id") Long id) {
         return siteService.getSiteById(id);
@@ -37,8 +38,9 @@ public class SiteController {
     public Result updateSite(@Validated @RequestBody Site site) {
         return siteService.modifySiteById(site);
     }
+
     @GetMapping("/get/approved")
-    public Result getSiteapproved() {
+    public Result getSiteApproved() {
         return siteService.getSiteApproved();
     }
 

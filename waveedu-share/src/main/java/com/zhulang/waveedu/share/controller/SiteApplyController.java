@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * @create 2023/3/12 11:22
  */
 @RestController
-@RequestMapping("/site/apply")
+@RequestMapping("/site-apply")
 public class SiteApplyController {
     @Resource
     private SiteApplyService siteApplyService;
@@ -30,13 +30,13 @@ public class SiteApplyController {
         return siteApplyService.addSiteApply(siteApply);
 
     }
-    @PostMapping("/del")
-    public Result removeSiteById(@Validated @RequestParam(value = "id")Long id) {
+    @DeleteMapping("/del")
+    public Result removeSiteById(@RequestParam(value = "id")Long id) {
         return siteApplyService.removeSiteApplyById(id);
 
     }
     @GetMapping("/get")
-    public Result getSite(@Validated @RequestParam(value = "id") Long id) {
+    public Result getSite(@RequestParam(value = "id") Long id) {
         return siteApplyService.getSiteApplyById(id);
 
     }

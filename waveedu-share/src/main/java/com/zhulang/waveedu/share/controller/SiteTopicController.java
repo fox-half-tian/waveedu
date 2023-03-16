@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * @create 2023/3/12 11:22
  */
 @RestController
-@RequestMapping("/site/topic")
+@RequestMapping("/site-topic")
 public class SiteTopicController {
     @Resource
     private SiteTopicService siteTopicService;
