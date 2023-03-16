@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.judge.dao.ProgramHomeworkProblemMapper">
+
+    <select id="selectProblemLimitInfo" resultType="com.zhulang.waveedu.judge.dto.ProblemLimitInfoDTO">
+        select `id`, `time_limit`, `memory_limit`, `stack_limit`
+        from `edu_program_homework_problem`
+        where `id` = #{id}
+    </select>
+    <select id="selectProblemCases" resultType="java.util.HashMap">
+        SELECT `id`, `input`, `output`
+        FROM `edu_program_homework_problem_case`
+        WHERE `problem_id` = #{problemId}
+    </select>
+</mapper>

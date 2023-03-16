@@ -19,12 +19,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/1/23 13:44
- * @Description:
+ * @author 狐狸半面添
+ * @create 2023-03-14 12:09
  */
 
 /**
@@ -65,7 +63,8 @@ public class SandboxRun {
     // 单例模式
     private static final SandboxRun instance = new SandboxRun();
 
-    private static final String SANDBOX_BASE_URL = "http://1.14.94.100:5050";
+//    private static final String SANDBOX_BASE_URL = "http://8.130.97.145:5050";
+    private static final String SANDBOX_BASE_URL = "http://114.132.54.129:5050";
 
     public static final HashMap<String, Integer> RESULT_MAP_STATUS = new HashMap<>();
 
@@ -147,6 +146,7 @@ public class SandboxRun {
 
     public JSONArray run(String uri, JSONObject param) throws SystemError {
         HttpHeaders headers = new HttpHeaders();
+        // 请求格式为 application/json
         headers.setContentType(MediaType.APPLICATION_JSON);
         /*
             测试案例的时候的参数：
@@ -180,7 +180,7 @@ public class SandboxRun {
             // 编译时与测试案例时 -》 SANDBOX_BASE_URL + uri：http://1.14.94.100:5050/run
             postForEntity = restTemplate.postForEntity(SANDBOX_BASE_URL + uri, request, String.class);
             /*
-            postForEntity
+            响应数据 postForEntity
                 编译时：
                     <200,
                         [
@@ -307,26 +307,21 @@ public class SandboxRun {
      * @param args              编译的cmd参数
      * @param envs              编译的环境变量
      * @param code              编译的源代码
-     * @param extraFiles        编译所需的额外文件 key:文件名，value:文件内容
      * @param needCopyOutCached 是否需要生成用户程序的缓存文件，即生成用户程序id
-//     * @param needCopyOutExe    是否需要生成编译后的用户程序exe文件
-//     * @param copyOutDir        生成编译后的用户程序exe文件的指定路径
-     * @MethodName compile
+     *
      * @Description 编译运行
      * @Return
-     * @Since 2022/1/3
      */
-    public static JSONArray compile(Long maxCpuTime, // 10000
-                                    Long maxRealTime, // 20000
-                                    Long maxMemory, // 536870912
-                                    Long maxStack, // 268435456
-                                    String srcName, // Main.java
-                                    String exeName, // Main.jar
-                                    List<String> args, //
+    public static JSONArray compile(Long maxCpuTime,
+                                    Long maxRealTime,
+                                    Long maxMemory,
+                                    Long maxStack,
+                                    String srcName,
+                                    String exeName,
+                                    List<String> args,
                                     List<String> envs,
-                                    String code, // import ...
-                                    HashMap<String, String> extraFiles, // null
-                                    Boolean needCopyOutCached // true
+                                    String code,
+                                    Boolean needCopyOutCached
                                     ) throws SystemError {
         JSONObject cmd = new JSONObject();
         /*
@@ -542,475 +537,4 @@ public class SandboxRun {
         return result;
     }
 
-
-    /**
-     * @param args                   特殊判题的运行cmd命令参数
-     * @param envs                   特殊判题的运行环境变量
-     * @param userOutputFilePath     用户程序输出文件的路径
-     * @param userOutputFileName     用户程序输出文件的名字
-     * @param testCaseInputFilePath  题目数据的输入文件的路径
-     * @param testCaseInputFileName  题目数据的输入文件的名字
-     * @param testCaseOutputFilePath 题目数据的输出文件的路径
-     * @param testCaseOutputFileName 题目数据的输出文件的路径
-     * @param spjExeSrc              特殊判题的exe文件的路径
-     * @param spjExeName             特殊判题的exe文件的名字
-     * @MethodName spjCheckResult
-     * @Description 特殊判题的评测
-     * @Return JSONArray
-     * @Since 2022/1/3
-     */
-    public static JSONArray spjCheckResult(List<String> args,
-                                           List<String> envs,
-                                           String userOutputFilePath,
-                                           String userOutputFileName,
-                                           String testCaseInputFilePath,
-                                           String testCaseInputFileName,
-                                           String testCaseOutputFilePath,
-                                           String testCaseOutputFileName,
-                                           String spjExeSrc,
-                                           String spjExeName) throws SystemError {
-
-        JSONObject cmd = new JSONObject();
-        cmd.set("args", args);
-        cmd.set("env", envs);
-
-        JSONArray outFiles = new JSONArray();
-
-        JSONObject content = new JSONObject();
-        content.set("content", "");
-
-        JSONObject outStdout = new JSONObject();
-        outStdout.set("name", "stdout");
-        outStdout.set("max", 1024 * 1024 * 16);
-
-        JSONObject outStderr = new JSONObject();
-        outStderr.set("name", "stderr");
-        outStderr.set("max", 1024 * 1024 * 16);
-
-        outFiles.put(content);
-        outFiles.put(outStdout);
-        outFiles.put(outStderr);
-        cmd.set("files", outFiles);
-
-        // ms-->ns
-        cmd.set("cpuLimit", TIME_LIMIT_MS * 1000 * 1000L);
-        cmd.set("clockLimit", TIME_LIMIT_MS * 1000 * 1000L * 3);
-        // byte
-        cmd.set("memoryLimit", MEMORY_LIMIT_MB * 1024 * 1024L);
-        cmd.set("procLimit", maxProcessNumber);
-        cmd.set("stackLimit", STACK_LIMIT_MB * 1024 * 1024L);
-
-
-        JSONObject spjExeFile = new JSONObject();
-        spjExeFile.set("src", spjExeSrc);
-
-        JSONObject useOutputFileSrc = new JSONObject();
-        useOutputFileSrc.set("src", userOutputFilePath);
-
-        JSONObject stdInputFileSrc = new JSONObject();
-        stdInputFileSrc.set("src", testCaseInputFilePath);
-
-        JSONObject stdOutFileSrc = new JSONObject();
-        stdOutFileSrc.set("src", testCaseOutputFilePath);
-
-        JSONObject spjCopyIn = new JSONObject();
-
-        spjCopyIn.set(spjExeName, spjExeFile);
-        spjCopyIn.set(userOutputFileName, useOutputFileSrc);
-        spjCopyIn.set(testCaseInputFileName, stdInputFileSrc);
-        spjCopyIn.set(testCaseOutputFileName, stdOutFileSrc);
-
-
-        cmd.set("copyIn", spjCopyIn);
-        cmd.set("copyOut", new JSONArray().put("stdout").put("stderr"));
-
-        JSONObject param = new JSONObject();
-
-        param.set("cmd", new JSONArray().put(cmd));
-
-        // 调用判题安全沙箱
-        JSONArray result = instance.run("/run", param);
-        JSONObject spjRes = (JSONObject) result.get(0);
-        spjRes.set("originalStatus", spjRes.getStr("status"));
-        spjRes.set("status", RESULT_MAP_STATUS.get(spjRes.getStr("status")));
-        return result;
-    }
-
-
-    /**
-     * @param args                   cmd的命令参数 评测运行的命令
-     * @param envs                   测评的环境变量
-     * @param userExeName            用户程序的名字
-     * @param userFileId             用户程序在编译后返回的id，主要是对应内存中已编译后的文件
-     * @param userFileContent        用户程序文件的内容，如果userFileId存在则为null
-     * @param userMaxTime            用户程序的最大测评时间 ms
-     * @param userMaxStack           用户程序的最大测评栈空间 mb
-     * @param testCaseInputPath      题目数据的输入文件路径
-     * @param testCaseInputFileName  题目数据的输入文件名字
-     * @param testCaseOutputFilePath 题目数据的输出文件路径
-     * @param testCaseOutputFileName 题目数据的输出文件名字
-     * @param userOutputFileName     用户程序的输出文件名字
-     * @param interactArgs           交互程序运行的cmd命令参数
-     * @param interactEnvs           交互程序运行的环境变量
-     * @param interactExeSrc         交互程序的exe文件路径
-     * @param interactExeName        交互程序的exe文件名字
-     * @MethodName interactTestCase
-     * @Description 交互评测
-     * @Return JSONArray
-     * @Since 2022/1/3
-     */
-    public static JSONArray interactTestCase(List<String> args,
-                                             List<String> envs,
-                                             String userExeName,
-                                             String userFileId,
-                                             String userFileContent,
-                                             Long userMaxTime,
-                                             Long userMaxMemory,
-                                             Integer userMaxStack,
-                                             String testCaseInputPath,
-                                             String testCaseInputFileName,
-                                             String testCaseOutputFilePath,
-                                             String testCaseOutputFileName,
-                                             String userOutputFileName,
-                                             List<String> interactArgs,
-                                             List<String> interactEnvs,
-                                             String interactExeSrc,
-                                             String interactExeName) throws SystemError {
-
-        /**
-         *  注意：用户源代码需要先编译，若是通过编译需要先将文件存入内存，再利用管道判题，同时特殊判题程序必须已编译且存在（否则判题失败，系统错误）！
-         */
-
-        JSONObject pipeInputCmd = new JSONObject();
-        pipeInputCmd.set("args", args);
-        pipeInputCmd.set("env", envs);
-
-        JSONArray files = new JSONArray();
-
-        JSONObject stderr = new JSONObject();
-        stderr.set("name", "stderr");
-        stderr.set("max", 1024 * 1024 * STDIO_SIZE_MB);
-
-        files.put(new JSONObject());
-        files.put(new JSONObject());
-        files.put(stderr);
-
-        String inTmp = files.toString().replace("{}", "null");
-        pipeInputCmd.set("files", JSONUtil.parseArray(inTmp, false));
-
-        // ms-->ns
-        pipeInputCmd.set("cpuLimit", userMaxTime * 1000 * 1000L);
-        pipeInputCmd.set("clockLimit", userMaxTime * 1000 * 1000L * 3);
-
-        // byte
-
-        pipeInputCmd.set("memoryLimit", (userMaxMemory + 100) * 1024 * 1024L);
-        pipeInputCmd.set("procLimit", maxProcessNumber);
-        pipeInputCmd.set("stackLimit", userMaxStack * 1024 * 1024L);
-
-        JSONObject exeFile = new JSONObject();
-        if (!StringUtils.isEmpty(userFileId)) {
-            exeFile.set("fileId", userFileId);
-        } else {
-            exeFile.set("content", userFileContent);
-        }
-        JSONObject copyIn = new JSONObject();
-        copyIn.set(userExeName, exeFile);
-
-        pipeInputCmd.set("copyIn", copyIn);
-        pipeInputCmd.set("copyOut", new JSONArray());
-
-
-        // 管道输出，用户程序输出数据经过特殊判题程序后，得到的最终输出结果。
-        JSONObject pipeOutputCmd = new JSONObject();
-        pipeOutputCmd.set("args", interactArgs);
-        pipeOutputCmd.set("env", interactEnvs);
-
-        JSONArray outFiles = new JSONArray();
-
-
-        JSONObject outStderr = new JSONObject();
-        outStderr.set("name", "stderr");
-        outStderr.set("max", 1024 * 1024 * STDIO_SIZE_MB);
-        outFiles.put(new JSONObject());
-        outFiles.put(new JSONObject());
-        outFiles.put(outStderr);
-        String outTmp = outFiles.toString().replace("{}", "null");
-        pipeOutputCmd.set("files", JSONUtil.parseArray(outTmp, false));
-
-        // ms-->ns
-        pipeOutputCmd.set("cpuLimit", userMaxTime * 1000 * 1000L * 2);
-        pipeOutputCmd.set("clockLimit", userMaxTime * 1000 * 1000L * 3 * 2);
-        // byte
-        pipeOutputCmd.set("memoryLimit", (userMaxMemory + 100) * 1024 * 1024L * 2);
-        pipeOutputCmd.set("procLimit", maxProcessNumber);
-        pipeOutputCmd.set("stackLimit", STACK_LIMIT_MB * 1024 * 1024L);
-
-        JSONObject spjExeFile = new JSONObject();
-        spjExeFile.set("src", interactExeSrc);
-
-        JSONObject stdInputFileSrc = new JSONObject();
-        stdInputFileSrc.set("src", testCaseInputPath);
-
-        JSONObject stdOutFileSrc = new JSONObject();
-        stdOutFileSrc.set("src", testCaseOutputFilePath);
-
-        JSONObject interactiveCopyIn = new JSONObject();
-        interactiveCopyIn.set(interactExeName, spjExeFile);
-        interactiveCopyIn.set(testCaseInputFileName, stdInputFileSrc);
-        interactiveCopyIn.set(testCaseOutputFileName, stdOutFileSrc);
-
-
-        pipeOutputCmd.set("copyIn", interactiveCopyIn);
-        pipeOutputCmd.set("copyOut", new JSONArray().put(userOutputFileName));
-
-        JSONArray cmdList = new JSONArray();
-        cmdList.put(pipeInputCmd);
-        cmdList.put(pipeOutputCmd);
-
-        JSONObject param = new JSONObject();
-        // 添加cmd指令
-        param.set("cmd", cmdList);
-
-        // 添加管道映射
-        JSONArray pipeMapping = new JSONArray();
-        // 用户程序
-        JSONObject user = new JSONObject();
-
-        JSONObject userIn = new JSONObject();
-        userIn.set("index", 0);
-        userIn.set("fd", 1);
-
-        JSONObject userOut = new JSONObject();
-        userOut.set("index", 1);
-        userOut.set("fd", 0);
-
-        user.set("in", userIn);
-        user.set("out", userOut);
-        user.set("max", STDIO_SIZE_MB * 1024 * 1024);
-        user.set("proxy", true);
-        user.set("name", "stdout");
-
-        // 评测程序
-        JSONObject judge = new JSONObject();
-
-        JSONObject judgeIn = new JSONObject();
-        judgeIn.set("index", 1);
-        judgeIn.set("fd", 1);
-
-        JSONObject judgeOut = new JSONObject();
-        judgeOut.set("index", 0);
-        judgeOut.set("fd", 0);
-
-        judge.set("in", judgeIn);
-        judge.set("out", judgeOut);
-        judge.set("max", STDIO_SIZE_MB * 1024 * 1024);
-        judge.set("proxy", true);
-        judge.set("name", "stdout");
-
-
-        // 添加到管道映射列表
-        pipeMapping.add(user);
-        pipeMapping.add(judge);
-
-        param.set("pipeMapping", pipeMapping);
-
-        // 调用判题安全沙箱
-        JSONArray result = instance.run("/run", param);
-        JSONObject userRes = (JSONObject) result.get(0);
-        JSONObject interactiveRes = (JSONObject) result.get(1);
-        userRes.set("originalStatus", userRes.getStr("status"));
-        userRes.set("status", RESULT_MAP_STATUS.get(userRes.getStr("status")));
-        interactiveRes.set("originalStatus", interactiveRes.getStr("status"));
-        interactiveRes.set("status", RESULT_MAP_STATUS.get(interactiveRes.getStr("status")));
-        return result;
-    }
-
 }
- /*
-     1. compile
-        Json Request Body
-        {
-            "cmd": [{
-                "args": ["/usr/bin/g++", "a.cc", "-o", "a"],
-                "env": ["PATH=/usr/bin:/bin"],
-                "files": [{
-                    "content": ""
-                }, {
-                    "name": "stdout",
-                    "max": 10240
-                }, {
-                    "name": "stderr",
-                    "max": 10240
-                }],
-                "cpuLimit": 10000000000,
-                "memoryLimit": 104857600,
-                "procLimit": 50,
-                "copyIn": {
-                    "a.cc": {
-                        "content": "#include <iostream>\nusing namespace std;\nint main() {\nint a, b;\ncin >> a >> b;\ncout << a + b << endl;\n}"
-                    }
-                },
-                "copyOut": ["stdout", "stderr"],
-                "copyOutCached": ["a.cc", "a"],
-                "copyOutDir": "1"
-            }]
-        }
-
-        Json Response Data
-
-        [
-            {
-                "status": "Accepted",
-                "exitStatus": 0,
-                "time": 303225231,
-                "memory": 32243712,
-                "runTime": 524177700,
-                "files": {
-                    "stderr": "",
-                    "stdout": ""
-                },
-                "fileIds": {
-                    "a": "5LWIZAA45JHX4Y4Z",
-                    "a.cc": "NOHPGGDTYQUFRSLJ"
-                }
-            }
-        ]
-    2.test case
-
-            Json Request Body
-              {
-                "cmd": [{
-                    "args": ["a"],
-                    "env": ["PATH=/usr/bin:/bin","LANG=en_US.UTF-8","LC_ALL=en_US.UTF-8","LANGUAGE=en_US:en"],
-                    "files": [{
-                        "src": "/judge/test_case/problem_1010/1.in"
-                    }, {
-                        "name": "stdout",
-                        "max": 10240
-                    }, {
-                        "name": "stderr",
-                        "max": 10240
-                    }],
-                    "cpuLimit": 10000000000,
-                    "realCpuLimit":30000000000,
-                    "stackLimit":134217728,
-                    "memoryLimit": 104811111,
-                    "procLimit": 50,
-                    "copyIn": {
-                        "a":{"fileId":"WDQL5TNLRRVB2KAP"}
-                    },
-                    "copyOut": ["stdout", "stderr"]
-                }]
-            }
-
-            Json Response Data
-             [{
-              "status": "Accepted",
-              "exitStatus": 0,
-              "time": 3171607,
-              "memory": 475136,
-              "runTime": 110396333,
-              "files": {
-                "stderr": "",
-                "stdout": "23\n"
-              }
-            }]
-
-    3. Interactive
-
-        {
-    "pipeMapping": [
-        {
-            "in": {
-                "max": 16777216,
-                "index": 0,
-                "fd": 1
-            },
-            "out": {
-                "index": 1,
-                "fd": 0
-            }
-        }
-    ],
-    "cmd": [
-        {
-            "stackLimit": 134217728,
-            "cpuLimit": 3000000000,
-            "realCpuLimit": 9000000000,
-            "clockLimit": 64,
-            "env": [
-                "LANG=en_US.UTF-8",
-                "LANGUAGE=en_US:en",
-                "LC_ALL=en_US.UTF-8",
-                "PYTHONIOENCODING=utf-8"
-            ],
-            "copyOut": [
-                "stderr"
-            ],
-            "args": [
-                "/usr/bin/python3",
-                "main"
-            ],
-            "files": [
-                {
-                    "src": "/judge/test_case/problem_1002/5.in"
-                },
-                null,
-                {
-                    "max": 16777216,
-                    "name": "stderr"
-                }
-            ],
-            "memoryLimit": 536870912,
-            "copyIn": {
-                "main": {
-                    "fileId": "CGTRDEMKW5VAYN6O"
-                }
-            }
-        },
-        {
-            "stackLimit": 134217728,
-            "cpuLimit": 8000000000,
-            "clockLimit": 24000000000,
-            "env": [
-                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                "LANG=en_US.UTF-8",
-                "LANGUAGE=en_US:en",
-                "LC_ALL=en_US.UTF-8"
-            ],
-            "copyOut": [
-                "stdout",
-                "stderr"
-            ],
-            "args": [
-                "/w/spj",
-                "/w/tmp"
-            ],
-            "files": [
-                null,
-                {
-                    "max": 16777216,
-                    "name": "stdout"
-                },
-                {
-                    "max": 16777216,
-                    "name": "stderr"
-                }
-            ],
-            "memoryLimit": 536870912,
-            "copyIn": {
-                "spj": {
-                    "src": "/judge/spj/1002/spj"
-                },
-                "tmp": {
-                    "src": "/judge/test_case/problem_1002/5.out"
-                }
-            },
-            "procLimit": 64
-        }
-    ]
-}
-
-
-  */

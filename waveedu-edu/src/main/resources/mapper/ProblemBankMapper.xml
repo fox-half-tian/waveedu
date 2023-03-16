@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.ProblemBankMapper">
+
+
+    <select id="selectSelfProblemInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.SelfSimpleProblemInfoQuery">
+        SELECT `id`, `title`, `difficulty`, `description`
+        FROM `program_problem_bank`
+        WHERE `author_id` = #{authorId}
+    </select>
+    <select id="selectPublicProblemInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.PublicSimpleProblemInfoQuery">
+        SELECT b.`id`,
+               b.`title`,
+               b.`difficulty`,
+               b.`description`,
+               b.`author_type` AS `authorType`,
+               b.`author_id`   AS `authorId`,
+               i.`name`        AS `authorName`,
+               i.`icon`        AS `authorIcon`
+        FROM `program_problem_bank` b
+                 LEFT JOIN `basic_user_info` i
+                           ON b.`author_id` = i.`id`
+        WHERE b.`is_public` = 1
+    </select>
+    <select id="selectSelfOrPublicProblemDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemDetailInfoQuery">
+        SELECT id,
+               title,
+               is_public,
+               time_limit,
+               memory_limit,
+               stack_limit,
+               `description`,
+               input,
+               output,
+               examples,
+               difficulty,
+               hint,
+               create_time,
+               update_time
+        FROM `program_problem_bank`
+        WHERE `id` = #{problemId}
+          AND `is_public` = 1
+    </select>
+    <resultMap id="selectNeedImportProblemsInfoListResultMap" type="com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemImportInfoQuery">
+        <result property="title" column="title"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="description" column="description"/>
+        <result property="timeLimit" column="time_limit"/>
+        <result property="stackLimit" column="stack_limit"/>
+        <result property="input" column="input"/>
+        <result property="output" column="output"/>
+        <result property="examples" column="examples"/>
+        <result property="hint" column="hint"/>
+        <result property="examples" column="examples"/>
+        <!--
+            一对多，这里是collection(集合)
+            ofType属性用来指定集合中的元素类型
+        -->
+        <collection property="caseList" ofType="com.zhulang.waveedu.edu.query.programhomeworkquery.ProblemImportInfoQuery$InnerCase">
+            <id property="input" column="caseInput"/>
+            <id property="output" column="caseOutput"/>
+        </collection>
+    </resultMap>
+    <select id="selectNeedImportProblemsInfoList"
+            resultMap="selectNeedImportProblemsInfoListResultMap">
+        SELECT b.`title`,
+        b.`difficulty`,
+        b.`description`,
+        b.`time_limit` AS `timeLimit`,
+        b.`memory_limit` AS `memoryLimit`,
+        b.`stack_limit` AS `stackLimit`,
+        b.`input`,
+        b.`output`,
+        b.`examples`,
+        b.`hint`,
+        c.`input` AS `caseInput`,
+        c.`output` AS `caseOutput`
+        FROM `program_problem_bank` b,`program_problem_bank_case` c
+        WHERE b.`id` IN
+        <foreach collection="problemIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        AND b.`id` = c.`problem_id`
+        AND (b.`is_public` = 1 OR b.`author_id` = #{authorId})
+
+    </select>
+</mapper>

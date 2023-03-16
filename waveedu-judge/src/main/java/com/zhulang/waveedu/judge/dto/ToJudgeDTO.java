@@ -1,6 +1,6 @@
 package com.zhulang.waveedu.judge.dto;
 
-import com.zhulang.waveedu.judge.entity.judge.Judge;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -8,9 +8,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2021/2/4 22:29
- * @Description:
+ * @author 狐狸半面添
+ * @create 2023-03-13 21:36
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -20,9 +19,18 @@ public class ToJudgeDTO implements Serializable {
     private static final long serialVersionUID = 999L;
 
     /**
-     *  判题数据实体类
+     * 问题id
      */
-    private Judge judge;
+    private Integer problemId;
 
+    /**
+     * 语言
+     */
+    private String language;
+
+    /**
+     * 代码
+     */
+    private String code;
 
 }

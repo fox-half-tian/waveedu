@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.program.dao.ProblemBankCaseMapper">
+
+    <select id="selectProblemIdAndAuthorIdAndAuthorType"
+            resultType="com.zhulang.waveedu.program.query.ProblemIdAndAuthorIdAndAuthorTypeQuery">
+        SELECT c.`problem_id`, b.`author_id`, b.`author_type`
+        FROM `program_problem_bank_case` c,
+             `program_problem_bank` b
+        WHERE c.`id` = #{caseId}
+          AND c.`problem_id` = b.`id`
+    </select>
+    <select id="selectProblemCaseInfoByProblemId"
+            resultType="com.zhulang.waveedu.program.query.ProblemCaseInfoQuery">
+        SELECT `id` AS `caseId`,
+               `input`,
+               `output`
+        FROM `program_problem_bank_case`
+        WHERE `problem_id` = #{problemId}
+    </select>
+</mapper>

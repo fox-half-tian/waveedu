@@ -1,18 +1,16 @@
 package com.zhulang.waveedu.judge.judge.entity;
 
 import cn.hutool.json.JSONObject;
-import com.zhulang.waveedu.judge.util.Constants;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2022/1/3 11:53
+ * @author 狐狸半面添
+ * @create 2023-03-14 09:30
  * @Description: 一次评测全局通用的传输实体类
  */
 
@@ -27,12 +25,7 @@ public class JudgeGlobalDTO implements Serializable {
     /**
      * 当前评测题目的id
      */
-    private Long problemId;
-
-    /**
-     * 当前评测题目的模式
-     */
-    private Constants.JudgeMode judgeMode;
+    private Integer problemId;
 
     /**
      * 用户程序在沙盒编译后对应内存文件的id，运行时需要传入
@@ -43,11 +36,6 @@ public class JudgeGlobalDTO implements Serializable {
      * 用户程序代码文件的内容
      */
     private String userFileContent;
-
-    /**
-     * 整个评测的工作目录
-     */
-    private String runDir;
 
     /**
      * 判题沙盒评测程序的最大实际时间，一般为题目最大限制时间+200ms
@@ -75,33 +63,13 @@ public class JudgeGlobalDTO implements Serializable {
     private JSONObject testCaseInfo;
 
     /**
-     * 交互程序或特判程序所需的额外文件 key:文件名，value：文件路径
-     */
-    private HashMap<String,String> judgeExtraFiles;
-
-    /**
      * 普通评测的命令配置
      */
     private LanguageConfig runConfig;
 
-    /**
-     * 特殊判题的命令配置
-     */
-    private LanguageConfig spjRunConfig;
-
-    /**
-     * 交互判题的命令配置
-     */
-    private LanguageConfig interactiveRunConfig;
-
-    /**
-     * 是否需要生成用户程序输出的文件
-     */
-    private Boolean needUserOutputFile;
 
     /**
      * 是否需要自动移除评测数据的行末空格
      */
-    private Boolean removeEOLBlank;
-
+    private Boolean removeEolBlank;
 }

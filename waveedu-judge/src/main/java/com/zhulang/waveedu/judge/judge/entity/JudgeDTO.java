@@ -8,8 +8,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2022/1/2 20:58
+ * @author 狐狸半面添
+ * @create 2023-03-13 22:36
  * @Description: 评测题目的传输类
  */
 @Data
@@ -59,11 +59,6 @@ public class JudgeDTO implements Serializable {
      * 当前题目评测点的输出字符大小限制 B
      */
     private Long maxOutputSize;
-
-    /**
-     * 当前题目评测点的分数（OI题目的测试点才有）
-     */
-    private Integer score;
 
     /**
      * problem_case_id

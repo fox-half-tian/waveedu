@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Author Himit_ZH
- * @Date 2022/11/22
+ * @author 狐狸半面添
+ * @create 2023-03-14 09:35
  */
 @Data
 public class LanguageConfig {

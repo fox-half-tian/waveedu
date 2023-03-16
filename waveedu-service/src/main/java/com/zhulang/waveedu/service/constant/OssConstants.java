@@ -21,7 +21,12 @@ public class OssConstants {
     public static final String LESSON_CLASS_COVER_DIR = "lesson-class-cover";
 
     /**
-     * 存储笔记的目录
+     * 存储笔记图片的目录
      */
     public static final String NOTE_IMAGE_DIR = "note-image";
+
+    /**
+     * 存储编程问题图片的目录
+     */
+    public static final String PROGRAM_PROBLEM_IMAGE ="program-problem-image";
 }

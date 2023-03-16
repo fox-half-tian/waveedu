@@ -49,7 +49,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         boolean lock = false;
         try {
             // 1.拿到锁，设置TTL
-            lock = redisLockUtils.tryLock(lockKey, RedisConstants.LOCK_LOGIN_USER_CODE_TTL);
+            lock = redisLockUtils.tryLock(lockKey, RedisConstants.LOCK_LOGIN_ADMIN_CODE_TTL);
             // 2.获取锁失败，直接退出
             if (!lock) {
                 return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), HttpStatus.HTTP_TRY_AGAIN_LATER.getValue());

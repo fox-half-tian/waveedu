@@ -3,12 +3,12 @@ package com.zhulang.waveedu.edu.test;
 import com.alibaba.fastjson.JSON;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.edu.po.LessonFile;
-import com.zhulang.waveedu.edu.vo.homeworkvo.HomeworkAnswerVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.MarkHomeworkVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.MarkHomeworkVO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 狐狸半面添
@@ -21,8 +21,12 @@ public class CommonTest {
 
     public static void test04(){
         List<String> list = new ArrayList<>();
-        for (String s : list) {
-            System.out.println("s");
+        list.add("hello");
+        list.add("yes");
+        list.add("no");
+        List<String> collect = list.stream().filter(str -> str.length() > 3).collect(Collectors.toList());
+        for (String s : collect) {
+            System.out.println(s);
         }
     }
 

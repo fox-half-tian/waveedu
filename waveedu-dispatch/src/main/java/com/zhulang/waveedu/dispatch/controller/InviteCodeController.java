@@ -30,8 +30,6 @@ import static com.zhulang.waveedu.common.constant.CommonConstants.REQUEST_HEADER
 @RequestMapping("/invite-code")
 public class InviteCodeController {
 
-
-
     @Resource
     private RestTemplate restTemplate;
 

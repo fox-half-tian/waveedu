@@ -3,14 +3,13 @@ package com.zhulang.waveedu.edu.service;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.edu.po.CommonHomeworkQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
-import com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
-import com.zhulang.waveedu.edu.vo.homeworkvo.BatchSaveCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.ModifyCommonHomeworkQuestionVO;
-import com.zhulang.waveedu.edu.vo.homeworkvo.SaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.BatchSaveCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.ModifyCommonHomeworkQuestionVO;
+import com.zhulang.waveedu.edu.vo.commonhomeworkvo.SaveCommonHomeworkQuestionVO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.LessonClassProgramHomeworkMapper">
+    <update id="updateNumById">
+        UPDATE `edu_lesson_class_program_homework`
+        SET `num` = (SELECT COUNT(*) FROM `edu_program_homework_problem` WHERE `homework_id` = #{homeworkId})
+        WHERE `id` = #{homeworkId}
+    </update>
+
+    <select id="selectIsPublishByHomeworkIdAndCreatorId" resultType="java.lang.Integer">
+        SELECT `is_publish`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{homeworkId}
+          AND `creator_id` = #{creatorId}
+    </select>
+    <select id="existsByHomeworkIdAndCreatorId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{homeworkId}
+          AND `creator_id` = #{creatorId}
+    </select>
+    <select id="selectTchHomeworkInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.TchSimpleHomeworkInfoQuery">
+        SELECT `id`,`title`,`num`,`is_publish` AS `status`,`end_time`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `class_id` = #{classId}
+        <if test="status!=null">
+            AND `is_publish` = #{status}
+        </if>
+        <if test="status!=null and status==1">
+            AND `end_time` &gt; NOW()
+        </if>
+        ORDER BY `create_time` DESC
+    </select>
+    <select id="selectNumById" resultType="java.lang.Long">
+        SELECT `num`
+        FROM `edu_lesson_class_program_homework`
+        WHERE `id` = #{id}
+    </select>
+    <select id="selectIsPublishAndEndTimeAndHomeworkIdAndHomeworkIdByProblemId"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery">
+        SELECT h.`is_publish`, h.`end_time`, h.`id` AS `homeworkId`
+        FROM `edu_program_homework_problem` p,
+             `edu_lesson_class_program_homework` h
+        WHERE p.`id` = #{problemId}
+          AND p.`homework_id` = h.`id`
+    </select>
+    <select id="selectStuHomeworkSimpleInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuSimpleHomeworkInfoQuery">
+        SELECT h.`id`                     AS `problemId`,
+               h.`title`                  AS `title`,
+               h.`num`                    AS `problemNum`,
+               h.`end_time`               AS `endTime`,
+               IFNULL(t.`completeNum`, 0) AS `completeNum`
+        FROM `edu_lesson_class_program_homework` h
+                 LEFT JOIN (SELECT `homework_id`, COUNT(*) AS `completeNum`
+                            FROM edu_program_homework_stu_answer
+                            WHERE `stu_id` = #{stuId}
+                            GROUP BY `homework_id`) t
+                           ON h.`id` = t.`homework_id`
+        WHERE h.`class_id` = #{classId}
+          AND h.`is_publish` = 1
+        ORDER BY h.`start_time` DESC
+    </select>
+    <select id="selectStuHomeworkDetailInfo"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery">
+        SELECT h.`id`         AS `homeworkId`,
+               h.`title`      AS `homeworkTitle`,
+               h.`num`        AS `problemNum`,
+               h.`start_time` AS `startTime`,
+               h.`end_time`   AS `endTime`,
+               t.`completeNum` AS `completeNum`
+        FROM `edu_lesson_class_program_homework` h,
+             (SELECT COUNT(*) AS `completeNum`
+              FROM `edu_program_homework_stu_answer`
+              WHERE `homework_id` = #{homeworkId}) t
+        WHERE h.`id` = #{homeworkId}
+    </select>
+    <select id="selectAnswerProblemSimpleInfolist"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.StuDetailHomeworkInfoQuery$InnerProblemInfo">
+        SELECT p.`id`          AS `problemId`,
+               p.`title`       AS `problemTitle`,
+               p.`difficulty`  AS `difficulty`,
+               t.`create_time` AS `completeTime`,
+               t.`time`        AS `runTime`,
+               t.`memory`      AS `runMemory`
+        FROM `edu_program_homework_problem` p
+                 LEFT JOIN (SELECT `problem_id`, `create_time`, `time`, `memory`
+                            FROM `edu_program_homework_stu_answer`
+                            WHERE `homework_id` = #{homeworkId}
+                              AND `stu_id` = #{stuId}) t
+                           ON p.`id` = t.`problem_id`
+        WHERE p.`homework_id` = #{homeworkId}
+        ORDER BY p.`id`
+    </select>
+</mapper>

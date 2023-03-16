@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2020/12/3 20:12
- * @Description:
+ * @author 狐狸半面添
+ * @create 2023-03-13 22:36
  */
 @RestController
 public class SystemConfigController {

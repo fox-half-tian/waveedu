@@ -1,81 +1,65 @@
 package com.zhulang.waveedu.judge.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.zhulang.waveedu.judge.dto.TestJudgeReq;
-import com.zhulang.waveedu.judge.dto.TestJudgeRes;
+import cn.hutool.core.bean.BeanUtil;
+import com.zhulang.waveedu.common.entity.JudgeResult;
+import com.zhulang.waveedu.judge.dto.ProblemLimitInfoDTO;
 import com.zhulang.waveedu.judge.dto.ToJudgeDTO;
-import com.zhulang.waveedu.judge.entity.judge.Judge;
-import com.zhulang.waveedu.judge.entity.problem.Problem;
-import com.zhulang.waveedu.judge.exception.SystemError;
-import com.zhulang.waveedu.judge.judge.JudgeContext;
+import com.zhulang.waveedu.judge.judge.JudgeStrategy;
 import com.zhulang.waveedu.judge.service.JudgeService;
+import com.zhulang.waveedu.judge.service.ProgramHomeworkProblemService;
 import com.zhulang.waveedu.judge.util.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
- * @Author: Himit_ZH
- * @Date: 2022/3/12 15:54
- * @Description:
+ * @author 狐狸半面添
+ * @since 2023-03-14
  */
 @Service
-@RefreshScope
 public class JudgeServiceImpl implements JudgeService {
 
-    @Value("${hoj-judge-server.name}")
-    private String name;
-
     @Resource
-    private JudgeContext judgeContext;
+    private ProgramHomeworkProblemService programHomeworkProblemService;
+    @Resource
+    private JudgeStrategy judgeStrategy;
 
 
     @Override
-    public void judge(Judge judge) {
+    public JudgeResult judge(ToJudgeDTO toJudgeDTO) {
         // 标志该判题过程进入编译阶段
 
         /*
             1.获取问题的信息
                 - id：问题id
-                - difficulty：难度
                 - time_limit：时间限制
                 - memory_limit：内存限制
                 - stack_limit：栈限制
-                - case_version：实例版本
          */
-        QueryWrapper<Problem> problemQueryWrapper = new QueryWrapper<>();
-        problemQueryWrapper.select("id",
-                        "difficulty",
-                        "time_limit",
-                        "memory_limit",
-                        "stack_limit",
-                        "case_version"
-                )
-                .eq("id", judge.getPid());
-        Problem problem = problemEntityService.getOne(problemQueryWrapper);
+        ProblemLimitInfoDTO problemLimitInfo = programHomeworkProblemService.getProblemLimitInfo(toJudgeDTO.getProblemId());
 
-        // 2.进行判题操作
-        Judge finalJudgeRes = judgeContext.Judge(problem, judge);
-
-        // 3.更新该次提交
-        judgeEntityService.updateById(finalJudgeRes);
-
-//        if (!Objects.equals(finalJudgeRes.getStatus(), Constants.Judge.STATUS_SUBMITTED_FAILED.getStatus())) {
-//            // 更新其它表
-//            judgeContext.updateOtherTable(finalJudgeRes.getSubmitId(),
-//                    finalJudgeRes.getStatus(),
-//                    judge.getCid(),
-//                    judge.getUid(),
-//                    judge.getPid(),
-//                    judge.getGid(),
-//                    finalJudgeRes.getScore(),
-//                    finalJudgeRes.getTime());
-//        }
+        // 2.进入编译
+        HashMap<String, Object> judgeResultMap = judgeStrategy.judge(problemLimitInfo, toJudgeDTO);
+        /*
+            3.返回结果，在正常情况下：
+                如果运行正确：返回 code time memory
+                如果运行失败：返回 code errMsg
+         */
+        JudgeResult judgeResult = BeanUtil.fillBeanWithMap(judgeResultMap, new JudgeResult(), false);
+        // 设置最大时间和最大空间不超过题目限制时间和空间
+        if (judgeResult.getCode().equals(Constants.Judge.STATUS_ACCEPTED.getStatus())) {
+            judgeResult.setTime(Math.min(judgeResult.getTime(), problemLimitInfo.getTimeLimit()));
+            judgeResult.setMemory(Math.min(judgeResult.getMemory(), problemLimitInfo.getMemoryLimit() * 1024));
+        }else{
+            String errMsg = judgeResult.getErrMsg();
+            if (!StringUtils.hasText(errMsg)){
+                errMsg = Constants.Judge.getTypeByStatus(judgeResult.getCode()).getName();
+            }
+            judgeResult.setErrMsg(errMsg);
+        }
+        // 返回
+        return judgeResult;
     }
 }

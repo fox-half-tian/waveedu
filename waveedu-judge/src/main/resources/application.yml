@@ -6,11 +6,10 @@ server:
 spring:
   application:
     name: waveedu-judge
-  profiles: prod
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://43.136.19.229:3306/hoj?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://8.134.136.211:3306/wave_edu?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initial-size: 10 # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
@@ -32,26 +31,10 @@ spring:
     remove-abandoned: true # 是否自动回收超时连接
     remove-abandoned-timeout: 1800 # 超时时间(以秒数为单位)
     transaction-query-timeout: 10000 # 事务超时时间
-    filters: stat,wall,log4j #数据库日志
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
-  global-config:
-    db-config:
-      id-type: assign_id # 使用雪花算法生成id
-      logic-delete-value: 1 # 逻辑已删除值
-      logic-not-delete-value: 0 # 逻辑未删除值
-  configuration:
-    # 这里我们配置出底层的sql，可以输出sql日志信息，方便我们观察
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-waveedu:
-  db:
-    username: root
-    password: hoj123456
-    host: 43.136.19.229
-    public-host: 43.136.19.229
-    port: 3306
-    public-port: 3306
-    name: hoj
+#  configuration:
+#     这里我们配置出底层的sql，可以输出sql日志信息，方便我们观察
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

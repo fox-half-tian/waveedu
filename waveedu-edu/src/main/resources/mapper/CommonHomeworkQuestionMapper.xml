@@ -27,21 +27,21 @@
         WHERE `common_homework_id` = #{commonHomeworkId}
     </select>
     <select id="selectHomeworkQuestionSimpleInfoList"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkQuestionSimpleInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkQuestionSimpleInfoQuery">
         SELECT `id`, `type`, `problem_desc`, `score`
         FROM `edu_common_homework_question`
         WHERE `common_homework_id` = #{homeworkId}
         ORDER BY `create_time`
     </select>
     <select id="selectHomeworkQuestionDetailInfoList"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkQuestionDetailInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkQuestionDetailInfoQuery">
         SELECT `id`, `type`, `problem_desc`, `score`, `answer`, `analysis`
         FROM `edu_common_homework_question`
         WHERE `common_homework_id` = #{homeworkId}
         ORDER BY `create_time`
     </select>
     <select id="selectQuestionDetailAndSelfAnswerWithoutScore"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionDetailAndSelfAnswerWithoutScoreQuery">
         SELECT q.`id`,
                q.`type`,
                q.`problem_desc`,
@@ -56,7 +56,7 @@
           AND q.`id` = a.`question_id`
     </select>
     <select id="selectQuestionSimpleAndSelfAnswerWithoutScore"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
         SELECT q.`id`,
                q.`type`,
                q.`problem_desc`,
@@ -69,7 +69,7 @@
           AND q.`id` = a.`question_id`
     </select>
     <select id="selectQuestionDetailAndSelfAnswerWithScore"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionDetailAndSelfAnswerWithScoreQuery">
         SELECT q.`id`,
                q.`type`,
                q.`problem_desc`,
@@ -85,7 +85,7 @@
           AND q.`id` = a.`question_id`
     </select>
     <select id="selectQuestionSimpleAndSelfAnswerWithScore"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.QuestionSimpleAndSelfAnswerWithoutScoreQuery">
         SELECT q.`id`,
                q.`type`,
                q.`problem_desc`,
@@ -99,7 +99,7 @@
           AND q.`id` = a.`question_id`
     </select>
     <select id="selectHomeworkIdAndTypeAndEndTimeAndIsPublishById"
-            resultType="com.zhulang.waveedu.edu.query.homeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery">
+            resultType="com.zhulang.waveedu.edu.query.commonhomeworkquery.HomeworkIdAndTypeAndEndTimeAndIsPublishQuery">
         SELECT h.`id`         AS `homeworkId`,
                h.`type`       AS `homeworkType`,
                h.`end_time`   AS `endTime`,

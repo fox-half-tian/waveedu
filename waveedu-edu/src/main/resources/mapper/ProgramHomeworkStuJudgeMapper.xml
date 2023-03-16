@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.ProgramHomeworkStuJudgeMapper">
+
+    <select id="selectAllSubmitRecords"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.SimpleSubmitRecordQuery">
+        SELECT `id`,
+               `status`,
+               `time`        AS `runTime`,
+               `memory`      AS `runMemory`,
+               `language`,
+               `create_time` AS `submitTime`
+        FROM `edu_program_homework_stu_judge`
+        WHERE `stu_id` = #{stuId}
+          AND `problem_id` = #{problemId}
+        ORDER BY `create_time` DESC
+    </select>
+</mapper>

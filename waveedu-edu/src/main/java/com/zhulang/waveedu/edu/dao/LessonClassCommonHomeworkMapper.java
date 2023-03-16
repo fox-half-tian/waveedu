@@ -2,7 +2,7 @@ package com.zhulang.waveedu.edu.dao;
 
 import com.zhulang.waveedu.edu.po.LessonClassCommonHomework;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.edu.query.homeworkquery.*;
+import com.zhulang.waveedu.edu.query.commonhomeworkquery.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

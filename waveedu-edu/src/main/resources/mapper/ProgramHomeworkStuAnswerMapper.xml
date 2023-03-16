@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.ProgramHomeworkStuAnswerMapper">
+
+    <select id="selectIdByUserIdAndProblemId" resultType="java.lang.Integer">
+        SELECT `id`
+        FROM `edu_program_homework_stu_answer`
+        WHERE `problem_id` = #{problemId}
+          AND `stu_id` = #{stuId}
+    </select>
+    <select id="existsByStuIdAndProblemId" resultType="java.lang.Integer">
+        SELECT 1
+        FROM `edu_program_homework_stu_answer`
+        WHERE `stu_id` = #{stuId}
+          AND `problem_id` = #{problemId}
+    </select>
+</mapper>

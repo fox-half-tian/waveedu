@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
 import java.util.Arrays;
 
+import static com.zhulang.waveedu.common.constant.RabbitConstants.PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME;
+
 /**
  * @author 狐狸半面添
  * @create 2023-02-28 21:31
@@ -48,8 +50,8 @@ public class RabbitConfig implements ApplicationContextAware {
             public void returnedMessage(@NotNull ReturnedMessage returnedMessage) {
                 // 发送时使用的交换机
                 String exchange = returnedMessage.getExchange();
-                // 如果是普通作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
-                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)){
+                // 如果是普通/编程作业延迟交换机，就不进行处理 todo 看有没有更好的解决办法
+                if (exchange.equals(RabbitConstants.COMMON_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)||exchange.equals(PROGRAM_HOMEWORK_PUBLISH_DELAYED_EXCHANGE_NAME)) {
                     return;
                 }
                 // 当前失败的消息对象
