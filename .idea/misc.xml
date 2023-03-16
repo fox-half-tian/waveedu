@@ -11,10 +11,11 @@
         <option value="$PROJECT_DIR$/waveedu-generator/pom.xml" />
         <option value="$PROJECT_DIR$/waveedu-service/pom.xml" />
         <option value="$PROJECT_DIR$/waveedu-xxl-job/pom.xml" />
+        <option value="$PROJECT_DIR$/waveedu-basic/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8 (2)" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
