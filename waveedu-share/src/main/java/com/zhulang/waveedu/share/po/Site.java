@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("share_site")
-public class site {
+public class Site {
     @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 

@@ -2,20 +2,18 @@ package com.zhulang.waveedu.share.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.share.po.site;
-import com.zhulang.waveedu.share.po.siteApply;
-import com.zhulang.waveedu.share.po.siteTopic;
+import com.zhulang.waveedu.share.po.SiteTopic;
 
 /**
  * @author 飒沓流星
  * @create 2023/3/12 11:29
  */
-public interface siteTopicService extends IService<siteTopic> {
+public interface SiteTopicService extends IService<SiteTopic> {
     /**
      * 添加站点主题
      * @return 添加结果
      */
-    Result addSiteTopic(siteTopic siteTopic);
+    Result addSiteTopic(SiteTopic siteTopic);
 
     /**
      * 通过id删站点主题
@@ -35,7 +33,7 @@ public interface siteTopicService extends IService<siteTopic> {
      * @param siteTopic
      * @return 修改结果
      */
-    Result modifySiteTopicById(siteTopic siteTopic);
+    Result modifySiteTopicById(SiteTopic siteTopic);
 
     Result getSiteTopicall();
     Result getTypeByTopicid(Long id);

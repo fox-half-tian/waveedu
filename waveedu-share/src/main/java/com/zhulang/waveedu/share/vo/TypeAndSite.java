@@ -1,8 +1,7 @@
 package com.zhulang.waveedu.share.vo;
 
-import com.zhulang.waveedu.share.po.site;
-import com.zhulang.waveedu.share.po.siteTopic;
-import com.zhulang.waveedu.share.po.siteType;
+import com.zhulang.waveedu.share.po.Site;
+import com.zhulang.waveedu.share.po.SiteType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TypeAndSite {
-    private  siteType siteType;
-    private List<site> site;
+    private SiteType siteType;
+    private List<Site> site;
 }

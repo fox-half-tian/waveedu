@@ -2,10 +2,11 @@ package com.zhulang.waveedu.share.controller;
 
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.share.po.site;
-import com.zhulang.waveedu.share.po.siteApply;
-import com.zhulang.waveedu.share.service.siteService;
-import com.zhulang.waveedu.share.vo.approveApplyVO;
+import com.zhulang.waveedu.share.po.Site;
+import com.zhulang.waveedu.share.po.SiteApply;
+import com.zhulang.waveedu.share.service.SiteApplyService;
+import com.zhulang.waveedu.share.service.SiteService;
+import com.zhulang.waveedu.share.vo.ApproveApplyVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +18,15 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/site/apply")
-public class siteApplyController {
+public class SiteApplyController {
     @Resource
-    private com.zhulang.waveedu.share.service.siteApplyService siteApplyService;
+    private SiteApplyService siteApplyService;
 
     @Resource
-    private siteService siteService;
+    private SiteService siteService;
 
     @PostMapping("/add")
-    public Result addSite(@Validated @RequestBody siteApply siteApply) {
+    public Result addSite(@Validated @RequestBody SiteApply siteApply) {
         return siteApplyService.addSiteApply(siteApply);
 
     }
@@ -40,16 +41,16 @@ public class siteApplyController {
 
     }
     @PutMapping("/update")
-    public Result updateSite(@Validated @RequestBody siteApply siteApply) {
+    public Result updateSite(@Validated @RequestBody SiteApply siteApply) {
         return siteApplyService.modifySiteApplyById(siteApply);
     }
     @PostMapping("/approve")
-    public Result approveSiteApply(@Validated @RequestBody approveApplyVO approveApplyVO) {
-        siteApply sa = siteApplyService.getById(approveApplyVO.getApplyId());
+    public Result approveSiteApply(@Validated @RequestBody ApproveApplyVO approveApplyVO) {
+        SiteApply sa = siteApplyService.getById(approveApplyVO.getApplyId());
         if(sa==null){
             return Result.error(HttpStatus.HTTP_NOT_FOUND.getCode(),"未找到该申请");
         }
-        site st = siteService.getById(sa.getSiteId());
+        Site st = siteService.getById(sa.getSiteId());
         if(approveApplyVO.getApprove()==1){
             // 通过
             sa.setStatus(1);

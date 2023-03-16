@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.share.vo;
 
-import com.zhulang.waveedu.common.valid.SnowIdValidate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class approveApplyVO {
+public class ApproveApplyVO {
     private Long applyId;
     private Integer approve;
 

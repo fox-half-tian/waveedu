@@ -3,18 +3,14 @@ package com.zhulang.waveedu.share.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.share.dao.siteMapper;
-import com.zhulang.waveedu.share.dao.siteTopicMapper;
-import com.zhulang.waveedu.share.dao.siteTypeMapper;
-import com.zhulang.waveedu.share.po.site;
-import com.zhulang.waveedu.share.po.siteTopic;
-import com.zhulang.waveedu.share.po.siteType;
-import com.zhulang.waveedu.share.service.siteTypeService;
-import com.zhulang.waveedu.share.vo.TypeAndSite;
+import com.zhulang.waveedu.share.dao.SiteMapper;
+import com.zhulang.waveedu.share.dao.SiteTypeMapper;
+import com.zhulang.waveedu.share.po.Site;
+import com.zhulang.waveedu.share.po.SiteType;
+import com.zhulang.waveedu.share.service.SiteTypeService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,20 +18,20 @@ import java.util.List;
  * @create 2023/3/12 11:52
  */
 @Service
-public class siteTypeServiceImpl extends ServiceImpl<siteTypeMapper, siteType> implements siteTypeService {
+public class SiteTypeServiceImpl extends ServiceImpl<SiteTypeMapper, SiteType> implements SiteTypeService {
     
     @Resource
-    private siteTypeMapper siteTypeMapper;
+    private SiteTypeMapper siteTypeMapper;
     @Resource
-    private com.zhulang.waveedu.share.dao.siteMapper siteMapper;
+    private SiteMapper siteMapper;
     @Override
-    public Result addSiteType(siteType siteType0) {
+    public Result addSiteType(SiteType siteType0) {
         int i = siteTypeMapper.insert(siteType0);
-        LambdaQueryWrapper<siteType> siteTypeWrapper = new LambdaQueryWrapper<>();
-        siteTypeWrapper.eq(siteType::getName,siteType0.getName() );
+        LambdaQueryWrapper<SiteType> siteTypeWrapper = new LambdaQueryWrapper<>();
+        siteTypeWrapper.eq(SiteType::getName,siteType0.getName() );
 
 
-        siteType s = siteTypeMapper.selectOne(siteTypeWrapper);
+        SiteType s = siteTypeMapper.selectOne(siteTypeWrapper);
         if(i>0){
             return Result.ok(s);
         }else {
@@ -55,7 +51,7 @@ public class siteTypeServiceImpl extends ServiceImpl<siteTypeMapper, siteType> i
 
     @Override
     public Result getSiteTypeById(Long id) {
-        siteType siteType = siteTypeMapper.selectById(id);
+        SiteType siteType = siteTypeMapper.selectById(id);
         if(siteType!=null){
             return Result.ok(siteType);
         }else{
@@ -64,7 +60,7 @@ public class siteTypeServiceImpl extends ServiceImpl<siteTypeMapper, siteType> i
     }
 
     @Override
-    public Result modifySiteTypeById(siteType siteType) {
+    public Result modifySiteTypeById(SiteType siteType) {
         int update = siteTypeMapper.updateById(siteType);
         if(update>0){
             return Result.ok("修改成功");
@@ -73,17 +69,17 @@ public class siteTypeServiceImpl extends ServiceImpl<siteTypeMapper, siteType> i
         }
     }
     public Result getSiteTypeall() {
-        LambdaQueryWrapper<siteType> siteTypeWrapper = new LambdaQueryWrapper<>();
-        siteTypeWrapper.gt(siteType::getId,0);
-        List<siteType> siteTypes = siteTypeMapper.selectList(siteTypeWrapper);
+        LambdaQueryWrapper<SiteType> siteTypeWrapper = new LambdaQueryWrapper<>();
+        siteTypeWrapper.gt(SiteType::getId,0);
+        List<SiteType> siteTypes = siteTypeMapper.selectList(siteTypeWrapper);
         return Result.ok(siteTypes);
     }
 
     @Override
     public Result getSizeByType(Long id) {
-        LambdaQueryWrapper<site> siteWrapper = new LambdaQueryWrapper<>();
-        siteWrapper.eq(site::getTypeId,id);
-        List<site> sites = siteMapper.selectList(siteWrapper);
+        LambdaQueryWrapper<Site> siteWrapper = new LambdaQueryWrapper<>();
+        siteWrapper.eq(Site::getTypeId,id);
+        List<Site> sites = siteMapper.selectList(siteWrapper);
         return Result.ok(sites);
     }
 }

@@ -2,18 +2,18 @@ package com.zhulang.waveedu.share.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.share.po.siteType;
+import com.zhulang.waveedu.share.po.SiteType;
 
 /**
  * @author 飒沓流星
  * @create 2023/3/12 11:30
  */
-public interface siteTypeService extends IService<siteType> {
+public interface SiteTypeService extends IService<SiteType> {
     /**
      * 添加站点分类
      * @return 添加结果
      */
-    Result addSiteType(siteType siteType);
+    Result addSiteType(SiteType siteType);
 
     /**
      * 通过id删站点分类
@@ -33,7 +33,7 @@ public interface siteTypeService extends IService<siteType> {
      * @param siteType
      * @return 修改结果
      */
-    Result modifySiteTypeById(siteType siteType);
+    Result modifySiteTypeById(SiteType siteType);
 
     Result getSiteTypeall();
 

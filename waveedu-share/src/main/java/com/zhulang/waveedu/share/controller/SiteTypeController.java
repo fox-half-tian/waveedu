@@ -1,9 +1,8 @@
 package com.zhulang.waveedu.share.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
-import com.zhulang.waveedu.share.po.siteTopic;
-import com.zhulang.waveedu.share.po.siteType;
-import com.zhulang.waveedu.share.service.siteTopicService;
+import com.zhulang.waveedu.share.po.SiteType;
+import com.zhulang.waveedu.share.service.SiteTypeService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +14,12 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/site/type")
-public class siteTypeController {
+public class SiteTypeController {
     @Resource
-    private com.zhulang.waveedu.share.service.siteTypeService siteTypeService;
+    private SiteTypeService siteTypeService;
 
     @PostMapping("/add")
-    public Result addSite(@Validated @RequestBody siteType siteType) {
+    public Result addSite(@Validated @RequestBody SiteType siteType) {
         return siteTypeService.addSiteType(siteType);
 
     }
@@ -35,7 +34,7 @@ public class siteTypeController {
 
     }
     @PutMapping("/update")
-    public Result updateSite(@Validated @RequestBody siteType siteType) {
+    public Result updateSite(@Validated @RequestBody SiteType siteType) {
         return siteTypeService.modifySiteTypeById(siteType);
 
     }
