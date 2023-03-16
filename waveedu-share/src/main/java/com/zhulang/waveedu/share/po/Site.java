@@ -5,10 +5,7 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
@@ -33,7 +30,7 @@ public class Site {
     private String introduce;
 
     private Long typeId;
-    @Pattern(regexp = RegexUtils.RegexPatterns.IMAGE_REGEX,message = "图片链接有误")
+    
     private String pictureUrl;
 
     private String siteUrl;

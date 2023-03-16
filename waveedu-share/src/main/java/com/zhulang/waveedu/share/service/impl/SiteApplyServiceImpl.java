@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.share.dao.SiteApplyMapper;
 import com.zhulang.waveedu.share.po.SiteApply;
 import com.zhulang.waveedu.share.service.SiteApplyService;
+import com.zhulang.waveedu.share.vo.ApplySiteVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,11 +25,21 @@ public class SiteApplyServiceImpl extends ServiceImpl<SiteApplyMapper, SiteApply
 
 
     @Override
-    public Result addSiteApply(SiteApply siteApply0) {
+    public Result addSiteApply(ApplySiteVo applySiteVo) {
+        SiteApply siteApply0=new SiteApply();
         siteApply0.setStatus(0);
+        siteApply0.setSiteUrl(applySiteVo.getSiteUrl());
+        siteApply0.setIntroduce(applySiteVo.getIntroduce());
+        siteApply0.setPictureUrl(applySiteVo.getPictureUrl());
+        siteApply0.setName(applySiteVo.getName());
+        siteApply0.setTypeId(applySiteVo.getTypeId());
+        siteApply0.setRemark(applySiteVo.getRemark());
+        siteApply0.setUserId(UserHolderUtils.getUserId());
+        siteApply0.setAdminId(Long.parseLong("0"));
         int i = siteApplyMapper.insert(siteApply0);
+
         LambdaQueryWrapper<SiteApply> siteApplyWrapper = new LambdaQueryWrapper<>();
-        siteApplyWrapper.eq(SiteApply::getSiteId,siteApply0.getSiteId() );
+        siteApplyWrapper.eq(SiteApply::getName,siteApply0.getName() );
         siteApplyWrapper.eq(SiteApply::getIsDeleted,0);
         SiteApply s = siteApplyMapper.selectOne(siteApplyWrapper);
         if(i>0){

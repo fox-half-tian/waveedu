@@ -3,6 +3,7 @@ package com.zhulang.waveedu.share.controller;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.po.Site;
 import com.zhulang.waveedu.share.service.SiteService;
+import com.zhulang.waveedu.share.vo.AddSiteVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class SiteController {
     private SiteService siteService;
 
     @PostMapping("/add")
-    public Result addSite(@Validated @RequestBody Site site) {
-        return siteService.addSite(site);
+    public Result addSite(@Validated @RequestBody AddSiteVO addSiteVO) {
+        return siteService.addSite(addSiteVO);
     }
 
     @PostMapping("/del")
@@ -41,7 +42,7 @@ public class SiteController {
 
     @GetMapping("/get/approved")
     public Result getSiteApproved() {
-        return siteService.getSiteApproved();
+        return siteService.getSiteall();
     }
 
 }
