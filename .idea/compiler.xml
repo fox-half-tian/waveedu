@@ -11,6 +11,7 @@
         <module name="waveedu-edu" />
         <module name="waveedu-chat" />
         <module name="waveedu-messagesdk" />
+        <module name="waveedu-vm" />
         <module name="xxl-job-executor-sample-frameless" />
         <module name="waveedu-judge" />
         <module name="waveedu-service" />
@@ -39,6 +40,7 @@
       <module name="waveedu-program" options="-parameters" />
       <module name="waveedu-service" options="-parameters" />
       <module name="waveedu-share" options="-parameters" />
+      <module name="waveedu-vm" options="-parameters" />
     </option>
   </component>
 </project>
