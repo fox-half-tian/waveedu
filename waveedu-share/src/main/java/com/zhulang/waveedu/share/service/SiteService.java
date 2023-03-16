@@ -3,6 +3,7 @@ package com.zhulang.waveedu.share.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.po.Site;
+import com.zhulang.waveedu.share.vo.AddSiteVO;
 
 /**
  * @author 飒沓流星
@@ -13,7 +14,7 @@ public interface SiteService extends IService<Site> {
      * 添加站点申请
      * @return 添加结果
      */
-    Result addSite(Site site);
+    Result addSite(AddSiteVO addSiteVO);
 
     /**
      * 通过id删站点申请
@@ -35,5 +36,5 @@ public interface SiteService extends IService<Site> {
      */
     Result modifySiteById(Site site);
 
-    Result getSiteApproved();
+    Result getSiteall();
 }

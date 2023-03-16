@@ -3,11 +3,15 @@ package com.zhulang.waveedu.share.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.share.dao.SiteApplyMapper;
 import com.zhulang.waveedu.share.dao.SiteMapper;
 import com.zhulang.waveedu.share.po.Site;
 import com.zhulang.waveedu.share.po.SiteApply;
+import com.zhulang.waveedu.share.po.SiteTopic;
 import com.zhulang.waveedu.share.service.SiteService;
+import com.zhulang.waveedu.share.vo.AddSiteVO;
+import com.zhulang.waveedu.share.vo.TopicAndType;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,12 +28,21 @@ public class SiteServiceImpl extends ServiceImpl<SiteMapper, Site> implements Si
     private SiteMapper siteMapper;
     @Resource
     private SiteApplyMapper siteApplyMapper;
-    Integer s=0;
+    Integer s=101;
     @Override
-    public Result addSite(Site site0) {
+    public Result addSite(AddSiteVO addSiteVO) {
         // 统一在修改的时候再排序
+        Site site0=new Site();
         site0.setSort(s);
         s++;
+        site0.setSiteUrl(addSiteVO.getSiteUrl());
+        site0.setPictureUrl(addSiteVO.getPictureUrl());
+        site0.setName(addSiteVO.getName());
+        site0.setTypeId(addSiteVO.getTypeId());
+        site0.setIntroduce(addSiteVO.getIntroduce());
+        site0.setUserId(UserHolderUtils.getUserId());
+        // 管理员加的
+        site0.setIdentity(1);
         int i = siteMapper.insert(site0);
         LambdaQueryWrapper<Site> siteWrapper = new LambdaQueryWrapper<>();
         siteWrapper.eq(Site::getSiteUrl,site0.getSiteUrl() );
@@ -96,14 +109,10 @@ public class SiteServiceImpl extends ServiceImpl<SiteMapper, Site> implements Si
     }
 
     @Override
-    public Result getSiteApproved() {
-        LambdaQueryWrapper<SiteApply> siteApplyWrapper = new LambdaQueryWrapper<>();
-        siteApplyWrapper.eq(SiteApply::getStatus,1);
-        List<SiteApply> siteApplyList = siteApplyMapper.selectList(siteApplyWrapper);
-        List<Site> list=new ArrayList<>();
-        for(SiteApply s:siteApplyList){
-            list.add(siteMapper.selectById(s.getSiteId()));
-        }
+    public Result getSiteall() {
+        LambdaQueryWrapper<Site> siteWrapper = new LambdaQueryWrapper<>();
+        siteWrapper.gt(Site::getId,0);
+        List<Site> list = siteMapper.selectList(siteWrapper);
         return Result.ok(list);
     }
 }

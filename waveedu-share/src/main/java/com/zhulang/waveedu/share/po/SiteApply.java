@@ -21,8 +21,6 @@ public class SiteApply {
     @TableId(value = "id",type = IdType.AUTO)
     private Long id;
 
-    private Long siteId;
-
     private String name;
 
     private Long userId;
