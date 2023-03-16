@@ -3,6 +3,7 @@ package com.zhulang.waveedu.edu.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -12,11 +13,13 @@ import com.zhulang.waveedu.common.util.RedisLockUtils;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.edu.dao.ProgramHomeworkStuJudgeMapper;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuAnswer;
+import com.zhulang.waveedu.edu.po.ProgramHomeworkStuCondition;
 import com.zhulang.waveedu.edu.po.ProgramHomeworkStuJudge;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEndTimeAndHomeworkIdQuery;
 import com.zhulang.waveedu.edu.query.programhomeworkquery.SimpleSubmitRecordQuery;
 import com.zhulang.waveedu.edu.service.LessonClassProgramHomeworkService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuAnswerService;
+import com.zhulang.waveedu.edu.service.ProgramHomeworkStuConditionService;
 import com.zhulang.waveedu.edu.service.ProgramHomeworkStuJudgeService;
 import com.zhulang.waveedu.edu.utils.LanguageSupportUtils;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SubmitCodeVO;
@@ -59,6 +62,8 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
     private ProgramHomeworkStuAnswerService programHomeworkStuAnswerService;
     @Resource
     private LessonClassProgramHomeworkService lessonClassProgramHomeworkService;
+    @Resource
+    private ProgramHomeworkStuConditionService programHomeworkStuConditionService;
 
     @Override
     public Result submit(SubmitCodeVO submitCodeVO, HttpServletRequest request) {
@@ -147,6 +152,30 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
                 programHomeworkStuAnswer.setStuId(userId);
                 // 插入记录
                 programHomeworkStuAnswerService.save(programHomeworkStuAnswer);
+                // 修改情况表的记录
+                ProgramHomeworkStuCondition condition = programHomeworkStuConditionService.getOne(new LambdaQueryWrapper<ProgramHomeworkStuCondition>()
+                        .eq(ProgramHomeworkStuCondition::getHomeworkId, homeworkId)
+                        .eq(ProgramHomeworkStuCondition::getStuId, userId));
+                if (condition == null) {
+                    // 新增记录，主要针对于 作业已经发布，但学生是后面加入班级 的情况，并判断是否已经全部完成
+                    ProgramHomeworkStuCondition stuCondition = new ProgramHomeworkStuCondition();
+                    stuCondition.setHomeworkId(homeworkId);
+                    stuCondition.setStuId(userId);
+                    stuCondition.setCompleteNum(1);
+                    int problemNum = lessonClassProgramHomeworkService.getNumById(homeworkId);
+                    if (1 == problemNum) {
+                        stuCondition.setAllCompleteTime(LocalDateTime.now());
+                    }
+                    programHomeworkStuConditionService.save(stuCondition);
+                } else {
+                    // 说明已存在记录，则完成数量加一，并判断是否已经全部完成
+                    int newNum = condition.getCompleteNum() + 1;
+                    programHomeworkStuConditionService.update(new LambdaUpdateWrapper<ProgramHomeworkStuCondition>()
+                            .eq(ProgramHomeworkStuCondition::getHomeworkId, homeworkId)
+                            .eq(ProgramHomeworkStuCondition::getStuId, userId)
+                            .set(ProgramHomeworkStuCondition::getCompleteNum, newNum)
+                            .set(newNum == lessonClassProgramHomeworkService.getNumById(homeworkId), ProgramHomeworkStuCondition::getAllCompleteTime, LocalDateTime.now()));
+                }
             }
         }
         // 将此记录加入到判题记录中
@@ -165,7 +194,7 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
     @Override
     public Result getAllSubmitRecords(Integer problemId) {
         // 1.校验格式
-        if (problemId<1000){
+        if (problemId < 1000) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "问题id格式错误");
         }
         // 2.获取信息
@@ -177,15 +206,15 @@ public class ProgramHomeworkStuJudgeServiceImpl extends ServiceImpl<ProgramHomew
     @Override
     public Result getSubmitRecordDetailInfo(Integer submitId) {
         // 1.校验格式
-        if (submitId<1000){
+        if (submitId < 1000) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "提交id格式错误");
         }
         // 2.获取信息（同时身份校验）
         ProgramHomeworkStuJudge info = programHomeworkStuJudgeMapper.selectOne(new LambdaQueryWrapper<ProgramHomeworkStuJudge>()
                 .eq(ProgramHomeworkStuJudge::getId, submitId)
                 .eq(ProgramHomeworkStuJudge::getStuId, UserHolderUtils.getUserId()));
-        if (info==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"提交记录不存在或权限不足");
+        if (info == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "提交记录不存在或权限不足");
         }
         // 3.返回
         return Result.ok(info);

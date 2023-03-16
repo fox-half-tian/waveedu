@@ -7,6 +7,7 @@ import com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkIsPublishAndEn
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.ModifyProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.PublishProgramHomeworkVO;
 import com.zhulang.waveedu.edu.vo.programhomeworkvo.SaveProgramHomeworkVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -115,4 +116,14 @@ public interface LessonClassProgramHomeworkService extends IService<LessonClassP
      * @return 详细信息
      */
     Result stuGetHomeworkDetailInfo(Integer homeworkId);
+
+    /**
+     * 根据 作业id 查询数量
+     *
+     * @param id 作业id
+     * @return 数量
+     */
+    Integer getNumById(Integer id);
+
+
 }

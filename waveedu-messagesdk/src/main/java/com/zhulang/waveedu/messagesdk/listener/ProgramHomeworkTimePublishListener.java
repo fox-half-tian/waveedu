@@ -7,7 +7,9 @@ import com.zhulang.waveedu.messagesdk.po.LessonClassProgramHomework;
 import com.zhulang.waveedu.messagesdk.service.CommonHomeworkQuestionService;
 import com.zhulang.waveedu.messagesdk.service.LessonClassCommonHomeworkService;
 import com.zhulang.waveedu.messagesdk.service.LessonClassProgramHomeworkService;
+import com.zhulang.waveedu.messagesdk.service.ProgramHomeworkStuConditionService;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,8 @@ import java.util.HashMap;
 public class ProgramHomeworkTimePublishListener {
     @Resource
     private LessonClassProgramHomeworkService lessonClassProgramHomeworkService;
+    @Resource
+    private ProgramHomeworkStuConditionService programHomeworkStuConditionService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -36,6 +40,7 @@ public class ProgramHomeworkTimePublishListener {
     public void listenerProgramHomeworkPublishQueue(HashMap<String, Object> map) {
         Integer id = (Integer) map.get("programHomeworkId");
         LocalDateTime startTime = LocalDateTime.parse((String) map.get("startTime"), formatter);
+        Long classId = Long.parseLong(map.get("classId").toString());
 
 
         // 如果预发布状态，并且时间正是该延迟消息设置的开始时间，则设置状态为已发布
@@ -48,6 +53,8 @@ public class ProgramHomeworkTimePublishListener {
                     .eq(LessonClassProgramHomework::getId, id)
                     .set(LessonClassProgramHomework::getIsPublish, 1)
             );
+            // 添加学生信息到 condition 表中
+            programHomeworkStuConditionService.saveStuInfoList(id,classId);
         }
     }
 }

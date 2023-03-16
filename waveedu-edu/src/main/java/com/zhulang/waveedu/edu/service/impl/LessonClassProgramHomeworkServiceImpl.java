@@ -49,9 +49,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     @Resource
     private LessonClassProgramHomeworkMapper lessonClassProgramHomeworkMapper;
     @Resource
-    private ProgramHomeworkProblemService programHomeworkProblemService;
-    @Resource
-    private ProgramHomeworkProblemCaseService programHomeworkProblemCaseService;
+    private ProgramHomeworkStuConditionService programHomeworkStuConditionService;
     @Resource
     private MessageSdkSendErrorLogService messageSdkSendErrorLogService;
     @Resource
@@ -192,7 +190,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         // 1.校验创建者，发布状况
         Map<String, Object> map = this.getMap(new LambdaQueryWrapper<LessonClassProgramHomework>()
                 .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
-                .select(LessonClassProgramHomework::getIsPublish, LessonClassProgramHomework::getCreatorId, LessonClassProgramHomework::getEndTime));
+                .select(LessonClassProgramHomework::getIsPublish, LessonClassProgramHomework::getCreatorId, LessonClassProgramHomework::getEndTime, LessonClassProgramHomework::getClassId));
         // 1.1 是否为创建者
         if (!map.get("creatorId").toString().equals(UserHolderUtils.getUserId().toString())) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), HttpStatus.HTTP_FORBIDDEN.getValue());
@@ -211,7 +209,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
             return Result.error(HttpStatus.HTTP_REPEAT_SUCCESS_OPERATE.getCode(), "作业已发布，请勿重复操作");
         }
         // 2.查询题目数量，如果为0则无法发布
-        long count = lessonClassProgramHomeworkMapper.selectNumById(publishProgramHomeworkVO.getHomeworkId());
+        int count = lessonClassProgramHomeworkMapper.selectNumById(publishProgramHomeworkVO.getHomeworkId());
         if (count == 0) {
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "请先添加至少一道题目");
         }
@@ -265,6 +263,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
                             HashMap<String, Object> sendMap = new HashMap<>(2);
                             sendMap.put("programHomeworkId", publishProgramHomeworkVO.getHomeworkId());
                             sendMap.put("startTime", publishProgramHomeworkVO.getStartTime());
+                            sendMap.put("classId", map.get("classId").toString());
                             // 设置发送消息的延迟时长（单位 ms）
                             int delayedTime = (int) Duration.between(LocalDateTime.now(), publishProgramHomeworkVO.getStartTime()).toMillis();
                             // 异步发送到消息队列
@@ -300,6 +299,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
             HashMap<String, Object> sendMap = new HashMap<>(2);
             sendMap.put("programHomeworkId", publishProgramHomeworkVO.getHomeworkId());
             sendMap.put("startTime", publishProgramHomeworkVO.getStartTime());
+            sendMap.put("classId", map.get("classId").toString());
 
             // 3.5 设置发送消息的延迟时长（单位 ms）
             long delayedTime = Duration.between(LocalDateTime.now(), publishProgramHomeworkVO.getStartTime()).toMillis();
@@ -325,14 +325,16 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
             return Result.ok();
         }
 
-        // 4.如果不是定时发布，就获取总分数，并修改发布状态为已发布，设置发布时间为当前时间
+        // 4.如果不是定时发布，修改发布状态为已发布，设置发布时间为当前时间
         this.update(new LambdaUpdateWrapper<LessonClassProgramHomework>()
                 .eq(LessonClassProgramHomework::getId, publishProgramHomeworkVO.getHomeworkId())
                 .set(LessonClassProgramHomework::getStartTime, LocalDateTime.now())
                 .set(LessonClassProgramHomework::getIsPublish, 1)
         );
+        // 5.添加学生信息到 condition 表中
+        programHomeworkStuConditionService.saveStuInfoList(publishProgramHomeworkVO.getHomeworkId(), Long.parseLong(map.get("classId").toString()));
 
-        // 5.返回
+        // 6.返回
         return Result.ok();
 
     }
@@ -346,7 +348,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     public Result stuGetHomeworkSimpleListInfo(Long classId) {
         Long userId = UserHolderUtils.getUserId();
         // 1.校验身份
-        if (!lessonClassStuService.existsByClassIdAndUserId(classId,userId)) {
+        if (!lessonClassStuService.existsByClassIdAndUserId(classId, userId)) {
             return Result.error(HttpStatus.HTTP_FORBIDDEN.getCode(), "未找到您在该班级中的学生信息");
         }
         // 2.获取信息
@@ -359,7 +361,7 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
             } else if (LocalDateTime.now().isAfter(info.getEndTime())) {
                 // 如果当前时间在截止时间之后，说明作业已截止
                 info.setStatus(1);
-            }else{
+            } else {
                 // 否则就是 进行中
                 info.setStatus(2);
             }
@@ -372,33 +374,33 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
     @Override
     public Result stuGetHomeworkDetailInfo(Integer homeworkId) {
         // 1.校验格式（身份不校验了）
-        if (homeworkId<1000){
+        if (homeworkId < 1000) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "作业Id格式错误");
         }
         // 2.查询作业信息
         StuDetailHomeworkInfoQuery infoQuery = lessonClassProgramHomeworkMapper.selectStuHomeworkDetailInfo(homeworkId);
-        if (infoQuery==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"未找到相关作业信息");
+        if (infoQuery == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未找到相关作业信息");
         }
-        if (Objects.equals(infoQuery.getCompleteNum(), infoQuery.getProblemNum())){
+        if (Objects.equals(infoQuery.getCompleteNum(), infoQuery.getProblemNum())) {
             // 完成数量等于问题数量
             infoQuery.setHomeworkStatus(0);
-        }else if(LocalDateTime.now().isAfter(infoQuery.getEndTime())){
+        } else if (LocalDateTime.now().isAfter(infoQuery.getEndTime())) {
             // 如果已经截止
             infoQuery.setHomeworkStatus(1);
-        }else{
+        } else {
             // 说明还在进行中，并未完成
             infoQuery.setHomeworkStatus(2);
         }
         // 3.查询问题与自己的回答信息
         List<StuDetailHomeworkInfoQuery.InnerProblemInfo> innerProblemInfos = lessonClassProgramHomeworkMapper.selectAnswerProblemSimpleInfolist(homeworkId, UserHolderUtils.getUserId());
-        if(innerProblemInfos==null||innerProblemInfos.isEmpty()){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"未找到相关问题信息");
+        if (innerProblemInfos == null || innerProblemInfos.isEmpty()) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "未找到相关问题信息");
         }
         for (StuDetailHomeworkInfoQuery.InnerProblemInfo innerProblemInfo : innerProblemInfos) {
-            if (innerProblemInfo.getCompleteTime()==null){
+            if (innerProblemInfo.getCompleteTime() == null) {
                 innerProblemInfo.setStatus(0);
-            }else{
+            } else {
                 innerProblemInfo.setStatus(1);
             }
         }
@@ -408,8 +410,8 @@ public class LessonClassProgramHomeworkServiceImpl extends ServiceImpl<LessonCla
         return Result.ok(infoQuery);
     }
 
-
-//    public boolean isClassStuByIdAndStuId(Integer id, Long stuId){
-//        return lessonClassProgramHomeworkMapper.isClassStuByIdAndStuId(id,stuId)!=null;
-//    }
+    @Override
+    public Integer getNumById(Integer id) {
+        return lessonClassProgramHomeworkMapper.selectNumById(id);
+    }
 }

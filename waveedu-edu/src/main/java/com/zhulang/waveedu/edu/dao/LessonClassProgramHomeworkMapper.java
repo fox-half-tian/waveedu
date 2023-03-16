@@ -61,7 +61,7 @@ public interface LessonClassProgramHomeworkMapper extends BaseMapper<LessonClass
      * @param id 作业id
      * @return 数量
      */
-    long selectNumById(@Param("id") Integer id);
+    Integer selectNumById(@Param("id") Integer id);
 
     /**
      * 根据问题id查询作业的发布状况，截止时间与作业id

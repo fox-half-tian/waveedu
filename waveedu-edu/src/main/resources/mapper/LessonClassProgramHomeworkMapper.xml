@@ -32,7 +32,7 @@
         </if>
         ORDER BY `create_time` DESC
     </select>
-    <select id="selectNumById" resultType="java.lang.Long">
+    <select id="selectNumById" resultType="java.lang.Integer">
         SELECT `num`
         FROM `edu_lesson_class_program_homework`
         WHERE `id` = #{id}

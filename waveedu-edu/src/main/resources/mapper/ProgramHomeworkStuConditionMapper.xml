@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhulang.waveedu.edu.dao.ProgramHomeworkStuConditionMapper">
+
+    <insert id="insertStuInfoList">
+        INSERT INTO `edu_program_homework_stu_condition`(`homework_id`, `stu_id`)
+        SELECT #{homeworkId}, `stu_id`
+        FROM `edu_lesson_class_stu`
+        WHERE `lesson_class_id` = #{classId}
+    </insert>
+    <select id="selectHomeworkStuCompleteInfoList"
+            resultType="com.zhulang.waveedu.edu.query.programhomeworkquery.HomeworkStuCompleteInfoQuery">
+        SELECT c.`stu_id`,i.`name` AS `stuName`,i.`icon` AS `stuIcon`,c.`complete_num`,c.`all_complete_time`
+        FROM `edu_program_homework_stu_condition` c,`basic_user_info` i
+        WHERE `homework_id` = #{homeworkId}
+          AND c.`stu_id` = i.`id`
+    </select>
+</mapper>
