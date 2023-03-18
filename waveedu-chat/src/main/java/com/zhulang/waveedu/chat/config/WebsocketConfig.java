@@ -35,9 +35,9 @@ public class WebsocketConfig /* implements WebSocketConfigurer */{
 //        return new MyWebSocketHandler();
 //    }
 
-    @Bean
-    public MyHandshakeInterceptor webSocketShakeInterceptor() {
-        return new MyHandshakeInterceptor();
-    }
+//    @Bean
+//    public MyHandshakeInterceptor webSocketShakeInterceptor() {
+//        return new MyHandshakeInterceptor();
+//    }
 
 }
