@@ -5,12 +5,13 @@
 
 <mapper namespace="com.zhulang.waveedu.chat.dao.EduLessonClassMapper">
 
-
-    <select id="getEduLessonClassStuByClassIdAndUserId"
-            resultType="com.zhulang.waveedu.chat.pojo.EduLessonClassStu">
-        select * from wave_edu.edu_lesson_class_stu where lesson_class_id=#{classId} and stu_id=#{userId}
-    </select>
-    <select id="getUserIdByClassId" resultType="java.lang.Long">
-        select stu_id from wave_edu.edu_lesson_class_stu where lesson_class_id=#{classId}
+    <select id="selectJoinClassInfoList" resultType="com.zhulang.waveedu.chat.query.ClassSimpleInfoQuery">
+        SELECT c.`id`    AS `classId`,
+               c.`name`  AS `className`,
+               c.`cover` AS `classCover`
+        FROM `edu_lesson_class_stu` s,
+             `edu_lesson_class` c
+        WHERE s.`stu_id` = #{stuId}
+          AND s.`lesson_class_id` = c.`id`
     </select>
 </mapper>

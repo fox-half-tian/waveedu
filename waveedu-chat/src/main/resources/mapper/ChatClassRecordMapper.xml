@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhulang.waveedu.chat.dao.ChatClassRecordMapper">
+
+
+    <insert id="insertChatMessage">
+        insert into chat_class_record
+        values (#{id}, #{classId}, #{userId}, #{type}, #{typeName},
+                #{content}, #{createTime}, #{updateTime})
+    </insert>
+    <select id="getAllByClassId" resultType="com.zhulang.waveedu.chat.pojo.ChatClassRecord">
+        select *
+        from chat_class_record
+        where class_id = #{classId}
+        order by create_time DESC
+        LIMIT #{nums}
+    </select>
+    <select id="selectClassLastRecordInfoList"
+            resultType="com.zhulang.waveedu.chat.query.CLassLastRecordInfoQuery">
+        SELECT r.`class_id`    AS `classId`,
+               r.`type`        AS `msgType`,
+               r.`content`     AS `msgContent`,
+               r.`create_time` AS `msgSendTime`
+        FROM `chat_class_record` r,
+             (SELECT MAX(`id`) AS `id`
+              FROM `chat_class_record`
+              WHERE `class_id` in
+                <foreach collection="classIds" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+              GROUP BY `class_id`) t
+        WHERE r.`id` = t.`id`
+    </select>
+</mapper>

@@ -1,7 +1,7 @@
 package com.zhulang.waveedu.chat;
 
 import com.zhulang.waveedu.chat.dao.BasicUserMapper;
-import com.zhulang.waveedu.chat.dao.ChatMapper;
+import com.zhulang.waveedu.chat.dao.ChatClassRecordMapper;
 import com.zhulang.waveedu.chat.pojo.BasicUserInfo;
 import com.zhulang.waveedu.chat.pojo.ChatClassRecord;
 import com.zhulang.waveedu.chat.utils.SnowflakeIdWorker;
@@ -20,7 +20,7 @@ import java.util.List;
 @SpringBootTest
 public class ChatTest {
     @Autowired
-    private ChatMapper chatMapper;
+    private ChatClassRecordMapper chatClassRecordMapper;
 
     @Autowired
     private BasicUserMapper basicUserMapper;
@@ -37,7 +37,7 @@ public class ChatTest {
         chatClassRecord.setTypeName("abc");
         chatClassRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         chatClassRecord.setUserId(1125588700L);
-        chatMapper.insertChatMessage(chatClassRecord);
+        chatClassRecordMapper.insertChatMessage(chatClassRecord);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ChatTest {
 
     @Test
     public void test3() {
-        List<ChatClassRecord> allByClassId = chatMapper.getAllByClassId(1125L, 4);
+        List<ChatClassRecord> allByClassId = chatClassRecordMapper.getAllByClassId(1125L, 4);
         System.out.println(allByClassId);
     }
 }

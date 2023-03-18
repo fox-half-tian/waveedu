@@ -1,0 +1,119 @@
+package com.zhulang.waveedu.chat.filter;
+
+import com.zhulang.waveedu.chat.utils.UserHolder;
+import com.zhulang.waveedu.common.constant.CommonConstants;
+import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
+import com.zhulang.waveedu.common.constant.RedisConstants;
+import com.zhulang.waveedu.common.entity.RedisUser;
+import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.CipherUtils;
+import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import com.zhulang.waveedu.common.util.WaveStrUtils;
+import com.zhulang.waveedu.common.util.WebUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Objects;
+
+/**
+ * @author 狐狸半面添
+ * @create 2023-02-11 23:25
+ */
+@Component
+public class IdentityFilter implements Filter {
+    @Resource
+    private RedisCacheUtils redisCacheUtils;
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        // 获取token
+        String token = ((HttpServletRequest) request).getHeader(CommonConstants.REQUEST_HEADER_TOKEN);
+        if (!StringUtils.hasText(token)) {
+            // 没有 token 则放行
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 解析token
+        String decrypt = CipherUtils.decrypt(token);
+        if (decrypt == null) {
+            WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
+            return;
+        }
+        String[] info = WaveStrUtils.strSplitToArr(decrypt, "-");
+        if (info.length != 3) {
+            WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), HttpStatus.HTTP_ILLEGAL_OPERATION.getValue()));
+            return;
+        }
+        // 从redis中获取用户信息
+        // info[0]是身份标识，info[1]是id，info[2]是uuid
+        RedisUser redisUser;
+        if (Integer.parseInt(info[0]) == LoginIdentityConstants.USER_MARK) {
+            // 如果是普通用户
+            redisUser = redisCacheUtils.getCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + info[1]);
+            if (Objects.isNull(redisUser)) {
+                // redis中无该用户id的缓存信息
+                WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_LOGIN_EXPIRE.getCode(), HttpStatus.HTTP_LOGIN_EXPIRE.getValue()));
+                return;
+            }
+            if (!redisUser.getUuid().equals(info[2])) {
+                // token未过期，但token值不一样 --> 在其它地方登录了该用户
+                WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_USER_CROWDING.getCode(), HttpStatus.HTTP_USER_CROWDING.getValue()));
+                return;
+            }
+
+            // 说明token有效且未过期
+
+            /*
+                (System.currentTimeMillis() - redisUser.getTime())/1000：上一次设置ttl距离现在的时长，这个时差肯定没有超过LOGIN_USER_INFO_TTL
+                RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
+             */
+            if (RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()) / 1000 <= RedisConstants.LOGIN_USER_INFO_REFRESH_TTL) {
+                // 距离过期90分钟不到，就刷新缓存
+                redisUser.setTime(System.currentTimeMillis());
+                redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + info[1], redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
+            }
+        } else if (Integer.parseInt(info[0]) == LoginIdentityConstants.ADMIN_MARK) {
+            // 如果是管理员
+            redisUser = redisCacheUtils.getCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + info[1]);
+            if (Objects.isNull(redisUser)) {
+                // redis中无该用户id的缓存信息
+                WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_LOGIN_EXPIRE.getCode(), HttpStatus.HTTP_LOGIN_EXPIRE.getValue()));
+                return;
+            }
+            if (!redisUser.getUuid().equals(info[2])) {
+                // token未过期，但token值不一样 --> 在其它地方登录了该用户
+                WebUtils.renderString(((HttpServletResponse) response), Result.error(HttpStatus.HTTP_USER_CROWDING.getCode(), HttpStatus.HTTP_USER_CROWDING.getValue()));
+                return;
+            }
+
+            // 说明token有效且未过期
+
+            /*
+                (System.currentTimeMillis() - redisUser.getTime())/1000：上一次设置ttl距离现在的时长，这个时差肯定没有超过LOGIN_USER_INFO_TTL
+                RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
+             */
+            if (RedisConstants.LOGIN_ADMIN_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()) / 1000 <= RedisConstants.LOGIN_ADMIN_INFO_REFRESH_TTL) {
+                // 距离过期90分钟不到，就刷新缓存
+                redisUser.setTime(System.currentTimeMillis());
+                redisCacheUtils.setCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + info[1], redisUser, RedisConstants.LOGIN_ADMIN_INFO_TTL);
+            }
+        } else {
+            throw new RuntimeException("非法token");
+        }
+
+        // 保存
+        UserHolder.saveUser(redisUser);
+
+        // 放行
+        chain.doFilter(request, response);
+    }
+
+}

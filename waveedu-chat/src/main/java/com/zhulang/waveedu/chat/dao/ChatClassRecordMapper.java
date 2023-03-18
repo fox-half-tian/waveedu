@@ -2,6 +2,8 @@ package com.zhulang.waveedu.chat.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.chat.pojo.ChatClassRecord;
+import com.zhulang.waveedu.chat.query.CLassLastRecordInfoQuery;
+import com.zhulang.waveedu.chat.query.ClassSimpleInfoQuery;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * @date 2023/3/8 [20:48]
  */
 @Mapper
-public interface ChatMapper extends BaseMapper<ChatClassRecord> {
+public interface ChatClassRecordMapper extends BaseMapper<ChatClassRecord> {
     /**
      * 插入聊天信息
      * @param chat 信息
@@ -27,4 +29,12 @@ public interface ChatMapper extends BaseMapper<ChatClassRecord> {
      * @return 班级信息
      */
     List<ChatClassRecord> getAllByClassId(@Param("classId")Long classId,@Param("nums")Integer nums);
+
+    /**
+     * 获取所有班级的最后一条记录的信息
+     *
+     * @param classIds 班级id
+     * @return 记录列表
+     */
+    List<CLassLastRecordInfoQuery> selectClassLastRecordInfoList(@Param("classIds") List<Long> classIds);
 }

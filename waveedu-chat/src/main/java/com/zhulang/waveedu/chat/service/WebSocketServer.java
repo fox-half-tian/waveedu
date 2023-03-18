@@ -9,8 +9,8 @@ import com.zhulang.waveedu.chat.Message.Message;
 import com.zhulang.waveedu.chat.Message.MessageList;
 import com.zhulang.waveedu.chat.Message.OnlineMessage;
 import com.zhulang.waveedu.chat.dao.BasicUserMapper;
-import com.zhulang.waveedu.chat.dao.ChatMapper;
-import com.zhulang.waveedu.chat.dao.EduLessonClassMapper;
+import com.zhulang.waveedu.chat.dao.ChatClassRecordMapper;
+import com.zhulang.waveedu.chat.dao.EduLessonClassStuMapper;
 import com.zhulang.waveedu.chat.pojo.BasicUserInfo;
 import com.zhulang.waveedu.chat.pojo.ChatClassRecord;
 import com.zhulang.waveedu.chat.pojo.EduLessonClassStu;
@@ -63,9 +63,9 @@ public class WebSocketServer {
     private String userId;
 
 
-    private final ChatMapper chatMapper = SpringUtil.getBean(ChatMapper.class);
+    private final ChatClassRecordMapper chatClassRecordMapper = SpringUtil.getBean(ChatClassRecordMapper.class);
     private final BasicUserMapper basicUserMapper = SpringUtil.getBean(BasicUserMapper.class);
-    private final EduLessonClassMapper eduLessonClassMapper = SpringUtil.getBean(EduLessonClassMapper.class);
+    private final EduLessonClassStuMapper eduLessonClassStuMapper = SpringUtil.getBean(EduLessonClassStuMapper.class);
 
     /**
      * 连接成功后调用的方法
@@ -93,7 +93,7 @@ public class WebSocketServer {
      * @throws IOException io异常
      */
     private void sendOnlineMessage(Session session, String classId) throws IOException {
-        List<Long> userIdByClassId = eduLessonClassMapper.getUserIdByClassId(Long.valueOf(classId));
+        List<Long> userIdByClassId = eduLessonClassStuMapper.getUserIdByClassId(Long.valueOf(classId));
         Map<String, Set<Long>> classOnline = new HashMap<>(31);
         Set<Long> userIdSet = new HashSet<>();
         for (String userId : WEBSOCKET_MAP.keySet()) {
@@ -157,7 +157,7 @@ public class WebSocketServer {
         }
         assert claims != null;
         this.userId = claims.getSubject();
-        EduLessonClassStu eduLessonClassStuByClassIdAndUserId = eduLessonClassMapper.getEduLessonClassStuByClassIdAndUserId(Long.valueOf(classId), Long.valueOf(userId));
+        EduLessonClassStu eduLessonClassStuByClassIdAndUserId = eduLessonClassStuMapper.getEduLessonClassStuByClassIdAndUserId(Long.valueOf(classId), Long.valueOf(userId));
         if (eduLessonClassStuByClassIdAndUserId == null) {
             errorMessage(session, "非该班级学生，无法进入班级群聊");
             session.close();
@@ -277,7 +277,7 @@ public class WebSocketServer {
     }
 
     public void defaultMessage(Message message, Session session) throws IOException {
-        chatMapper.insertChatMessage(message.getChatMessage());
+        chatClassRecordMapper.insertChatMessage(message.getChatMessage());
         message.setMessageType(0);
         WEBSOCKET_MAP = classMap.get(session.getRequestParameterMap().get("class_id").get(0));
         for (String key : WEBSOCKET_MAP.keySet()) {
@@ -304,7 +304,7 @@ public class WebSocketServer {
     @NotNull
     private MessageList getMessageList(Message message) {
         int page = message.getPage() * 10;
-        List<ChatClassRecord> allByClassId = chatMapper.getAllByClassId(message.getChatMessage().getClassId(), page);
+        List<ChatClassRecord> allByClassId = chatClassRecordMapper.getAllByClassId(message.getChatMessage().getClassId(), page);
         MessageList messageList = new MessageList();
         messageList.setMessageType(2);
         messageList.setPage(message.getPage());
