@@ -168,4 +168,9 @@ public class ProgramHomeworkProblemServiceImpl extends ServiceImpl<ProgramHomewo
         // 4.返回
         return Result.ok(problemInfo);
     }
+
+    @Override
+    public Integer getProblemCountHaveCase(Integer homeworkId) {
+        return programHomeworkProblemMapper.selectProblemCountHaveCase(homeworkId);
+    }
 }

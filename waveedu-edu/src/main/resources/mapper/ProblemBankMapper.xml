@@ -78,12 +78,12 @@
         b.`hint`,
         c.`input` AS `caseInput`,
         c.`output` AS `caseOutput`
-        FROM `program_problem_bank` b,`program_problem_bank_case` c
+        FROM `program_problem_bank` b LEFT JOIN `program_problem_bank_case` c
+        ON b.`id` = c.`problem_id`
         WHERE b.`id` IN
         <foreach collection="problemIds" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
-        AND b.`id` = c.`problem_id`
         AND (b.`is_public` = 1 OR b.`author_id` = #{authorId})
 
     </select>
