@@ -5,6 +5,7 @@ import com.zhulang.waveedu.common.mapper.JacksonObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -29,5 +30,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport   {
     public void addInterceptors(InterceptorRegistry registry) {
         // 登录拦截器
         registry.addInterceptor(new RemoveInterceptor());
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .maxAge(3600);
     }
 }
