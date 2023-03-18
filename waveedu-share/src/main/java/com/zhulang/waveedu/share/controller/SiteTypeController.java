@@ -23,7 +23,7 @@ public class SiteTypeController {
         return siteTypeService.addSiteType(siteType);
 
     }
-    @PostMapping("/del")
+    @DeleteMapping("/del")
     public Result removeSiteById(@Validated @RequestParam(value = "id") Long id) {
         return siteTypeService.removeSiteTypeById(id);
 

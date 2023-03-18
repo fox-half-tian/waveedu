@@ -23,7 +23,7 @@ public class SiteTopicController {
         return siteTopicService.addSiteTopic(siteTopic);
 
     }
-    @PostMapping("/del")
+    @DeleteMapping("/del")
     public Result removeSiteById(@Validated @RequestParam(value = "id") Long id) {
         return siteTopicService.removeSiteTopicById(id);
 
