@@ -65,7 +65,7 @@ public class LinuxEndpoint {
         String token = session.getRequestParameterMap().get("token").get(0);
         Long userId = getUserId(token);
         if (userId == null) {
-            session.getBasicRemote().sendText("用户登录过期或无效登录，请重新登录");
+            session.getBasicRemote().sendText(JSON.toJSONString(Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(),"用户登录过期或无效登录，请重新登录")));
             session.close();
             return;
         }
