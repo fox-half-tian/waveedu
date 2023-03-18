@@ -24,7 +24,7 @@ public class SiteController {
         return siteService.addSite(addSiteVO);
     }
 
-    @PostMapping("/del")
+    @DeleteMapping("/del")
     public Result removeSiteById(@RequestParam(value = "id") Long id) {
         return siteService.removeSiteById(id);
 
