@@ -15,14 +15,23 @@ import com.zhulang.waveedu.chat.pojo.BasicUserInfo;
 import com.zhulang.waveedu.chat.pojo.ChatClassRecord;
 import com.zhulang.waveedu.chat.pojo.EduLessonClassStu;
 import com.zhulang.waveedu.chat.utils.SnowflakeIdWorker;
-import com.zhulang.waveedu.common.util.JwtUtils;
-import com.zhulang.waveedu.common.util.RedisCacheUtils;
+import com.zhulang.waveedu.chat.utils.UserHolder;
+import com.zhulang.waveedu.common.constant.CommonConstants;
+import com.zhulang.waveedu.common.constant.HttpStatus;
+import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
+import com.zhulang.waveedu.common.constant.RedisConstants;
+import com.zhulang.waveedu.common.entity.RedisUser;
+import com.zhulang.waveedu.common.entity.Result;
+import com.zhulang.waveedu.common.util.*;
 import io.jsonwebtoken.Claims;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -147,16 +156,12 @@ public class WebSocketServer {
     private boolean initSessionAndCheckMessage(Session session, String classId) throws IOException {
         this.classId = classId;
         String token = session.getRequestParameterMap().get("token").get(0);
-        Claims claims = null;
-        try {
-            claims = JwtUtils.parseJWT(token);
-        } catch (Exception e) {
-            errorMessage(session, "Token解析错误");
+        this.userId = getUserId(token);
+        if (this.userId==null){
+            errorMessage(session,"用户登录过期或无效登录，请重新登录");
             session.close();
             return true;
         }
-        assert claims != null;
-        this.userId = claims.getSubject();
         EduLessonClassStu eduLessonClassStuByClassIdAndUserId = eduLessonClassStuMapper.getEduLessonClassStuByClassIdAndUserId(Long.valueOf(classId), Long.valueOf(userId));
         if (eduLessonClassStuByClassIdAndUserId == null) {
             errorMessage(session, "非该班级学生，无法进入班级群聊");
@@ -372,5 +377,76 @@ public class WebSocketServer {
 
     public static synchronized void subOnlineCount() {
         WebSocketServer.onlineCount--;
+    }
+
+    public String getUserId(String token){
+        if (!StringUtils.hasText(token)) {
+            // 没有 token 则放行
+            return null;
+        }
+
+        // 解析token
+        String decrypt = CipherUtils.decrypt(token);
+        if (decrypt == null) {
+            return null;
+        }
+        String[] info = WaveStrUtils.strSplitToArr(decrypt, "-");
+        if (info.length != 3) {
+            return null;
+        }
+        // 从redis中获取用户信息
+        // info[0]是身份标识，info[1]是id，info[2]是uuid
+        RedisUser redisUser;
+        if (Integer.parseInt(info[0]) == LoginIdentityConstants.USER_MARK) {
+            // 如果是普通用户
+            redisUser = redisCacheUtils.getCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + info[1]);
+            if (Objects.isNull(redisUser)) {
+                // redis中无该用户id的缓存信息
+                return null;
+            }
+            if (!redisUser.getUuid().equals(info[2])) {
+                // token未过期，但token值不一样 --> 在其它地方登录了该用户
+                return null;
+            }
+
+            // 说明token有效且未过期
+
+            /*
+                (System.currentTimeMillis() - redisUser.getTime())/1000：上一次设置ttl距离现在的时长，这个时差肯定没有超过LOGIN_USER_INFO_TTL
+                RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
+             */
+            if (RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()) / 1000 <= RedisConstants.LOGIN_USER_INFO_REFRESH_TTL) {
+                // 距离过期90分钟不到，就刷新缓存
+                redisUser.setTime(System.currentTimeMillis());
+                redisCacheUtils.setCacheObject(RedisConstants.LOGIN_USER_INFO_KEY + info[1], redisUser, RedisConstants.LOGIN_USER_INFO_TTL);
+            }
+        } else if (Integer.parseInt(info[0]) == LoginIdentityConstants.ADMIN_MARK) {
+            // 如果是管理员
+            redisUser = redisCacheUtils.getCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + info[1]);
+            if (Objects.isNull(redisUser)) {
+                // redis中无该用户id的缓存信息
+                return null;
+            }
+            if (!redisUser.getUuid().equals(info[2])) {
+                // token未过期，但token值不一样 --> 在其它地方登录了该用户
+                return null;
+            }
+
+            // 说明token有效且未过期
+
+            /*
+                (System.currentTimeMillis() - redisUser.getTime())/1000：上一次设置ttl距离现在的时长，这个时差肯定没有超过LOGIN_USER_INFO_TTL
+                RedisConstants.LOGIN_USER_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()/1000)：距离过期还有多久
+             */
+            if (RedisConstants.LOGIN_ADMIN_INFO_TTL - (System.currentTimeMillis() - redisUser.getTime()) / 1000 <= RedisConstants.LOGIN_ADMIN_INFO_REFRESH_TTL) {
+                // 距离过期90分钟不到，就刷新缓存
+                redisUser.setTime(System.currentTimeMillis());
+                redisCacheUtils.setCacheObject(RedisConstants.LOGIN_ADMIN_INFO_KEY + info[1], redisUser, RedisConstants.LOGIN_ADMIN_INFO_TTL);
+            }
+        } else {
+            return null;
+        }
+
+        return redisUser.getId().toString();
     }
 }
