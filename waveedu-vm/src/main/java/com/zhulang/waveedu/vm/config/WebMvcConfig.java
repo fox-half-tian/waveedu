@@ -24,7 +24,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         converters.add(0, messageConverter);
     }
 
-        @Override
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")

@@ -3,31 +3,28 @@ package com.zhulang.waveedu.vm.ws;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.LoginIdentityConstants;
 import com.zhulang.waveedu.common.constant.RedisConstants;
 import com.zhulang.waveedu.common.entity.RedisUser;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.CipherUtils;
 import com.zhulang.waveedu.common.util.RedisCacheUtils;
-import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-import sun.misc.MessageUtils;
-
 import javax.annotation.Resource;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,13 +44,14 @@ public class LinuxEndpoint {
      */
     private static final Map<Long, String> LINUX_URL = new ConcurrentHashMap<>();
 
-    private RestTemplate restTemplate = SpringUtil.getBean(RestTemplate.class);
+    private final RestTemplate restTemplate = SpringUtil.getBean(RestTemplate.class);
 
     private Long userId;
 
 
-    @Resource
-    private RedisCacheUtils redisCacheUtils;
+    private String linuxUrl;
+
+    private RedisCacheUtils redisCacheUtils = SpringUtil.getBean(RedisCacheUtils.class);
 
 
     /**
@@ -76,9 +74,8 @@ public class LinuxEndpoint {
         Session oldSession = ONLINE_USERS.get(userId);
         if (oldSession != null) {
             // 关闭原有连接
-            oldSession.getBasicRemote().sendText("您已在其它地方操作虚拟机，当前被强制下线");
+            oldSession.getBasicRemote().sendText(JSON.toJSONString(Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(), "您已在其它地方操作虚拟机，当前被强制下线")));
             oldSession.close();
-            return;
         }
 
         // 3.获取新连接
@@ -86,12 +83,23 @@ public class LinuxEndpoint {
                 .exchange("http://114.132.54.165:6666/vm", HttpMethod.GET, null, String.class)
                 .getBody();
         JSONObject info = JSONObject.parseObject(responseJson);
-        if (!"1".equals(info.getString("code"))){
+        if (!"1".equals(info.getString("code"))) {
             // 如果不相等说明获取失败
-            session.getBasicRemote().sendText("获取失败，请稍后重试");
+            session.getBasicRemote().sendText(JSON.toJSONString(Result.error("获取失败，请稍后重试")));
+            session.close();
+            return;
         }
+        // 4.获取linux的url
+        String url = info.getString("url");
 
-        onlineUsers.put(this.userId, session);
+        // 5.将连接信息保存
+        this.userId = userId;
+        this.linuxUrl = url;
+        ONLINE_USERS.put(userId, session);
+        LINUX_URL.put(userId, url);
+
+        // 6.将连接信息返回
+        session.getBasicRemote().sendText(JSON.toJSONString(Result.ok(url)));
     }
 
 
@@ -104,20 +112,7 @@ public class LinuxEndpoint {
      */
     @OnMessage
     public void onMessage(String message) {
-        try {
-            //将消息推送给指定的用户
-            Message msg = JSON.parseObject(message, Message.class);
-            //获取 消息接收方的用户名
-            String toName = msg.getToName();
-            String mess = msg.getMessage();
-            //获取消息接收方用户对象的session对象
-            Session session = onlineUsers.get(toName);
-            String user = (String) this.httpSession.getAttribute("user");
-            String msg1 = MessageUtils.getMessage(false, user, mess);
-            session.getBasicRemote().sendText(msg1);
-        } catch (Exception e) {
-            //记录日志
-        }
+
     }
 
     /**
@@ -128,12 +123,20 @@ public class LinuxEndpoint {
     @OnClose
     public void onClose(Session session) {
         if (userId != null) {
-            // 1.移除在线用户
-            ONLINE_USERS.remove(userId);
-            // 2.移除连接
+            Session storeSession = ONLINE_USERS.get(userId);
+            if (session.equals(storeSession)) {
+                ONLINE_USERS.remove(userId);
+            }
             String url = LINUX_URL.get(userId);
-
-            LINUX_URL.remove(userId);
+            if (url != null && url.equals(linuxUrl)) {
+                LINUX_URL.remove(userId);
+                HashMap<String, Object> map = new HashMap<>(1);
+                map.put("url",url);
+                HttpEntity<JSONObject> entity = new HttpEntity<>(new JSONObject(map), null);
+                restTemplate
+                        .exchange("http://114.132.54.165:6666/del", HttpMethod.POST, entity, Result.class)
+                        .getBody();
+            }
         }
     }
 
@@ -205,7 +208,7 @@ public class LinuxEndpoint {
             return null;
         }
 
-        return redisUser.getId().toString();
+        return redisUser.getId();
     }
 
 }
