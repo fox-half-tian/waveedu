@@ -44,4 +44,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
     public Result getSelfApplyingList() {
         return Result.ok(resourceMapper.selectSelfApplyingList(UserHolderUtils.getUserId()));
     }
+
+    @Override
+    public Result getSelfApprovedList() {
+        return Result.ok(resourceMapper.selectSelfApprovedList(UserHolderUtils.getUserId()));
+    }
 }

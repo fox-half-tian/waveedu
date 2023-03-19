@@ -35,4 +35,11 @@ public interface ResourceService extends IService<Resources> {
      * @return 信息列表
      */
     Result getSelfApplyingList();
+
+    /**
+     * 获取自己已经审批的资源信息列表
+     *
+     * @return 信息列表
+     */
+    Result getSelfApprovedList();
 }

@@ -51,4 +51,14 @@ public class ResourceController {
     public Result getApplyingList(){
         return resourceService.getSelfApplyingList();
     }
+
+    /**
+     * 用户获取自己已经被审批的资源信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getSelfApprovedList")
+    public Result getSelfApprovedList(){
+        return resourceService.getSelfApprovedList();
+    }
 }
