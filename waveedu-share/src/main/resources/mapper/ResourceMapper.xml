@@ -2,4 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhulang.waveedu.share.dao.ResourceMapper">
 
+    <select id="selectSelfApplyingList" resultType="com.zhulang.waveedu.share.query.SelfResourceApplyingQuery">
+        SELECT `id`,
+               `title`,
+               `introduce`,
+               `file_path`,
+               `file_type`,
+               `file_format`,
+               `file_byte_size`,
+               `file_format_size`,
+               `tag`,
+               `create_time` AS `applyTime`
+        FROM `share_resource_apply`
+        WHERE `status` = 0
+          AND `user_id` = #{userId}
+        ORDER BY `create_time` DESC
+    </select>
+    <select id="selectSelfApprovedList" resultType="com.zhulang.waveedu.share.query.SelfApprovedInfoQuery">
+        select `id`,
+               `title`,
+               `introduce`,
+               `file_path`,
+               `file_type`,
+               `file_format`,
+               `file_byte_size`,
+               `file_format_size`,
+               `tag`,
+               `create_time` as `applyTime`,
+               `status`,
+               `approve_time`,
+               `mark`
+        from `share_resource_apply`
+        where (`status` = 1 or `status` = 2)
+          and `user_id` = #{userId}
+        order by `approve_time` desc
+    </select>
 </mapper>

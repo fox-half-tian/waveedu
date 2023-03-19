@@ -3,10 +3,7 @@ package com.zhulang.waveedu.share.controller;
 
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.service.ResourceService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -32,5 +29,36 @@ public class ResourceController {
     @GetMapping("/getSelfResourcesList")
     public Result getSelfResourcesList(){
         return resourceService.getSelfResourcesList();
+    }
+
+    /**
+     * 删除自己的某个资源
+     *
+     * @param resourceId 资源id
+     * @return 删除状况
+     */
+    @DeleteMapping("/remove")
+    public Result removeResource(@RequestParam("resourceId")Integer resourceId){
+        return resourceService.removeResource(resourceId);
+    }
+
+    /**
+     * 获取自己正在审批中的资源信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getApplyingList")
+    public Result getApplyingList(){
+        return resourceService.getSelfApplyingList();
+    }
+
+    /**
+     * 用户获取自己已经被审批的资源信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getSelfApprovedList")
+    public Result getSelfApprovedList(){
+        return resourceService.getSelfApprovedList();
     }
 }

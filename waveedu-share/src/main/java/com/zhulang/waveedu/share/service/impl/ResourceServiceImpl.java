@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.share.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.share.po.Resources;
@@ -29,5 +30,23 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         return Result.ok(resourceMapper.selectList(new LambdaQueryWrapper<Resources>()
                 .eq(Resources::getUserId, UserHolderUtils.getUserId())
                 .orderByDesc(Resources::getCreateTime)));
+    }
+
+    @Override
+    public Result removeResource(Integer resourceId) {
+        int delCount = resourceMapper.delete(new LambdaQueryWrapper<Resources>()
+                .eq(Resources::getId, resourceId)
+                .eq(Resources::getUserId, UserHolderUtils.getUserId()));
+        return delCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "资源不存在或权限不足");
+    }
+
+    @Override
+    public Result getSelfApplyingList() {
+        return Result.ok(resourceMapper.selectSelfApplyingList(UserHolderUtils.getUserId()));
+    }
+
+    @Override
+    public Result getSelfApprovedList() {
+        return Result.ok(resourceMapper.selectSelfApprovedList(UserHolderUtils.getUserId()));
     }
 }
