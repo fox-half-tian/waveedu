@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.share.service;
 
+import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.po.Resources;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ResourceService extends IService<Resources> {
 
+    /**
+     * 用户获取自己所有的资源列表
+     *
+     * @return 资源列表
+     */
+    Result getSelfResourcesList();
 }
