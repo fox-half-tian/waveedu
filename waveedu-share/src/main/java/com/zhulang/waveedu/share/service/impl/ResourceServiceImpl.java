@@ -6,6 +6,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.share.po.Resources;
 import com.zhulang.waveedu.share.dao.ResourceMapper;
+import com.zhulang.waveedu.share.query.ResourceShowInfoQuery;
 import com.zhulang.waveedu.share.service.ResourceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -41,12 +42,13 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
     }
 
     @Override
-    public Result getSelfApplyingList() {
-        return Result.ok(resourceMapper.selectSelfApplyingList(UserHolderUtils.getUserId()));
+    public Result getResourceInfo(Integer resourceId) {
+        ResourceShowInfoQuery resourceInfo = resourceMapper.selectResourceInfo(resourceId);
+        if (resourceInfo==null){
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"资源不存在");
+        }
+        return Result.ok(resourceInfo);
     }
 
-    @Override
-    public Result getSelfApprovedList() {
-        return Result.ok(resourceMapper.selectSelfApprovedList(UserHolderUtils.getUserId()));
-    }
+
 }

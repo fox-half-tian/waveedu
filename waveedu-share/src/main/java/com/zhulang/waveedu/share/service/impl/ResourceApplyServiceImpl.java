@@ -68,10 +68,11 @@ public class ResourceApplyServiceImpl extends ServiceImpl<ResourceApplyMapper, R
             }
         }
         resourceApply.setTag(tag);
-        // 3.设置标题，介绍，用户id
+        // 3.设置标题，介绍，用户id，文件名
         resourceApply.setTitle(saveResourceApplyVO.getTitle());
         resourceApply.setIntroduce(saveResourceApplyVO.getIntroduce());
         resourceApply.setUserId(UserHolderUtils.getUserId());
+        resourceApply.setFileName(saveResourceApplyVO.getFileName());
         // 4.保存
         resourceApplyMapper.insert(resourceApply);
         // 5.返回
@@ -111,6 +112,7 @@ public class ResourceApplyServiceImpl extends ServiceImpl<ResourceApplyMapper, R
         resources.setFileFormatSize(applyInfo.getFileFormatSize());
         resources.setFileByteSize(applyInfo.getFileByteSize());
         resources.setTag(applyInfo.getTag());
+        resources.setFileName(applyInfo.getFileName());
 
         // 6.增加记录到资源表
         resourceService.save(resources);
@@ -126,5 +128,15 @@ public class ResourceApplyServiceImpl extends ServiceImpl<ResourceApplyMapper, R
     @Override
     public Result getApprovedList() {
         return Result.ok(resourceApplyMapper.selectApprovedInfoList());
+    }
+
+    @Override
+    public Result getSelfApplyingList() {
+        return Result.ok(resourceApplyMapper.selectSelfApplyingList(UserHolderUtils.getUserId()));
+    }
+
+    @Override
+    public Result getSelfApprovedList() {
+        return Result.ok(resourceApplyMapper.selectSelfApprovedList(UserHolderUtils.getUserId()));
     }
 }

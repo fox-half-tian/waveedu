@@ -13,6 +13,7 @@
                a.`file_format`,
                a.`file_byte_size`,
                a.`file_format_size`,
+               a.`file_name`,
                a.`tag`,
                a.`create_time` AS `applyTime`,
                i.`name`        AS `username`,
@@ -33,6 +34,7 @@
                a.`file_format`,
                a.`file_byte_size`,
                a.`file_format_size`,
+               a.`file_name`,
                a.`tag`,
                a.`create_time` AS `applyTime`,
                a.`approve_time`,
@@ -50,5 +52,42 @@
           AND a.`user_id` = i.`id`
           AND a.`admin_id` = n.`id`
         ORDER BY a.`create_time` DESC
+    </select>
+    <select id="selectSelfApplyingList" resultType="com.zhulang.waveedu.share.query.SelfResourceApplyingQuery">
+        SELECT `id`,
+               `title`,
+               `introduce`,
+               `file_path`,
+               `file_type`,
+               `file_format`,
+               `file_byte_size`,
+               `file_format_size`,
+               `file_name`,
+               `tag`,
+               `create_time` AS `applyTime`
+        FROM `share_resource_apply`
+        WHERE `status` = 0
+          AND `user_id` = #{userId}
+        ORDER BY `create_time` DESC
+    </select>
+    <select id="selectSelfApprovedList" resultType="com.zhulang.waveedu.share.query.SelfApprovedInfoQuery">
+        select `id`,
+               `title`,
+               `introduce`,
+               `file_path`,
+               `file_type`,
+               `file_format`,
+               `file_byte_size`,
+               `file_format_size`,
+               `file_name`,
+               `tag`,
+               `create_time` as `applyTime`,
+               `status`,
+               `approve_time`,
+               `mark`
+        from `share_resource_apply`
+        where (`status` = 1 or `status` = 2)
+          and `user_id` = #{userId}
+        order by `approve_time` desc
     </select>
 </mapper>

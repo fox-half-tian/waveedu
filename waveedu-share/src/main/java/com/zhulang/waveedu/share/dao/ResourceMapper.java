@@ -2,11 +2,8 @@ package com.zhulang.waveedu.share.dao;
 
 import com.zhulang.waveedu.share.po.Resources;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhulang.waveedu.share.query.SelfApprovedInfoQuery;
-import com.zhulang.waveedu.share.query.SelfResourceApplyingQuery;
+import com.zhulang.waveedu.share.query.ResourceShowInfoQuery;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * <p>
@@ -19,18 +16,10 @@ import java.util.List;
 public interface ResourceMapper extends BaseMapper<Resources> {
 
     /**
-     * 获取自己正在申请中的资源信息列表
+     * 获取某个资源的详细信息
      *
-     * @param userId 用户id
-     * @return 信息列表
+     * @param id 资源id
+     * @return 信息
      */
-    List<SelfResourceApplyingQuery> selectSelfApplyingList(@Param("userId") Long userId);
-
-    /**
-     * 获取自己已经审批的资源信息列表
-     *
-     * @param userId 用户id
-     * @return 信息列表
-     */
-    List<SelfApprovedInfoQuery> selectSelfApprovedList(@Param("userId") Long userId);
+    ResourceShowInfoQuery selectResourceInfo(@Param("id") Integer id);
 }

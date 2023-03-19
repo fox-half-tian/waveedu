@@ -1,9 +1,5 @@
 package com.zhulang.waveedu.share.query;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,12 +8,12 @@ import java.time.LocalDateTime;
 
 /**
  * @author 狐狸半面添
- * @create 2023-03-19 12:50
+ * @create 2023-03-19 17:40
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NoApproveResourceInfoQuery {
+public class ResourceShowInfoQuery {
     /**
      * 自增id
      */
@@ -47,11 +43,6 @@ public class NoApproveResourceInfoQuery {
      * 介绍
      */
     private String introduce;
-
-    /**
-     * 资源路径
-     */
-    private String filePath;
 
     /**
      * 文件名
@@ -84,7 +75,7 @@ public class NoApproveResourceInfoQuery {
     private String tag;
 
     /**
-     * 申请时间
+     * 创建时间
      */
-    private LocalDateTime applyTime;
+    private String createTime;
 }

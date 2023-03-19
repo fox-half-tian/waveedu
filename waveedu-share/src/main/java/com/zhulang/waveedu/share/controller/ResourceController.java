@@ -43,22 +43,16 @@ public class ResourceController {
     }
 
     /**
-     * 获取自己正在审批中的资源信息列表
+     * 获取某个资源的信息
      *
-     * @return 信息列表
+     * @param resourceId 资源id
+     * @return 资源信息
      */
-    @GetMapping("/getApplyingList")
-    public Result getApplyingList(){
-        return resourceService.getSelfApplyingList();
+    @GetMapping("/getResourceInfo")
+    public Result getResourceInfo(@RequestParam("resourceId")Integer resourceId){
+        return resourceService.getResourceInfo(resourceId);
     }
 
-    /**
-     * 用户获取自己已经被审批的资源信息列表
-     *
-     * @return 信息列表
-     */
-    @GetMapping("/getSelfApprovedList")
-    public Result getSelfApprovedList(){
-        return resourceService.getSelfApprovedList();
-    }
+
+
 }

@@ -71,6 +71,11 @@ public class Resources implements Serializable {
     private String fileFormatSize;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
      * 下载次数
      */
     private Integer downloadCount;

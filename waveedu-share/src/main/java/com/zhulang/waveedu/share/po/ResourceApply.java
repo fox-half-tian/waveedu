@@ -56,6 +56,11 @@ public class ResourceApply implements Serializable {
     private String fileType;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
      * 文件格式
      */
     private String fileFormat;

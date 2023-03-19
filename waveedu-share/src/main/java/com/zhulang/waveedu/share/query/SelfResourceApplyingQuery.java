@@ -35,6 +35,11 @@ public class SelfResourceApplyingQuery {
     private String filePath;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
      * 文件类型：文本，图片，音频，视频，其它
      */
     private String fileType;

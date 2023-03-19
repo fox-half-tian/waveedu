@@ -30,6 +30,13 @@ public class SaveResourceApplyVO {
     private String introduce;
 
     /**
+     * 文件名
+     */
+    @NotBlank(message = "文件名不允许为空")
+    @Length(min = 1,max = 255,message = "文件名应在1-255字间")
+    private String fileName;
+
+    /**
      * 标签
      */
     private String tag;

@@ -70,6 +70,11 @@ public class ApprovedResourceInfoQuery {
     private String fileFormatSize;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
      * 标签
      */
     private String tag;

@@ -4,6 +4,9 @@ import com.zhulang.waveedu.share.po.ResourceApply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.share.query.ApprovedResourceInfoQuery;
 import com.zhulang.waveedu.share.query.NoApproveResourceInfoQuery;
+import com.zhulang.waveedu.share.query.SelfApprovedInfoQuery;
+import com.zhulang.waveedu.share.query.SelfResourceApplyingQuery;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,4 +33,20 @@ public interface ResourceApplyMapper extends BaseMapper<ResourceApply> {
      * @return 信息列表
      */
     List<ApprovedResourceInfoQuery> selectApprovedInfoList();
+
+    /**
+     * 获取自己正在申请中的资源信息列表
+     *
+     * @param userId 用户id
+     * @return 信息列表
+     */
+    List<SelfResourceApplyingQuery> selectSelfApplyingList(@Param("userId") Long userId);
+
+    /**
+     * 获取自己已经审批的资源信息列表
+     *
+     * @param userId 用户id
+     * @return 信息列表
+     */
+    List<SelfApprovedInfoQuery> selectSelfApprovedList(@Param("userId") Long userId);
 }
