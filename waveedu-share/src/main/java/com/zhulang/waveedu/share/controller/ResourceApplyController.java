@@ -58,4 +58,14 @@ public class ResourceApplyController {
         return resourceApplyService.getNoApproveList();
     }
 
+    /**
+     * 管理员获取已经审批的信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getApprovedList")
+    public Result getApprovedList(){
+        return resourceApplyService.getApprovedList();
+    }
+
 }

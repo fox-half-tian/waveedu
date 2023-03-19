@@ -122,4 +122,9 @@ public class ResourceApplyServiceImpl extends ServiceImpl<ResourceApplyMapper, R
     public Result getNoApproveList() {
         return Result.ok(resourceApplyMapper.selectNoApproveInfoList());
     }
+
+    @Override
+    public Result getApprovedList() {
+        return Result.ok(resourceApplyMapper.selectApprovedInfoList());
+    }
 }

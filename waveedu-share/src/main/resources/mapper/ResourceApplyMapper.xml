@@ -23,4 +23,32 @@
           AND a.`user_id` = i.`id`
         ORDER BY a.`create_time`
     </select>
+    <select id="selectApprovedInfoList" resultType="com.zhulang.waveedu.share.query.ApprovedResourceInfoQuery">
+        SELECT a.`id`,
+               a.`title`,
+               a.`user_id`,
+               a.`introduce`,
+               a.`file_path`,
+               a.`file_type`,
+               a.`file_format`,
+               a.`file_byte_size`,
+               a.`file_format_size`,
+               a.`tag`,
+               a.`create_time` AS `applyTime`,
+               a.`approve_time`,
+               a.`mark`,
+               a.`status`,
+               a.`admin_id`,
+               i.`name`        AS `username`,
+               i.`icon`        AS `userIcon`,
+               n.`nick_name`   AS `adminName`,
+               n.`icon`        AS `adminIcon`
+        FROM `share_resource_apply` a,
+             `basic_user_info` i,
+             `basic_admin` n
+        WHERE a.`status` != 0
+          AND a.`user_id` = i.`id`
+          AND a.`admin_id` = n.`id`
+        ORDER BY a.`create_time` DESC
+    </select>
 </mapper>
