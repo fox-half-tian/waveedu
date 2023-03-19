@@ -39,4 +39,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
                 .eq(Resources::getUserId, UserHolderUtils.getUserId()));
         return delCount != 0 ? Result.ok() : Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "资源不存在或权限不足");
     }
+
+    @Override
+    public Result getSelfApplyingList() {
+        return Result.ok(resourceMapper.selectSelfApplyingList(UserHolderUtils.getUserId()));
+    }
 }

@@ -41,4 +41,14 @@ public class ResourceController {
     public Result removeResource(@RequestParam("resourceId")Integer resourceId){
         return resourceService.removeResource(resourceId);
     }
+
+    /**
+     * 获取自己正在审批中的资源信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getApplyingList")
+    public Result getApplyingList(){
+        return resourceService.getSelfApplyingList();
+    }
 }

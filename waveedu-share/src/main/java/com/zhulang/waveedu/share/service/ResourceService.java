@@ -28,4 +28,11 @@ public interface ResourceService extends IService<Resources> {
      * @return 删除状况
      */
     Result removeResource(Integer resourceId);
+
+    /**
+     * 获取自己正在审批中的资源信息列表
+     *
+     * @return 信息列表
+     */
+    Result getSelfApplyingList();
 }
