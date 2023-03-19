@@ -38,4 +38,5 @@ public interface SiteTopicService extends IService<SiteTopic> {
     Result getSiteTopicall();
     Result getTypeByTopicid(Long id);
     Result getTypeAndSiteByTopicid(Long id);
+    Result getAnything();
 }

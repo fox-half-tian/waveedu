@@ -10,9 +10,7 @@ import com.zhulang.waveedu.share.po.Site;
 import com.zhulang.waveedu.share.po.SiteTopic;
 import com.zhulang.waveedu.share.po.SiteType;
 import com.zhulang.waveedu.share.service.SiteTopicService;
-import com.zhulang.waveedu.share.vo.TopicAndType;
-import com.zhulang.waveedu.share.vo.TypeAndSite;
-import com.zhulang.waveedu.share.vo.TypeNameAndId;
+import com.zhulang.waveedu.share.vo.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -129,5 +127,36 @@ public class SiteTopicServiceImpl extends ServiceImpl<SiteTopicMapper, SiteTopic
         }
 
         return Result.ok(TSL);
+    }
+
+    @Override
+    public Result getAnything() {
+        List<TopicAll> Rlist=new ArrayList<>();
+
+        LambdaQueryWrapper<SiteTopic> siteTopicWrapper = new LambdaQueryWrapper<>();
+        siteTopicWrapper.gt(SiteTopic::getId,0);
+        List<SiteTopic> siteTopics = siteTopicMapper.selectList(siteTopicWrapper);
+
+        for(SiteTopic s:siteTopics){
+            TopicAll topicAll=new TopicAll();
+            topicAll.setTopic(s);
+            LambdaQueryWrapper<SiteType> siteTypeWrapper = new LambdaQueryWrapper<>();
+            siteTypeWrapper.eq(SiteType::getTopicId,s.getId());
+            List<SiteType> siteTypes = siteTypeMapper.selectList(siteTypeWrapper);
+
+            List<TypeAll> nai=new ArrayList<>();
+            for(SiteType st:siteTypes){
+                TypeAll tni=new TypeAll();
+                tni.setSiteType(st);
+                LambdaQueryWrapper<Site> siteWrapper = new LambdaQueryWrapper<>();
+                siteWrapper.eq(Site::getTypeId,st.getId());
+                List<Site> sites = siteMapper.selectList(siteWrapper);
+                tni.setSites(sites);
+                nai.add(tni);
+            }
+            topicAll.setTypes(nai);
+            Rlist.add(topicAll);
+        }
+        return Result.ok(Rlist);
     }
 }
