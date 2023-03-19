@@ -6,12 +6,9 @@ import com.zhulang.waveedu.share.service.ResourceApplyService;
 import com.zhulang.waveedu.share.vo.ResourceApproveVO;
 import com.zhulang.waveedu.share.vo.SaveResourceApplyVO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -49,6 +46,16 @@ public class ResourceApplyController {
     @PostMapping("/approve")
     public Result approve(@Validated @RequestBody ResourceApproveVO resourceApproveVO){
         return resourceApplyService.approve(resourceApproveVO);
+    }
+
+    /**
+     * 管理员获取未审批的信息列表
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/getNoApproveList")
+    public Result getNoApproveList(){
+        return resourceApplyService.getNoApproveList();
     }
 
 }

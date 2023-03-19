@@ -31,4 +31,11 @@ public interface ResourceApplyService extends IService<ResourceApply> {
      * @return 审批结果
      */
     Result approve(ResourceApproveVO resourceApproveVO);
+
+    /**
+     * 管理员获取未审批的信息列表
+     *
+     * @return 信息列表
+     */
+    Result getNoApproveList();
 }

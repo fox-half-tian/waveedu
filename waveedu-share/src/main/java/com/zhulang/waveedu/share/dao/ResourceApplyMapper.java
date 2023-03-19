@@ -2,6 +2,9 @@ package com.zhulang.waveedu.share.dao;
 
 import com.zhulang.waveedu.share.po.ResourceApply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zhulang.waveedu.share.query.NoApproveResourceInfoQuery;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ResourceApplyMapper extends BaseMapper<ResourceApply> {
 
+    /**
+     * 获取所有未审批的资源信息
+     *
+     * @return 信息列表
+     */
+    List<NoApproveResourceInfoQuery> selectNoApproveInfoList();
 }
