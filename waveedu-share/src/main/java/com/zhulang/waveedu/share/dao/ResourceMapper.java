@@ -1,6 +1,5 @@
 package com.zhulang.waveedu.share.dao;
 
-import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.po.Resources;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.share.query.ResourceShowInfoQuery;
@@ -33,4 +32,14 @@ public interface ResourceMapper extends BaseMapper<Resources> {
      * @return 列表信息
      */
     List<ResourceShowInfoQuery> selectResourceInfoList(@Param("id") Integer id,@Param("limitNum")Integer limitNum);
+
+    void updateDownloadCountForOne(@Param("id") Integer id);
+
+    /**
+     * 查询文件资源路径
+     *
+     * @param id 资源id
+     * @return 资源路径
+     */
+    String selectFilePathById(@Param("id") Integer id);
 }

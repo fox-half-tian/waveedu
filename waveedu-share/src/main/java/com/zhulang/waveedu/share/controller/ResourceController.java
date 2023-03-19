@@ -1,6 +1,8 @@
 package com.zhulang.waveedu.share.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.share.service.ResourceService;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +66,19 @@ public class ResourceController {
         return resourceService.getResourceInfoList(resourceId);
     }
 
-
+    /**
+     * 资源下载，下载次数+1
+     *
+     * @param object 资源id
+     * @return 资源路径
+     */
+    @PostMapping("/download")
+    public Result download(@RequestBody JSONObject object){
+        try {
+            return resourceService.download(Integer.parseInt(object.getString("resourceId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(),"资源id格式错误");
+        }
+    }
 
 }

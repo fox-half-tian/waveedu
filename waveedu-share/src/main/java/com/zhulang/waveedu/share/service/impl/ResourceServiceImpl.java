@@ -59,5 +59,22 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
         return Result.ok(resourceMapper.selectResourceInfoList(resourceId, ShareConstants.RESOURCE_QUERY_DEFAULT_LIMIT_NUM));
     }
 
+    @Override
+    public Result download(Integer resourceId) {
+        // 1.校验格式
+        if (resourceId == null || resourceId < 1000) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "资源id格式错误");
+        }
+        // 2.获取资源路径
+        String filePath = resourceMapper.selectFilePathById(resourceId);
+        if (filePath == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "资源文件不存在");
+        }
+        // 3.下载次数 +1
+        resourceMapper.updateDownloadCountForOne(resourceId);
+        // 4.返回资源路径
+        return Result.ok(filePath);
+    }
+
 
 }

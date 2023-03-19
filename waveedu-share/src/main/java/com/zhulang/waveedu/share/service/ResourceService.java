@@ -45,4 +45,12 @@ public interface ResourceService extends IService<Resources> {
      * @return 列表信息
      */
     Result getResourceInfoList(Integer resourceId);
+
+    /**
+     * 下载资源，下载次数+1
+     *
+     * @param resourceId 资源id
+     * @return 资源路径
+     */
+    Result download(Integer resourceId);
 }
