@@ -51,4 +51,8 @@ public class SiteTopicController {
     public Result getTypeAndSite(@RequestParam(value = "id") Long id) {
         return siteTopicService.getTypeAndSiteByTopicid(id);
     }
+    @GetMapping("/getanything")
+    public Result getAnything(){
+        return siteTopicService.getAnything();
+    }
 }
