@@ -20,4 +20,12 @@ public interface ResourceService extends IService<Resources> {
      * @return 资源列表
      */
     Result getSelfResourcesList();
+
+    /**
+     * 删除自己的某个资源
+     *
+     * @param resourceId 资源id
+     * @return 删除状况
+     */
+    Result removeResource(Integer resourceId);
 }
