@@ -23,4 +23,26 @@
         where r.`id` = #{id}
           and r.`user_id` = i.`id`
     </select>
+    <select id="selectResourceInfoList" resultType="com.zhulang.waveedu.share.query.ResourceShowInfoQuery">
+        SELECT r.`id`,
+               r.`title`,
+               r.`introduce`,
+               r.`file_name`,
+               r.`file_type`,
+               r.`file_format`,
+               r.`file_byte_size`,
+               r.`file_format_size`,
+               r.`tag`,
+               r.`create_time`,
+               r.`download_count`,
+               r.`user_id`,
+               i.`name` AS `username`,
+               i.`icon` AS `userIcon`
+        FROM `share_resource` r,
+             `basic_user_info` i
+        WHERE r.`id` &lt; #{id}
+          AND r.`user_id` = i.`id`
+        ORDER BY r.`id` DESC
+        LIMIT #{limitNum}
+    </select>
 </mapper>

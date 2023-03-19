@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
+import com.zhulang.waveedu.share.Constant.ShareConstants;
 import com.zhulang.waveedu.share.po.Resources;
 import com.zhulang.waveedu.share.dao.ResourceMapper;
 import com.zhulang.waveedu.share.query.ResourceShowInfoQuery;
@@ -44,10 +45,18 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resources> 
     @Override
     public Result getResourceInfo(Integer resourceId) {
         ResourceShowInfoQuery resourceInfo = resourceMapper.selectResourceInfo(resourceId);
-        if (resourceInfo==null){
-            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(),"资源不存在");
+        if (resourceInfo == null) {
+            return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "资源不存在");
         }
         return Result.ok(resourceInfo);
+    }
+
+    @Override
+    public Result getResourceInfoList(Integer resourceId) {
+        if (resourceId == null || resourceId <= 0) {
+            resourceId = Integer.MAX_VALUE;
+        }
+        return Result.ok(resourceMapper.selectResourceInfoList(resourceId, ShareConstants.RESOURCE_QUERY_DEFAULT_LIMIT_NUM));
     }
 
 

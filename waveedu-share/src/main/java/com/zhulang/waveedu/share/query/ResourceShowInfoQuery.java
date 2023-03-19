@@ -45,6 +45,11 @@ public class ResourceShowInfoQuery {
     private String introduce;
 
     /**
+     * 下载次数
+     */
+    private Integer downloadCount;
+
+    /**
      * 文件名
      */
     private String fileName;

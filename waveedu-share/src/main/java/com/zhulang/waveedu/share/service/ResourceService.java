@@ -37,4 +37,12 @@ public interface ResourceService extends IService<Resources> {
      * @return 资源信息
      */
     Result getResourceInfo(Integer resourceId);
+
+    /**
+     * 获取资源信息列表
+     *
+     * @param resourceId 资源id
+     * @return 列表信息
+     */
+    Result getResourceInfoList(Integer resourceId);
 }

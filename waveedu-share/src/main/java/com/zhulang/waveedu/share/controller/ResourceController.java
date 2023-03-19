@@ -53,6 +53,17 @@ public class ResourceController {
         return resourceService.getResourceInfo(resourceId);
     }
 
+    /**
+     * 获取资源信息列表
+     *
+     * @param resourceId 资源id
+     * @return 列表信息
+     */
+    @GetMapping("/getResourceInfoList")
+    public Result getResourceInfoList(@RequestParam(value = "resourceId",required = false)Integer resourceId){
+        return resourceService.getResourceInfoList(resourceId);
+    }
+
 
 
 }

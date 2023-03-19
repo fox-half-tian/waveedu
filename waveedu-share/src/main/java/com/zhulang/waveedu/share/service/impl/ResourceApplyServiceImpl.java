@@ -113,6 +113,7 @@ public class ResourceApplyServiceImpl extends ServiceImpl<ResourceApplyMapper, R
         resources.setFileByteSize(applyInfo.getFileByteSize());
         resources.setTag(applyInfo.getTag());
         resources.setFileName(applyInfo.getFileName());
+        resources.setCreateTime(applyInfo.getCreateTime());
 
         // 6.增加记录到资源表
         resourceService.save(resources);
