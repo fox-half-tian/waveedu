@@ -71,6 +71,11 @@ public class OssServiceController {
         return ossClientUtils.policy(OssConstants.PROGRAM_PROBLEM_IMAGE);
     }
 
+    /**
+     * 获取班级聊天图片的签名
+     *
+     * @return 签名信息
+     */
     @GetMapping("/classChatImage")
     public Result classChatImage(){
         return ossClientUtils.policy(OssConstants.CLASS_CHAT_IMAGE);
