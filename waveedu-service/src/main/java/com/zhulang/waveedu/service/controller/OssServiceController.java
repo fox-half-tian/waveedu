@@ -70,4 +70,9 @@ public class OssServiceController {
     public Result programProblemImage() {
         return ossClientUtils.policy(OssConstants.PROGRAM_PROBLEM_IMAGE);
     }
+
+    @GetMapping("/classChatImage")
+    public Result classChatImage(){
+        return ossClientUtils.policy(OssConstants.CLASS_CHAT_IMAGE);
+    }
 }

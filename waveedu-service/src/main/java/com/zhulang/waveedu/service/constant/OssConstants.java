@@ -29,4 +29,9 @@ public class OssConstants {
      * 存储编程问题图片的目录
      */
     public static final String PROGRAM_PROBLEM_IMAGE ="program-problem-image";
+
+    /**
+     * 存储班级聊天图片的目录
+     */
+    public static final String CLASS_CHAT_IMAGE ="class-chat-image";
 }
