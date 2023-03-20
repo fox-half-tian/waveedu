@@ -70,6 +70,15 @@ public class SiteApplyServiceImpl extends ServiceImpl<SiteApplyMapper, SiteApply
     }
 
     @Override
+    public Result getSiteApplyByUserId(Long id) {
+
+        LambdaQueryWrapper<SiteApply> siteApplyWrapper = new LambdaQueryWrapper<>();
+        siteApplyWrapper.eq(SiteApply::getUserId,id);
+        List<SiteApply> siteApplies = siteApplyMapper.selectList(siteApplyWrapper);
+        return Result.ok(siteApplies);
+    }
+
+    @Override
     public Result modifySiteApplyById(SiteApply siteApply) {
         int update = siteApplyMapper.updateById(siteApply);
         if(update>0){
