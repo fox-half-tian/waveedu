@@ -157,8 +157,8 @@ public class WebSocketServer {
         this.classId = classId;
         String token = session.getRequestParameterMap().get("token").get(0);
         this.userId = getUserId(token);
-        if (this.userId==null){
-            errorMessage(session,"用户登录过期或无效登录，请重新登录");
+        if (this.userId == null) {
+            errorMessage(session, "用户登录过期或无效登录，请重新登录");
             session.close();
             return true;
         }
@@ -182,7 +182,7 @@ public class WebSocketServer {
                 String replace = redisJson.replace("\\", "");
                 System.out.println(replace);
                 try {
-                     info = JSON.parseObject(replace, BasicUserInfo.class);
+                    info = JSON.parseObject(replace, BasicUserInfo.class);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -241,9 +241,9 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String json, Session session) throws IOException {
-        log.info("收到来自窗口" + userId + "的信息:" + json);
+//        log.info("收到来自窗口" + userId + "的信息:" + json);
         SnowflakeIdWorker snowflakeIdWorker = new SnowflakeIdWorker(1, 1);
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject;
         try {
             jsonObject = JSONObject.parseObject(json);
         } catch (JSONException e) {
@@ -285,9 +285,11 @@ public class WebSocketServer {
         chatClassRecordMapper.insertChatMessage(message.getChatMessage());
         message.setMessageType(0);
         WEBSOCKET_MAP = classMap.get(session.getRequestParameterMap().get("class_id").get(0));
-        for (String key : WEBSOCKET_MAP.keySet()) {
-            String msg = JSON.toJSONString(message);
-            WEBSOCKET_MAP.get(key).getBasicRemote().sendText(msg);
+        String msg = JSON.toJSONString(message);
+        for (Session oneSession : WEBSOCKET_MAP.values()) {
+            if (oneSession != session) {
+                oneSession.getBasicRemote().sendText(msg);
+            }
         }
     }
 
@@ -379,7 +381,7 @@ public class WebSocketServer {
         WebSocketServer.onlineCount--;
     }
 
-    public String getUserId(String token){
+    public String getUserId(String token) {
         if (!StringUtils.hasText(token)) {
             // 没有 token 则放行
             return null;
