@@ -30,6 +30,7 @@ public interface SiteApplyService extends IService<SiteApply> {
      */
     Result getSiteApplyById(Long id);
 
+    Result getSiteApplyByUserId(Long id);
     /**
      * 修改站点
      * @param siteApply

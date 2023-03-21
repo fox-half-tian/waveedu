@@ -88,4 +88,10 @@ public class SiteApplyController {
     public Result getSiteApplyByAdminId(){
         return siteApplyService.getSiteApplyByAdminId();
     }
+
+    @GetMapping("/get/self")
+    public Result getSite() {
+        Long userId = UserHolderUtils.getUserId();
+        return siteApplyService.getSiteApplyByUserId(userId);
+    }
 }
