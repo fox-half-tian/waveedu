@@ -47,6 +47,10 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         LambdaQueryWrapper<College> collegeWrapper = new LambdaQueryWrapper<>();
         collegeWrapper.eq(College::getName, identityVO.getCollegeName());
         College college = collegeMapper.selectOne(collegeWrapper);
+        if (identityVO.getType() == 1 && !college.getTchCode().equals(identityVO.getTchCode())) {
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "教师身份校验失败");
+        }
+
         identity.setCollegeId(college.getId());
         identity.setNumber(identityVO.getNumber());
         identity.setType(identityVO.getType());
@@ -56,7 +60,7 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         try {
             identityMapper.insert(identity);
         } catch (Exception e) {
-            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(),"该身份已被其他用户注册");
+            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "该身份已被其他用户注册");
         }
         // 5.查询出刚刚添加的身份信息
         Identity result = identityMapper.selectOne(identityWrapper);

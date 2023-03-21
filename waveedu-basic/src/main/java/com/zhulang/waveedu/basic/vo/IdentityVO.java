@@ -30,6 +30,11 @@ public class IdentityVO {
     private String collegeName;
 
     /**
+     * 教师邀请码
+     */
+    private String tchCode;
+
+    /**
      * 身份类型 1为教师/0为学生
      */
     @NotNull
