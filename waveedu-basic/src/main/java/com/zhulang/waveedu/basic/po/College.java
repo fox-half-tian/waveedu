@@ -28,16 +28,20 @@ public class College {
      * 学校名
      */
     private String name;
+
+    /**
+     * 教师邀请码
+     */
+    private String tchCode;
+
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 }
