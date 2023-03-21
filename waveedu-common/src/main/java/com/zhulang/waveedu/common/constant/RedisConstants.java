@@ -33,21 +33,21 @@ public class RedisConstants {
 
     /**
      * 用户登录后保存在redis的信息
-     * 有效期：两小时
-     * 如果离过期还有90分钟就刷新一次有效期
+     * 有效期：五小时
+     * 如果离过期还有4小时就刷新一次有效期
      */
     public static final String LOGIN_USER_INFO_KEY = "login:user:info:";
-    public static final Long LOGIN_USER_INFO_TTL = 60 * 60 * 2L;
-    public static final Long LOGIN_USER_INFO_REFRESH_TTL = 60 * 90L;
+    public static final Long LOGIN_USER_INFO_TTL = 60 * 60 * 5L;
+    public static final Long LOGIN_USER_INFO_REFRESH_TTL = 60 * 60 * 4L;
 
     /**
-     * 用户登录后保存在redis的信息
-     * 有效期：两小时
-     * 如果离过期还有90分钟就刷新一次有效期
+     * 管理员登录后保存在redis的信息
+     * 有效期：五小时
+     * 如果离过期还有4小时就刷新一次有效期
      */
     public static final String LOGIN_ADMIN_INFO_KEY = "login:admin:info:";
-    public static final Long LOGIN_ADMIN_INFO_TTL = 60 * 60 * 2L;
-    public static final Long LOGIN_ADMIN_INFO_REFRESH_TTL = 60 * 90L;
+    public static final Long LOGIN_ADMIN_INFO_TTL = 60 * 60 * 5L;
+    public static final Long LOGIN_ADMIN_INFO_REFRESH_TTL = 60 * 60 * 4L;
 
     /**
      * 保存用户通过密码登录的验证次数
@@ -107,7 +107,7 @@ public class RedisConstants {
     /**
      * 班级群聊的所有班级的key
      */
-    public static final String CHAT_CLASS_INFO="chat:class:info:";
+    public static final String CHAT_CLASS_INFO = "chat:class:info:";
 
     /**
      * 用户判题时，只允许该用户的单线程操作，减轻判题机压力

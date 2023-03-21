@@ -25,4 +25,20 @@ public interface CollegeService extends IService<College> {
      * @return 数据信息列表
      */
     Result getPageRecords(Integer pageNum, Integer recordNum);
+
+    /**
+     * 修改教师邀请码
+     *
+     * @param collegeId 院校id
+     * @return 新的邀请码
+     */
+    Result modifyTchCode(Integer collegeId);
+
+    /**
+     * 通过院校name获取院校的详细信息
+     *
+     * @param name 院校名
+     * @return 详细信息
+     */
+    Result getCollegeInfo(String name);
 }

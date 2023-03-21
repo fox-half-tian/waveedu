@@ -58,4 +58,15 @@ public class CollegeController {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "院校id格式错误");
         }
     }
+
+    /**
+     * 通过院校name获取院校的详细信息
+     *
+     * @param name 院校名
+     * @return 详细信息
+     */
+    @GetMapping("/getCollegeInfo")
+    public Result getCollegeInfo(@RequestParam("name")String name){
+        return collegeService.getCollegeInfo(name);
+    }
 }
