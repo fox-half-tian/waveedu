@@ -2,6 +2,7 @@ package com.zhulang.waveedu.basic.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhulang.waveedu.basic.service.CollegeService;
+import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +42,20 @@ public class CollegeController {
     public Result getPageRecords(@RequestParam(value = "pageNum")Integer pageNum,
                                  @RequestParam(value = "recordNum")Integer recordNum){
         return collegeService.getPageRecords(pageNum,recordNum);
+    }
+
+    /**
+     * 修改教师邀请码
+     *
+     * @param object 院校id
+     * @return 新的邀请码
+     */
+    @PutMapping("/modify/tchCode")
+    public Result modifyTchCode(@RequestBody JSONObject object){
+        try {
+            return collegeService.modifyTchCode(Integer.parseInt(object.getString("collegeId")));
+        } catch (NumberFormatException e) {
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "院校id格式错误");
+        }
     }
 }
