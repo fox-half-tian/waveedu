@@ -16,4 +16,13 @@ public interface CollegeService extends IService<College> {
      * @return 院校结果
      */
     Result getCollegesByLike(String name);
+
+    /**
+     * 获取当前页数据
+     *
+     * @param pageNum 页数
+     * @param recordNum 记录数
+     * @return 数据信息列表
+     */
+    Result getPageRecords(Integer pageNum, Integer recordNum);
 }

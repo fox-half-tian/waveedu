@@ -29,4 +29,17 @@ public class CollegeController {
         // 当前依旧是走的数据库查询，后面可能考虑为 redis 缓存进行模糊查询
         return collegeService.getCollegesByLike(name);
     }
+
+    /**
+     * 获取当前页数据
+     *
+     * @param pageNum 页数
+     * @param recordNum 记录数
+     * @return 数据信息列表
+     */
+    @GetMapping("/getPageRecords")
+    public Result getPageRecords(@RequestParam(value = "pageNum")Integer pageNum,
+                                 @RequestParam(value = "recordNum")Integer recordNum){
+        return collegeService.getPageRecords(pageNum,recordNum);
+    }
 }

@@ -1,5 +1,6 @@
 package com.zhulang.waveedu.basic.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.basic.dao.CollegeMapper;
 import com.zhulang.waveedu.basic.po.College;
@@ -22,5 +23,12 @@ public class CollegeServiceImpl extends ServiceImpl<CollegeMapper, College> impl
     public Result getCollegesByLike(String name) {
         List<String> names = collegeMapper.selectNamesLikeName(name);
         return Result.ok(names);
+    }
+
+    @Override
+    public Result getPageRecords(Integer pageNum, Integer recordNum) {
+        Page<College> page = new Page<>(pageNum, recordNum);
+        collegeMapper.selectPage(page,null);
+        return Result.ok(page);
     }
 }
