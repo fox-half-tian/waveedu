@@ -76,6 +76,8 @@ minio:
   secretKey: minioadmin
   # 指定存储的桶
   bucket: waveedu
+chatgpt:
+  address: 43.136.19.229:8000
 
 
 
