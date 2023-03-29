@@ -4,6 +4,7 @@ import com.zhulang.waveedu.common.util.RegexUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -28,7 +29,7 @@ public class SaveLessonVO {
     /**
      * 课程介绍，最多512长度
      */
-    @Pattern(regexp = RegexUtils.RegexPatterns.LESSON_INTRO__REGEX, message = "只允许512字内的介绍")
+    @Length(min=0,max = 512, message = "只允许512字内的介绍")
     private String introduce;
 
     /**
