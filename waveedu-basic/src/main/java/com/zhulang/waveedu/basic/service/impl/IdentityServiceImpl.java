@@ -14,6 +14,7 @@ import com.zhulang.waveedu.basic.vo.IdentityVO;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
+import com.zhulang.waveedu.common.util.WaveStrUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -120,32 +121,37 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         if (RegexUtils.isSnowIdInvalid(identityVO.getUserId())) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效id");
         }
-        // 2.判断type是否符合要求
-        if (!(identityVO.getType() == 1 || identityVO.getType() == 0)) {
-            return Result.error("type参数有误，应为0或1");
-        }
-        // 3.检查是否添加过
-        LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
-        IdentityWrapper.eq(Identity::getUserId, identityVO.getUserId());
-        IdentityWrapper.eq(Identity::getIsDeleted, 0);
-        Identity r = identityMapper.selectOne(IdentityWrapper);
-        if (r == null) {
-            return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "请先添加身份再修改");
-        }else{
-            // 废弃原来的
-            identityMapper.deleteById(r.getId());
-        }
-        // 4.查询院校
+        // 2.查询院校信息
         College college = collegeMapper.selectOne(new LambdaQueryWrapper<College>()
                 .eq(College::getName, identityVO.getCollegeName()));
-        if (college==null){
+        if (college == null) {
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "院校不存在");
         }
+        // 3.如果是老师，校验邀请码
+        if (identityVO.getType() == 1 && !college.getTchCode().equals(identityVO.getTchCode())) {
+            return Result.error(HttpStatus.HTTP_VERIFY_FAIL.getCode(), "教师身份校验失败");
+        }
+        // 4.查看是否已经存在该身份
+        identityVO.setNumber(WaveStrUtils.removeBlank(identityVO.getNumber()));
+        Long count = identityMapper.selectCount(new LambdaQueryWrapper<Identity>()
+                .eq(Identity::getCollegeId, college.getId())
+                .eq(Identity::getType, identityVO.getType())
+                .eq(Identity::getNumber, identityVO.getNumber()));
+        if (count != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "身份已被使用");
+        }
+        // 5.删除原身份
+        identityMapper.deleteById(new LambdaQueryWrapper<Identity>()
+                .eq(Identity::getUserId, identityVO.getUserId()));
         // 5.添加记录
-        r.setCollegeId(college.getId());
-        r.setCollegeName(college.getName());
-        r.setId(null);
-        identityMapper.insert(r);
+        Identity identity = new Identity();
+        identity.setCollegeId(college.getId());
+        identity.setCollegeName(college.getName());
+        identity.setUserId(identityVO.getUserId());
+        identity.setType(identityVO.getType());
+        identity.setNumber(identityVO.getNumber());
+        identityMapper.insert(identity);
+        // 6.返回
         return Result.ok("修改成功");
     }
 }
