@@ -123,4 +123,11 @@ public interface LessonService extends IService<Lesson> {
      * @return 信息列表
      */
     Result getChapterAndSectionInfo(Long lessonId);
+
+    /**
+     * 获取用户作为教学团队而非创建者的所有课程的简单信息
+     *
+     * @return 信息列表
+     */
+    Result getTchLessonSimpleInfoList();
 }

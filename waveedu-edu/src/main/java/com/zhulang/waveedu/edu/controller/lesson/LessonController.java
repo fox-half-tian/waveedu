@@ -109,6 +109,16 @@ public class LessonController {
     }
 
     /**
+     * 获取用户作为教学团队而非创建者的所有课程的简单信息
+     *
+     * @return 信息列表
+     */
+    @GetMapping("/get/tchLessonSimpleInfoList")
+    public Result getTchLessonSimpleInfoList(){
+        return lessonService.getTchLessonSimpleInfoList();
+    }
+
+    /**
      * 修改课程的基本信息
      *
      * @param modifyLessonBasicInfoVO 课程id + 课程名 + 课程介绍 + 课程封面

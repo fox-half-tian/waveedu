@@ -3,7 +3,7 @@ package com.zhulang.waveedu.edu.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.query.chapterquery.ChapterNameInfoWithSectionListQuery;
-import com.zhulang.waveedu.edu.query.lessonquery.CreateLessonSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.CreateOrTchLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
@@ -51,7 +51,7 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @param creatorId 创建者id
      * @return 简答信息列表
      */
-    List<CreateLessonSimpleInfoQuery> selectCreateLessonSimpleInfoList(@Param("creatorId") Long creatorId);
+    List<CreateOrTchLessonSimpleInfoQuery> selectCreateLessonSimpleInfoList(@Param("creatorId") Long creatorId);
 
     /**
      * 查询缓存到redis的lesson信息：课程id + 课程名 + 课程介绍 + 课程封面 + 创建人id + 创建时间
@@ -69,4 +69,13 @@ public interface LessonMapper extends BaseMapper<Lesson> {
      * @return 信息列表
      */
     List<ChapterNameInfoWithSectionListQuery> selectChapterAndSectionInfo(@Param("lessonId") Long lessonId);
+
+    /**
+     * 查询用户作为教学团队而非创建者的课程的简单信息，按照时间由近到远进行排序
+     * 课程id + 课程名 +  课程封面 + 课程创建时间
+     *
+     * @param userId 创建者id
+     * @return 简答信息列表
+     */
+    List<CreateOrTchLessonSimpleInfoQuery> selectTchLessonSimpleInfoList(@Param("userId") Long userId);
 }

@@ -28,7 +28,7 @@
           AND is_deleted = 0
     </select>
     <select id="selectCreateLessonSimpleInfoList"
-            resultType="com.zhulang.waveedu.edu.query.lessonquery.CreateLessonSimpleInfoQuery">
+            resultType="com.zhulang.waveedu.edu.query.lessonquery.CreateOrTchLessonSimpleInfoQuery">
         SELECT `id`, `name`, `cover`, `create_time`
         FROM `edu_lesson`
         WHERE `creator_id` = #{creatorId}
@@ -60,5 +60,16 @@
                            ON c.id = s.chapter_id
         WHERE c.lesson_id = #{lessonId}
         ORDER BY c.order_by, s.order_by
+    </select>
+    <select id="selectTchLessonSimpleInfoList"
+            resultType="com.zhulang.waveedu.edu.query.lessonquery.CreateOrTchLessonSimpleInfoQuery">
+        SELECT l.`id`, l.`name`, l.`cover`, l.`create_time`
+        FROM `edu_lesson_tch` t,
+             `edu_lesson` l
+        WHERE t.`user_id` = #{userId}
+          AND t.`lesson_id` = l.`id`
+          AND l.`creator_id` != #{userId}
+          AND l.is_deleted = 0
+        ORDER BY l.`create_time` DESC
     </select>
 </mapper>
