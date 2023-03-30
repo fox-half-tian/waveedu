@@ -16,7 +16,7 @@ import com.zhulang.waveedu.edu.dao.LessonMapper;
 import com.zhulang.waveedu.edu.po.Lesson;
 import com.zhulang.waveedu.edu.po.LessonTch;
 import com.zhulang.waveedu.edu.query.chapterquery.ChapterNameInfoWithSectionListQuery;
-import com.zhulang.waveedu.edu.query.lessonquery.CreateLessonSimpleInfoQuery;
+import com.zhulang.waveedu.edu.query.lessonquery.CreateOrTchLessonSimpleInfoQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.LessonBasicInfoQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.LessonCacheQuery;
 import com.zhulang.waveedu.edu.query.lessonquery.TchInviteCodeQuery;
@@ -262,7 +262,7 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
 
     @Override
     public Result getCreateLessonSimpleInfoList() {
-        List<CreateLessonSimpleInfoQuery> infoList = lessonMapper.selectCreateLessonSimpleInfoList(UserHolderUtils.getUserId());
+        List<CreateOrTchLessonSimpleInfoQuery> infoList = lessonMapper.selectCreateLessonSimpleInfoList(UserHolderUtils.getUserId());
         return Result.ok(infoList);
     }
 
@@ -360,6 +360,12 @@ public class LessonServiceImpl extends ServiceImpl<LessonMapper, Lesson> impleme
         // 3.查询章节信息
         List<ChapterNameInfoWithSectionListQuery> infoList = lessonMapper.selectChapterAndSectionInfo(lessonId);
         // 4.返回
+        return Result.ok(infoList);
+    }
+
+    @Override
+    public Result getTchLessonSimpleInfoList() {
+        List<CreateOrTchLessonSimpleInfoQuery> infoList = lessonMapper.selectTchLessonSimpleInfoList(UserHolderUtils.getUserId());
         return Result.ok(infoList);
     }
 }

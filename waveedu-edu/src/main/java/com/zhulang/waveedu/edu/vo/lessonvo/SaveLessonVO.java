@@ -29,7 +29,7 @@ public class SaveLessonVO {
     /**
      * 课程介绍，最多512长度
      */
-    @Length(min=0,max = 512, message = "只允许512字内的介绍")
+    @Length(min = 0, max = 512, message = "只允许512字内的介绍")
     private String introduce;
 
     /**
