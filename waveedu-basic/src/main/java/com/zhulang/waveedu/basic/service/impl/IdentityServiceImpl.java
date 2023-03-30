@@ -128,20 +128,24 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
         IdentityWrapper.eq(Identity::getUserId, identityVO.getUserId());
         IdentityWrapper.eq(Identity::getIsDeleted, 0);
-        Identity R = identityMapper.selectOne(IdentityWrapper);
-        if (R == null) {
+        Identity r = identityMapper.selectOne(IdentityWrapper);
+        if (r == null) {
             return Result.error(HttpStatus.HTTP_ILLEGAL_OPERATION.getCode(), "请先添加身份再修改");
+        }else{
+            // 废弃原来的
+            identityMapper.deleteById(r.getId());
         }
-        // 4.更新
-        Identity identity = new Identity();
-        identity.setType(identityVO.getType());
-        identity.setNumber(identityVO.getNumber());
-        LambdaQueryWrapper<College> CollegeWrapper = new LambdaQueryWrapper<>();
-        CollegeWrapper.eq(College::getName, identityVO.getCollegeName());
-        College college = collegeMapper.selectOne(CollegeWrapper);
-        identity.setCollegeId(college.getId());
-        identity.setId(R.getId());
-        identityMapper.updateById(identity);
+        // 4.查询院校
+        College college = collegeMapper.selectOne(new LambdaQueryWrapper<College>()
+                .eq(College::getName, identityVO.getCollegeName()));
+        if (college==null){
+            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "院校不存在");
+        }
+        // 5.添加记录
+        r.setCollegeId(college.getId());
+        r.setCollegeName(college.getName());
+        r.setId(null);
+        identityMapper.insert(r);
         return Result.ok("修改成功");
     }
 }
