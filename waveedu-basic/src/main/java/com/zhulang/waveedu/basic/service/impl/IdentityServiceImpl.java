@@ -1,13 +1,11 @@
 package com.zhulang.waveedu.basic.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.basic.dao.CollegeMapper;
 import com.zhulang.waveedu.basic.dao.IdentityMapper;
 import com.zhulang.waveedu.basic.po.College;
 import com.zhulang.waveedu.basic.po.Identity;
-import com.zhulang.waveedu.basic.po.UserInfo;
 import com.zhulang.waveedu.basic.query.IdentityQuery;
 import com.zhulang.waveedu.basic.service.IdentityService;
 import com.zhulang.waveedu.basic.vo.IdentityVO;
@@ -33,10 +31,6 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
 
     @Override
     public Result addIdentity(IdentityVO identityVO) {
-        // 1.判断是否是无效id
-//        if (RegexUtils.isSnowIdInvalid(identityVO.getUserId())) {
-//            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效id");
-//        }
         // 2.检查是否添加过
         LambdaQueryWrapper<Identity> identityWrapper = new LambdaQueryWrapper<>();
         identityWrapper.eq(Identity::getUserId, identityVO.getUserId());
@@ -101,22 +95,22 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
             return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效id");
         }
         // 2.查出该用户的身份记录
-        LambdaQueryWrapper<Identity> IdentityWrapper = new LambdaQueryWrapper<>();
-        IdentityWrapper.eq(Identity::getUserId, id);
-        Identity R = identityMapper.selectOne(IdentityWrapper);
-        if (R == null) {
+        LambdaQueryWrapper<Identity> identityWrapper = new LambdaQueryWrapper<>();
+        identityWrapper.eq(Identity::getUserId, id);
+        Identity r = identityMapper.selectOne(identityWrapper);
+        if (r == null) {
             return Result.error(HttpStatus.HTTP_INFO_NOT_EXIST.getCode(), "该用户身份尚未添加");
         }
         IdentityQuery identityQuery = new IdentityQuery();
-        identityQuery.setUserId(R.getUserId());
+        identityQuery.setUserId(r.getUserId());
         // 3.查到院校名字
-        LambdaQueryWrapper<College> CollegeWrapper = new LambdaQueryWrapper<>();
-        CollegeWrapper.eq(College::getId, R.getCollegeId());
-        College college = collegeMapper.selectOne(CollegeWrapper);
+        LambdaQueryWrapper<College> collegeWrapper = new LambdaQueryWrapper<>();
+        collegeWrapper.eq(College::getId, r.getCollegeId());
+        College college = collegeMapper.selectOne(collegeWrapper);
         identityQuery.setCollegeName(college.getName());
-        identityQuery.setNumber(R.getNumber());
-        identityQuery.setType(R.getType());
-        identityQuery.setCollegeId(R.getCollegeId());
+        identityQuery.setNumber(r.getNumber());
+        identityQuery.setType(r.getType());
+        identityQuery.setCollegeId(r.getCollegeId());
         // 3.返回结果
         return Result.ok(identityQuery);
     }
@@ -124,10 +118,6 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result modifyIdentity(IdentityVO identityVO) {
-        // 1.判断是否是无效id
-        if (RegexUtils.isSnowIdInvalid(identityVO.getUserId())) {
-            return Result.error(HttpStatus.HTTP_BAD_REQUEST.getCode(), "无效id");
-        }
         // 2.查询院校信息
         College college = collegeMapper.selectOne(new LambdaQueryWrapper<College>()
                 .eq(College::getName, identityVO.getCollegeName()));
