@@ -17,6 +17,7 @@
              `basic_user_info` u
                  LEFT JOIN `basic_identity` i
                            ON u.id = i.user_id
+                           AND i.is_deleted = 0
         WHERE t.lesson_id = #{lessonId}
           AND t.user_id = u.id
     </select>
