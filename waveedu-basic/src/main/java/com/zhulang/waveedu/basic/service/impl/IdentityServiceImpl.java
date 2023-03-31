@@ -16,6 +16,7 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.RegexUtils;
 import com.zhulang.waveedu.common.util.WaveStrUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -57,15 +58,20 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
         identity.setType(identityVO.getType());
         identity.setUserId(identityVO.getUserId());
         identity.setCollegeName(college.getName());
-        // 4.添加用户的身份信息
-        try {
-            identityMapper.insert(identity);
-        } catch (Exception e) {
-            return Result.error(HttpStatus.HTTP_INFO_REFUSE.getCode(), "该身份已被其他用户注册");
+        // 4.查询该身份是否已被使用
+        identityVO.setNumber(WaveStrUtils.removeBlank(identityVO.getNumber()));
+        Long count = identityMapper.selectCount(new LambdaQueryWrapper<Identity>()
+                .eq(Identity::getCollegeId, college.getId())
+                .eq(Identity::getType, identityVO.getType())
+                .eq(Identity::getNumber, identityVO.getNumber()));
+        if (count != 0) {
+            return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "身份已被使用");
         }
-        // 5.查询出刚刚添加的身份信息
+        // 5.添加用户的身份信息
+        identityMapper.insert(identity);
+        // 6.查询出刚刚添加的身份信息
         Identity result = identityMapper.selectOne(identityWrapper);
-        // 6.返回刚刚添加的身份信息
+        // 7.返回刚刚添加的身份信息
         IdentityQuery identityQuery = new IdentityQuery();
         identityQuery.setUserId(result.getUserId());
         identityQuery.setCollegeName(college.getName());
@@ -116,6 +122,7 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result modifyIdentity(IdentityVO identityVO) {
         // 1.判断是否是无效id
         if (RegexUtils.isSnowIdInvalid(identityVO.getUserId())) {
@@ -141,7 +148,7 @@ public class IdentityServiceImpl extends ServiceImpl<IdentityMapper, Identity> i
             return Result.error(HttpStatus.HTTP_REFUSE_OPERATE.getCode(), "身份已被使用");
         }
         // 5.删除原身份
-        identityMapper.deleteById(new LambdaQueryWrapper<Identity>()
+        identityMapper.delete(new LambdaQueryWrapper<Identity>()
                 .eq(Identity::getUserId, identityVO.getUserId()));
         // 5.添加记录
         Identity identity = new Identity();
