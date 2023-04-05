@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.service.config;
 
-import com.zhulang.waveedu.service.util.SmsTemplateUtils;
+import com.zhulang.waveedu.service.util.AliSmsTemplateUtils;
+import com.zhulang.waveedu.service.util.TxSmsTemplateUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SmsConfig {
     @Bean
-    @ConfigurationProperties(prefix = "sms")
-    public SmsTemplateUtils smsTemplateUtils(){
-        return new SmsTemplateUtils();
+    @ConfigurationProperties(prefix = "sms.tx")
+    public TxSmsTemplateUtils smsTemplateUtils(){
+        return new TxSmsTemplateUtils();
+    }
+
+    /**
+     * 配置阿里短信发送工具类
+     */
+    @Bean
+    @ConfigurationProperties(prefix = "sms.ali")
+    public AliSmsTemplateUtils aliSmsTemplateUtils(){
+        return new AliSmsTemplateUtils();
     }
 }

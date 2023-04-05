@@ -1,6 +1,7 @@
 package com.zhulang.waveedu.service.service.impl;
 
 
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhulang.waveedu.common.constant.HttpStatus;
 import com.zhulang.waveedu.common.constant.RedisConstants;
@@ -10,7 +11,8 @@ import com.zhulang.waveedu.common.entity.Result;
 import com.zhulang.waveedu.common.util.UserHolderUtils;
 import com.zhulang.waveedu.service.dao.UserMapper;
 import com.zhulang.waveedu.service.po.User;
-import com.zhulang.waveedu.service.util.SmsTemplateUtils;
+import com.zhulang.waveedu.service.util.AliSmsTemplateUtils;
+import com.zhulang.waveedu.service.util.TxSmsTemplateUtils;
 import com.zhulang.waveedu.service.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     private RedisCacheUtils redisCacheUtils;
     @Resource
-    private SmsTemplateUtils smsTemplateUtils;
+    private TxSmsTemplateUtils txSmsTemplateUtils;
+    @Resource
+    private AliSmsTemplateUtils aliSmsTemplateUtils;
     @Resource
     private UserMapper userMapper;
 
@@ -46,9 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(),"发送失败，验证码仍在有效期内");
         }
 
-        // todo 4.验证码不存在或者剩余时长小于四分钟，则可以继续发送验证码 --> 先生成六位随机数
-        // String code = RandomUtil.randomNumbers(6);
-        String code = "131499";
+        // 4.验证码不存在或者剩余时长小于四分钟，则可以继续发送验证码 --> 先生成六位随机数
+         String code = RandomUtil.randomNumbers(6);
 
         // 关于恶意并发的问题，在短信云平台已经自动做了处理，这里就无需处理
 
@@ -56,9 +59,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCacheUtils.setCacheObject(key,code+",0",RedisConstants.LOGIN_USER_CODE_TTL);
 
         // 6.发送短信到手机
-        // todo 测试阶段暂不发送 boolean result = smsTemplateUtils.sendLoginCode(phone, code);
-        // 默认为 true
-        boolean result = true;
+        boolean result = aliSmsTemplateUtils.sendLoginCode(phone,code);
+        //boolean result = txSmsTemplateUtils.sendLoginCode(phone, code);
         if(!result){
             // 6.1 发送失败，则移除 redis 中的验证码缓存信息，并返回
             redisCacheUtils.deleteObject(key + phone);
@@ -89,9 +91,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return Result.error(HttpStatus.HTTP_TRY_AGAIN_LATER.getCode(),"发送失败，验证码仍在有效期内");
         }
 
-        // todo 4.验证码不存在或者剩余时长小于四分钟，则可以继续发送验证码 --> 先生成六位随机数
-        // String code = RandomUtil.randomNumbers(6);
-        String code = "131499";
+        // 4.验证码不存在或者剩余时长小于四分钟，则可以继续发送验证码 --> 先生成六位随机数
+        String code = RandomUtil.randomNumbers(6);
 
         // 关于恶意并发的问题，在短信云平台已经自动做了处理，这里就无需处理
 
@@ -99,9 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCacheUtils.setCacheObject(key,code+",0",RedisConstants.LOGOFF_USER_CODE_TTL);
 
         // 6.发送短信到手机
-//         todo 测试阶段暂不发送 boolean result = smsTemplateUtils.sendLogoffCode(phone, code);
-        // 默认为 true
-        boolean result = true;
+        boolean result = aliSmsTemplateUtils.sendLogoffCode(phone, code);
         if(!result){
             // 6.1 发送失败，则移除 redis 中的验证码缓存信息，并返回
             redisCacheUtils.deleteObject(key);

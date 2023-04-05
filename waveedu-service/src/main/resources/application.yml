@@ -56,16 +56,28 @@ spring:
         time-between-eviction-runs: 10s
     database: 0
 sms:
-  # 应用的AppID
-  appId: 1400791280
-  # 应用的App Key
-  appKey: cbd511ed24bd832d05af54f63c84e52d
-  # 签名的内容
-  signContent: 狐狸半面添公众号
-  # 登录&注册短信模板的id
-  loginTemplateId: 1671035
-  # 注销短信模板的id
-  logoffTemplateId: 1675463
+  ali:
+    # 子用户的访问键
+    accessKeyId: LTAI5tFTDyuX64wv5pwSsd4V
+    # 子用户的访问密钥
+    accessKeySecret: mRtsbehqDxo88KMULEO0IVxR9PM4DX
+    # 签名名称
+    signName: 逐浪教育
+    # 登录短信模板的code
+    loginTemplateCode: SMS_275275393
+    # 注销短信模板的code
+    logoffTemplateCode: SMS_275395382
+  tx:
+    # 应用的AppID
+    appId: 1400791280
+    # 应用的App Key
+    appKey: cbd511ed24bd832d05af54f63c84e52d
+    # 签名的内容
+    signContent: 狐狸半面添公众号
+    # 登录&注册短信模板的id
+    loginTemplateId: 1671035
+    # 注销短信模板的id
+    logoffTemplateId: 1675463
 minio:
   # 指定连接的ip和端口
 #  endpoint: http://8.134.136.211:9000

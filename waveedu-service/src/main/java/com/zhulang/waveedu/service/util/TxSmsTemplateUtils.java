@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SmsTemplateUtils {
+public class TxSmsTemplateUtils {
     /**
      * 应用的AppID
      */
